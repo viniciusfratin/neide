@@ -4,7 +4,7 @@ Home garden sprinkler system.
 ## Build
 Make sure you have CMake version 3.23 or above. Then, you can build by running
 
-> cmake -G "Unix Makefiles" -S software/ -B build/
+> cmake -S software/ -B build/
 
 followed by
 
