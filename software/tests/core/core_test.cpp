@@ -5,8 +5,17 @@ extern "C"
 #include "core.h"
 }
 
-TEST(CoreTest, DummyCore) {
-  int core_result = core();
+TEST(CoreTest, ShouldBeIdleStateAfterInitialization)
+{
+  /* Given */
+  SystemCore system_core = SystemCore_Construct();
   
-  EXPECT_EQ(core_result, 123);
+  /* When */
+  CoreState current_state = SystemCore_GetCurrentState(system_core);
+
+  /* Then */
+  EXPECT_EQ(current_state, CORE_STATE_IDLE);
+
+
+  SystemCore_Destruct(&system_core);
 }
