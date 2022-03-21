@@ -14,20 +14,12 @@ SystemCore SystemCore_Construct()
     {
         instance->current_system_state = CORE_STATE_IDLE;
     }
-
-    return instance;
-}
-
-Bool SystemCore_IsInstanceValid(SystemCore instance)
-{
-    Bool is_instance_valid = FALSE;
-
-    if(instance != NULL)
+    else
     {
-        is_instance_valid = TRUE;
+        instance = SYSTEM_CORE_INVALID_INSTANCE;
     }
 
-    return is_instance_valid;
+    return instance;
 }
 
 void SystemCore_Destruct(SystemCore* instancePtr)
@@ -35,7 +27,7 @@ void SystemCore_Destruct(SystemCore* instancePtr)
     if(instancePtr != NULL)
     {
         free(*instancePtr);
-        (*instancePtr) = NULL;
+        (*instancePtr) = SYSTEM_CORE_INVALID_INSTANCE;
     }
 }
 

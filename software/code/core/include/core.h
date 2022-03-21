@@ -10,8 +10,9 @@ typedef enum CoreStateInternal
 
 typedef struct SystemCoreInternal* SystemCore;
 
+#define SYSTEM_CORE_INVALID_INSTANCE ((SystemCore)NULL)
+
 SystemCore SystemCore_Construct();
-Bool SystemCore_IsInstanceValid(SystemCore instance);
 void SystemCore_Destruct(SystemCore* instancePtr);
 
 CoreState SystemCore_GetCurrentState(SystemCore instance);
