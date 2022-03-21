@@ -3,10 +3,6 @@
 
 #include "common.h"
 
-typedef enum CoreStateInternal
-{
-    CORE_STATE_IDLE = 0
-} CoreState;
 
 typedef struct SystemCoreInternal* SystemCore;
 
@@ -14,6 +10,12 @@ typedef struct SystemCoreInternal* SystemCore;
 
 SystemCore SystemCore_Construct();
 void SystemCore_Destruct(SystemCore* instancePtr);
+
+
+typedef enum CoreStateInternal
+{
+    CORE_STATE_IDLE = 0
+} CoreState;
 
 CoreState SystemCore_GetCurrentState(SystemCore instance);
 
