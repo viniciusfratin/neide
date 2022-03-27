@@ -13,7 +13,7 @@ In order to create the Docker image after cloning this repository, run
 
 **Note**: This command needs not to be executed again, unless there is some change to the code.
 
-### Build
+### Build and Tests
 In order to build the code and execute the tests, run
 
 > docker run --name neide --rm --tty viniciusfratin/neide:v0.1
@@ -27,7 +27,7 @@ Make sure you have the following prerequisites:
 - gcc (>= 9.2.0)
 - g++ (>= 9.2.0)
 
-### Build and Tests
+### Build
 Then, after cloning this repository, you can build by running
 
 > cd neide/
