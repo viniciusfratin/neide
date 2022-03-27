@@ -9,18 +9,22 @@ In order to create the Docker image after cloning this repository, run
 
 > cd neide/
 >
-> docker build --no-cache -t viniciusfratin/neide:v0.1 -f ./docker/Dockerfile .
+> docker build -t viniciusfratin/neide:v0.1 -f ./docker/Dockerfile .
 
 To instantiate a new container from the built image, run
 
 > docker create --tty --name neide viniciusfratin/neide:v0.1
 
-From now on, the build environment is setup in the container and the previous commands need not to be executed again.
+From now on, the build environment is setup inside the container. 
+
+**Note**: The previous commands need not to be executed again, unless there is some change to the code.
 
 ### Build
 In order to build the code and execute the tests, run
 
 > docker start --attach neide
+
+In case you make a change to the code, refer to the **Note** in the previous section.
 
 ## If you are not using Docker:
 ### Setup
