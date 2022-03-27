@@ -27,7 +27,7 @@ Make sure you have the following prerequisites:
 - gcc (>= 9.2.0)
 - g++ (>= 9.2.0)
 
-### Build
+### Build and Tests
 Then, after cloning this repository, you can build by running
 
 > cd neide/
