@@ -26,8 +26,8 @@ In order to build the code and execute the tests, run
 ### Setup
 Make sure you have the following prerequisites:
 - CMake (>= 3.23)
-- gcc (>= 11.2.0)
-- g++ (>= 11.2.0)
+- gcc (>= 9.2.0)
+- g++ (>= 9.2.0)
 
 ### Build
 Then, after cloning this repository, you can build by running
