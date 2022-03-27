@@ -7,6 +7,7 @@ Make sure you have Docker installed.
 In order to create the Docker image after cloning this repository, run
 
 > cd neide/
+>
 > docker build --no-cache -t viniciusfratin/neide:v0.1 -f ./docker/Dockerfile .
 
 To instantiate a new container from the built image, run
