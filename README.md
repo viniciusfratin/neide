@@ -9,7 +9,7 @@ In order to create the Docker image after cloning this repository, run
 
 > cd neide/
 >
-> docker build -t viniciusfratin/neide:v0.1 -f ./docker/Dockerfile .
+> docker build --tag viniciusfratin/neide:v0.1 --file ./docker/Dockerfile .
 
 **Note**: This command needs not to be executed again, unless there is some change to the code.
 
