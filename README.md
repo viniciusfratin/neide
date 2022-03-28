@@ -24,8 +24,8 @@ In case you make a change to the code, refer to the **Note** in the previous sec
 ### Setup
 Make sure you have the following prerequisites:
 - CMake (>= 3.23)
-- gcc (>= 9.2.0)
-- g++ (>= 9.2.0)
+- gcc (>= 9.4.0)
+- g++ (>= 9.4.0)
 
 ### Build
 Then, after cloning this repository, you can build by running
