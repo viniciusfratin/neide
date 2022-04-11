@@ -1,5 +1,7 @@
 set (core_source_files
-	"src/core.c")
+	"src/core.c"
+    "src/idle_state.c"
+    "src/woke_state.c")
 
 add_library (core "${core_source_files}")
 

@@ -3,18 +3,16 @@
 
 typedef struct SystemCoreInternal
 {
-    CoreState current_system_state;
-    ShouldWakeUpCallback should_wake_up_callback;
+    HandleCoreState* current_handle_core_state;
 } SystemCoreImplementation;
 
-SystemCore SystemCore_Construct(ShouldWakeUpCallback should_wake_up_callback)
+SystemCore SystemCore_Construct(HandleCoreState* initial_handle_core_state)
 {
     SystemCore instance = (SystemCore)malloc(sizeof(SystemCoreImplementation));
 
     if(instance != NULL)
     {
-        instance->current_system_state = CORE_STATE_IDLE;
-        instance->should_wake_up_callback = should_wake_up_callback;
+        instance->current_handle_core_state = initial_handle_core_state;
     }
     else
     {
@@ -35,29 +33,13 @@ void SystemCore_Destruct(SystemCore* instancePtr)
 
 CoreState SystemCore_GetCurrentState(SystemCore instance)
 {
-    return instance->current_system_state;
+    return instance->current_handle_core_state->core_state;
 }
 
 void SystemCore_AdvanceCycle(SystemCore instance)
 {
-    CoreState next_state = CORE_STATE_IDLE;
-
-    switch (instance->current_system_state)
-    {
-        case CORE_STATE_IDLE:
-            if(instance->should_wake_up_callback() == TRUE)
-            {
-                next_state = CORE_STATE_WOKE;
-            }
-            else
-            {
-                next_state = CORE_STATE_IDLE;
-            }
-            break;
-
-        case CORE_STATE_WOKE:
-            break;
-    }
-
-    instance->current_system_state = next_state;
+    instance->current_handle_core_state = 
+        instance->current_handle_core_state->handle_state_callback(
+            instance->current_handle_core_state->state_instance
+        );
 }

@@ -15,4 +15,4 @@ WORKDIR /neide
 COPY ./software /neide/software
 CMD cmake -S software/ -B build/ \
 	&& cmake --build build/ \
-	&& ctest --test-dir build/tests/
+	&& ctest --test-dir build/tests/ --rerun-failed --output-on-failure
