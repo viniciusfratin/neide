@@ -15,7 +15,13 @@ extern "C"
 
 class CoreWithWakeUpTrue : public ::testing::Test
 {
-    protected:  
+    private:
+        IdleState idle_state;
+        WokeState woke_state;
+
+    protected:
+        SystemCore system_core;
+        
         void SetUp() override
         {
             idle_state = IdleState_Construct(stub_should_wake_up_true, &woke_state);
@@ -32,15 +38,17 @@ class CoreWithWakeUpTrue : public ::testing::Test
             IdleState_Destruct(&idle_state);
             SystemCore_Destruct(&system_core);
         }
-
-        IdleState idle_state;
-        WokeState woke_state;
-        SystemCore system_core;
 };
 
 class CoreWithWakeUpFalse : public ::testing::Test
 {
-    protected:  
+    private:
+        IdleState idle_state;
+        WokeState woke_state;
+
+    protected:
+        SystemCore system_core;
+        
         void SetUp() override
         {
             idle_state = IdleState_Construct(stub_should_wake_up_false, &woke_state);
@@ -57,10 +65,6 @@ class CoreWithWakeUpFalse : public ::testing::Test
             IdleState_Destruct(&idle_state);
             SystemCore_Destruct(&system_core);
         }
-
-        IdleState idle_state;
-        WokeState woke_state;
-        SystemCore system_core;
 };
 
 TEST_F(CoreWithWakeUpTrue, ShouldBeIdleStateAfterInitialization)
