@@ -8,131 +8,87 @@ extern "C"
 #include "woke_state.h"
 }
 
-Bool stub_should_wake_up_true()
+extern "C"
 {
-	return TRUE;
+#include "stubs.hpp"
 }
 
-Bool stub_should_wake_up_false()
+class CoreWithWakeUpTrue : public ::testing::Test
 {
-	return FALSE;
-}
+    protected:  
+        void SetUp() override
+        {
+            idle_state = IdleState_Construct(stub_should_wake_up_true, &woke_state);
+            woke_state = WokeState_Construct();
 
-TEST(CoreTest, ShouldBeIdleStateAfterInitialization)
+            system_core = SystemCore_Construct(
+                IdleState_GetHandleCoreState(idle_state)
+            );
+        }
+
+        void TearDown() override
+        {
+            WokeState_Destruct(&woke_state);
+            IdleState_Destruct(&idle_state);
+            SystemCore_Destruct(&system_core);
+        }
+
+        IdleState idle_state;
+        WokeState woke_state;
+        SystemCore system_core;
+};
+
+class CoreWithWakeUpFalse : public ::testing::Test
 {
-	/* Given */
-    IdleState idle_state;
-    WokeState woke_state;
-    
-    idle_state = IdleState_Construct(stub_should_wake_up_true, &woke_state);
-    woke_state = WokeState_Construct();
+    protected:  
+        void SetUp() override
+        {
+            idle_state = IdleState_Construct(stub_should_wake_up_false, &woke_state);
+            woke_state = WokeState_Construct();
 
-	SystemCore system_core = SystemCore_Construct(
-        IdleState_GetHandleCoreState(idle_state)
-    );
+            system_core = SystemCore_Construct(
+                IdleState_GetHandleCoreState(idle_state)
+            );
+        }
 
+        void TearDown() override
+        {
+            WokeState_Destruct(&woke_state);
+            IdleState_Destruct(&idle_state);
+            SystemCore_Destruct(&system_core);
+        }
+
+        IdleState idle_state;
+        WokeState woke_state;
+        SystemCore system_core;
+};
+
+TEST_F(CoreWithWakeUpTrue, ShouldBeIdleStateAfterInitialization)
+{
+	/* Given fixture */
 	/* When */
 	CoreState current_state = SystemCore_GetCurrentState(system_core);
 
 	/* Then */
 	EXPECT_EQ(current_state, CORE_STATE_IDLE);
-
-
-    WokeState_Destruct(&woke_state);
-    IdleState_Destruct(&idle_state);
-	SystemCore_Destruct(&system_core);
 }
 
-TEST(CoreTest, ShouldBeNotValidAfterDestruction)
+TEST_F(CoreWithWakeUpTrue, ShouldBeWokeStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsTrue)
 {
-	/* Given */
-	IdleState idle_state;
-    WokeState woke_state;
-    
-    idle_state = IdleState_Construct(stub_should_wake_up_true, &woke_state);
-    woke_state = WokeState_Construct();
-
-	SystemCore system_core = SystemCore_Construct(
-        IdleState_GetHandleCoreState(idle_state)
-    );
-
-	/* When */
-    WokeState_Destruct(&woke_state);
-    IdleState_Destruct(&idle_state);
-	SystemCore_Destruct(&system_core);
-
-	/* Then */
-	EXPECT_EQ(system_core, SYSTEM_CORE_INVALID_INSTANCE);
-}
-
-TEST(CoreTest, ShouldBeValidAfterConstruction)
-{
-	/* Given, when */
-	IdleState idle_state;
-    WokeState woke_state;
-    
-    idle_state = IdleState_Construct(stub_should_wake_up_true, &woke_state);
-    woke_state = WokeState_Construct();
-
-	SystemCore system_core = SystemCore_Construct(
-        IdleState_GetHandleCoreState(idle_state)
-    );
-
-	/* Then */
-	EXPECT_NE(system_core, SYSTEM_CORE_INVALID_INSTANCE);
-
-
-    WokeState_Destruct(&woke_state);
-    IdleState_Destruct(&idle_state);
-	SystemCore_Destruct(&system_core);
-}
-
-TEST(CoreTest, ShouldBeWokeStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsTrue)
-{
-	/* Given */
-	IdleState idle_state;
-    WokeState woke_state;
-    
-    idle_state = IdleState_Construct(stub_should_wake_up_true, &woke_state);
-    woke_state = WokeState_Construct();
-
-	SystemCore system_core = SystemCore_Construct(
-        IdleState_GetHandleCoreState(idle_state)
-    );
-
+	/* Given fixture */
 	/* When */
 	SystemCore_AdvanceCycle(system_core);
 
 	/* Then */
 	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_WOKE);
-
-
-    WokeState_Destruct(&woke_state);
-    IdleState_Destruct(&idle_state);
-	SystemCore_Destruct(&system_core);
 }
 
-TEST(CoreTest, ShouldBeIdleStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsFalse)
+TEST_F(CoreWithWakeUpFalse, ShouldBeIdleStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsFalse)
 {
-	/* Given */
-	IdleState idle_state;
-    WokeState woke_state;
-    
-    idle_state = IdleState_Construct(stub_should_wake_up_false, &woke_state);
-    woke_state = WokeState_Construct();
-
-	SystemCore system_core = SystemCore_Construct(
-        IdleState_GetHandleCoreState(idle_state)
-    );
-
+	/* Given fixture */
 	/* When */
 	SystemCore_AdvanceCycle(system_core);
 
 	/* Then */
 	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IDLE);
-
-
-    WokeState_Destruct(&woke_state);
-    IdleState_Destruct(&idle_state);
-	SystemCore_Destruct(&system_core);
 }
