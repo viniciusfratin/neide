@@ -1,7 +1,4 @@
-extern "C"
-{
-    
-#include "stubs.hpp"
+#include "stubs.h"
 
 Bool stub_should_wake_up_true()
 {
@@ -11,6 +8,4 @@ Bool stub_should_wake_up_true()
 Bool stub_should_wake_up_false()
 {
 	return FALSE;
-}
-
 }

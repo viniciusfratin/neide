@@ -1,6 +1,6 @@
 set(core_tests_sources
 	"core_test.cpp"
-    "stubs.cpp"
+    "stubs_cpp.cpp"
 )
 
 add_executable(

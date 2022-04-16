@@ -8,10 +8,7 @@ extern "C"
 #include "woke_state.h"
 }
 
-extern "C"
-{
-#include "stubs.hpp"
-}
+#include "stubs_cpp.hpp"
 
 class CoreWithWakeUpTrue : public ::testing::Test
 {
