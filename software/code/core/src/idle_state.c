@@ -3,7 +3,7 @@
 
 typedef struct IdleStateInternal
 {
-    CoreStateHandle handle_idle_state;
+    CoreStateHandle idle_state_handle;
     ShouldWakeUpCallback should_wake_up_callback;
     WokeState* woke_state_ptr;
 } IdleStateImplementation;
@@ -16,13 +16,13 @@ IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, Woke
 
     if(instance != NULL)
     {
-        instance->handle_idle_state = CoreStateHandle_Construct(
+        instance->idle_state_handle = CoreStateHandle_Construct(
             (void*)instance,
             CORE_STATE_IDLE,
             IdleState_HandleIdleState
         );
 
-        if(instance->handle_idle_state != CORE_STATE_HANDLE_INVALID_INSTANCE)
+        if(instance->idle_state_handle != CORE_STATE_HANDLE_INVALID_INSTANCE)
         {
             instance->should_wake_up_callback = should_wake_up_callback;
             instance->woke_state_ptr = woke_state_ptr;
@@ -51,7 +51,7 @@ void IdleState_Destruct(IdleState* instancePtr)
 
 CoreStateHandle IdleState_GetCoreStateHandle(IdleState instance)
 {
-    return instance->handle_idle_state;
+    return instance->idle_state_handle;
 }
 
 static CoreStateHandle IdleState_HandleIdleState(void* state_instance)
