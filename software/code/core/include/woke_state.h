@@ -2,14 +2,14 @@
 #define WOKE_STATE_H
 
 #include "common.h"
-#include "core_states.h"
+#include "core_state_handle.h"
 
 typedef struct WokeStateInternal* WokeState;
 
 #define WOKE_STATE_INVALID_INSTANCE ((WokeState)NULL)
 
 
-HandleCoreState* WokeState_GetHandleCoreState(WokeState instance);
+CoreStateHandle WokeState_GetCoreStateHandle(WokeState instance);
 
 
 WokeState WokeState_Construct();

@@ -1,5 +1,6 @@
 set (core_source_files
 	"src/core.c"
+    "src/core_state_handle.c"
     "src/idle_state.c"
     "src/woke_state.c")
 

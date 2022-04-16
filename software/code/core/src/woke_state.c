@@ -3,10 +3,10 @@
 
 typedef struct WokeStateInternal
 {
-    HandleCoreState handle_woke_state;
+    CoreStateHandle handle_woke_state;
 } WokeStateImplementation;
 
-static HandleCoreState* WokeState_HandleWokeState(void* state_instance);
+static CoreStateHandle WokeState_HandleWokeState(void* state_instance);
 
 WokeState WokeState_Construct()
 {
@@ -14,9 +14,16 @@ WokeState WokeState_Construct()
 
     if(instance != NULL)
     {
-        instance->handle_woke_state.state_instance = (void*)instance;
-        instance->handle_woke_state.handle_state_callback = WokeState_HandleWokeState;
-        instance->handle_woke_state.core_state = CORE_STATE_WOKE;
+        instance->handle_woke_state = CoreStateHandle_Construct(
+            (void*)instance,
+            CORE_STATE_WOKE,
+            WokeState_HandleWokeState
+        );
+
+        if(instance->handle_woke_state == CORE_STATE_HANDLE_INVALID_INSTANCE)
+        {
+            instance = WOKE_STATE_INVALID_INSTANCE;
+        }
     }
     else
     {
@@ -35,15 +42,15 @@ void WokeState_Destruct(WokeState* instancePtr)
     }
 }
 
-HandleCoreState* WokeState_GetHandleCoreState(WokeState instance)
+CoreStateHandle WokeState_GetCoreStateHandle(WokeState instance)
 {
-    return &instance->handle_woke_state;
+    return instance->handle_woke_state;
 }
 
-static HandleCoreState* WokeState_HandleWokeState(void* state_instance)
+static CoreStateHandle WokeState_HandleWokeState(void* state_instance)
 {
     WokeState instance = (WokeState)state_instance;
-    HandleCoreState* next_handle_core_state = WokeState_GetHandleCoreState(instance);
+    CoreStateHandle next_core_state_handle = WokeState_GetCoreStateHandle(instance);
 
-    return next_handle_core_state;
+    return next_core_state_handle;
 }

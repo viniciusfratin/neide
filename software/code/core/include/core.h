@@ -2,7 +2,7 @@
 #define CORE_H
 
 #include "common.h"
-#include "core_states.h"
+#include "core_state_handle.h"
 
 typedef struct SystemCoreInternal* SystemCore;
 
@@ -13,7 +13,7 @@ CoreState SystemCore_GetCurrentState(SystemCore instance);
 void SystemCore_AdvanceCycle(SystemCore instance);
 
 
-SystemCore SystemCore_Construct(HandleCoreState* initial_handle_core_state);
+SystemCore SystemCore_Construct(CoreStateHandle initial_core_state_handle);
 void SystemCore_Destruct(SystemCore* instancePtr);
 
 

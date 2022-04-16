@@ -2,7 +2,7 @@
 #define IDLE_STATE_H
 
 #include "common.h"
-#include "core_states.h"
+#include "core_state_handle.h"
 #include "woke_state.h"
 
 typedef struct IdleStateInternal* IdleState;
@@ -12,7 +12,7 @@ typedef struct IdleStateInternal* IdleState;
 typedef Bool (*ShouldWakeUpCallback)();
 
 
-HandleCoreState* IdleState_GetHandleCoreState(IdleState instance);
+CoreStateHandle IdleState_GetCoreStateHandle(IdleState instance);
 
 
 IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, WokeState* woke_state_ptr);
