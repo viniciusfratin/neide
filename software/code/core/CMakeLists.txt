@@ -2,7 +2,8 @@ set (core_source_files
 	"src/core.c"
     "src/core_state_interface.c"
     "src/idle_state.c"
-    "src/woke_state.c")
+    "src/woke_state.c"
+    "src/soil_humidity_check_state.c")
 
 add_library (core "${core_source_files}")
 

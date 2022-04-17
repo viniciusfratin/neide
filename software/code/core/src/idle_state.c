@@ -7,13 +7,13 @@ typedef struct IdleStateInternal
     CoreStateInterface idle_state_interface;
     CoreState core_state;
     ShouldWakeUpCallback should_wake_up_callback;
-    WokeState* woke_state_ptr;
+    CoreStateInterface* woke_state_interface_ptr;
 } IdleStateImplementation;
 
 static CoreStateInterface IdleState_ExecuteIdleState(void* state_instance);
 static CoreState IdleState_GetCoreState(void* state_instance);
 
-IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, WokeState* woke_state_ptr)
+IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, CoreStateInterface* woke_state_interface_ptr)
 {
     IdleState instance = (IdleState)malloc(sizeof(IdleStateImplementation));
 
@@ -29,7 +29,7 @@ IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, Woke
         {
             instance->core_state = CORE_STATE_IDLE;
             instance->should_wake_up_callback = should_wake_up_callback;
-            instance->woke_state_ptr = woke_state_ptr;
+            instance->woke_state_interface_ptr = woke_state_interface_ptr;
         }
         else
         {
@@ -67,7 +67,7 @@ static CoreStateInterface IdleState_ExecuteIdleState(void* state_instance)
 
     if(instance->should_wake_up_callback())
     {
-        next_core_state_interface = WokeState_GetCoreStateInterface(*(instance->woke_state_ptr));
+        next_core_state_interface = *(instance->woke_state_interface_ptr);
     }
     else
     {

@@ -1,7 +1,6 @@
 #ifndef WOKE_STATE_H
 #define WOKE_STATE_H
 
-#include "common.h"
 #include "core_state_interface.h"
 
 typedef struct WokeStateInternal* WokeState;
@@ -12,7 +11,7 @@ typedef struct WokeStateInternal* WokeState;
 CoreStateInterface WokeState_GetCoreStateInterface(WokeState instance);
 
 
-WokeState WokeState_Construct();
+WokeState WokeState_Construct(CoreStateInterface* soil_humidity_check_state_interface_ptr);
 void WokeState_Destruct(WokeState* instancePtr);
 
 

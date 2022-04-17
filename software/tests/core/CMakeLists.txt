@@ -1,11 +1,19 @@
 set(core_tests_sources
 	"core_test.cpp"
-    "stubs_cpp.cpp"
+    "stubs/src/stubs_cpp.cpp"
+    "mocks/src/mocks_cpp.cpp"
 )
 
 add_executable(
 	core_tests
 	"${core_tests_sources}"
+)
+
+target_include_directories (
+    core_tests
+    PRIVATE
+    "stubs/include"
+    "mocks/include"
 )
 
 if(MSVC)

@@ -6,65 +6,109 @@ extern "C"
 #include "core.h"
 #include "idle_state.h"
 #include "woke_state.h"
+#include "soil_humidity_check_state.h"
 }
 
 #include "stubs_cpp.hpp"
+#include "mocks_cpp.hpp"
 
-class CoreWithWakeUpTrue : public ::testing::Test
+class CoreInitialIdleWithWakeUpTrue : public ::testing::Test
 {
     private:
         IdleState idle_state;
-        WokeState woke_state;
+        GeneralStateMock woke_state_mock;
+        CoreStateInterface idle_state_interface;
+        CoreStateInterface woke_state_mock_interface;
 
     protected:
         SystemCore system_core;
         
         void SetUp() override
         {
-            idle_state = IdleState_Construct(stub_should_wake_up_true, &woke_state);
-            woke_state = WokeState_Construct();
+            idle_state = IdleState_Construct(stub_should_wake_up_true, &woke_state_mock_interface);
+            woke_state_mock = GeneralStateMock_Construct(CORE_STATE_WOKE);
+
+            idle_state_interface = IdleState_GetCoreStateInterface(idle_state);
+            woke_state_mock_interface = GeneralStateMock_GetCoreStateInterface(woke_state_mock);
 
             system_core = SystemCore_Construct(
-                IdleState_GetCoreStateInterface(idle_state)
+                idle_state_interface
             );
         }
 
         void TearDown() override
         {
-            WokeState_Destruct(&woke_state);
+            GeneralStateMock_Destruct(&woke_state_mock);
             IdleState_Destruct(&idle_state);
             SystemCore_Destruct(&system_core);
         }
 };
 
-class CoreWithWakeUpFalse : public ::testing::Test
+class CoreInitialIdleWithWakeUpFalse : public ::testing::Test
 {
     private:
         IdleState idle_state;
-        WokeState woke_state;
+        GeneralStateMock woke_state_mock;
+        CoreStateInterface idle_state_interface;
+        CoreStateInterface woke_state_mock_interface;
 
     protected:
         SystemCore system_core;
         
         void SetUp() override
         {
-            idle_state = IdleState_Construct(stub_should_wake_up_false, &woke_state);
-            woke_state = WokeState_Construct();
+            idle_state = IdleState_Construct(stub_should_wake_up_false, &woke_state_mock_interface);
+            woke_state_mock = GeneralStateMock_Construct(CORE_STATE_WOKE);
+
+            idle_state_interface = IdleState_GetCoreStateInterface(idle_state);
+            woke_state_mock_interface = GeneralStateMock_GetCoreStateInterface(woke_state_mock);
 
             system_core = SystemCore_Construct(
-                IdleState_GetCoreStateInterface(idle_state)
+                idle_state_interface
             );
         }
 
         void TearDown() override
         {
-            WokeState_Destruct(&woke_state);
+            GeneralStateMock_Destruct(&woke_state_mock);
             IdleState_Destruct(&idle_state);
             SystemCore_Destruct(&system_core);
         }
 };
 
-TEST_F(CoreWithWakeUpTrue, ShouldBeIdleStateAfterInitialization)
+class CoreInitialWoke : public ::testing::Test
+{
+    private:
+        WokeState woke_state;
+        GeneralStateMock soil_humidity_check_state_mock;
+        CoreStateInterface woke_state_interface;
+        CoreStateInterface soil_humidity_check_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {
+            woke_state = WokeState_Construct(&soil_humidity_check_state_mock_interface);
+            soil_humidity_check_state_mock = GeneralStateMock_Construct(CORE_STATE_SOIL_HUMIDITY_CHECK);
+
+            woke_state_interface = WokeState_GetCoreStateInterface(woke_state);
+            soil_humidity_check_state_mock_interface = GeneralStateMock_GetCoreStateInterface(soil_humidity_check_state_mock);
+
+            system_core = SystemCore_Construct(
+                woke_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&soil_humidity_check_state_mock);
+            WokeState_Destruct(&woke_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
+TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleStateAfterInitialization)
 {
 	/* Given fixture */
 	/* When */
@@ -74,7 +118,7 @@ TEST_F(CoreWithWakeUpTrue, ShouldBeIdleStateAfterInitialization)
 	EXPECT_EQ(current_state, CORE_STATE_IDLE);
 }
 
-TEST_F(CoreWithWakeUpTrue, ShouldBeWokeStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsTrue)
+TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeWokeStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsTrue)
 {
 	/* Given fixture */
 	/* When */
@@ -84,7 +128,7 @@ TEST_F(CoreWithWakeUpTrue, ShouldBeWokeStateWhenIdleStateAndAdvancingCycleAndWak
 	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_WOKE);
 }
 
-TEST_F(CoreWithWakeUpFalse, ShouldBeIdleStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsFalse)
+TEST_F(CoreInitialIdleWithWakeUpFalse, ShouldBeIdleStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsFalse)
 {
 	/* Given fixture */
 	/* When */
@@ -92,4 +136,14 @@ TEST_F(CoreWithWakeUpFalse, ShouldBeIdleStateWhenIdleStateAndAdvancingCycleAndWa
 
 	/* Then */
 	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IDLE);
+}
+
+TEST_F(CoreInitialWoke, ShouldBeSoilHumidityCheckStateWhenWokeStateAndAdvancingCycle)
+{
+	/* Given fixture */
+	/* When */
+	SystemCore_AdvanceCycle(system_core);
+
+	/* Then */
+	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_HUMIDITY_CHECK);
 }

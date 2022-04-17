@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "core_state_interface.h"
-#include "woke_state.h"
 
 typedef struct IdleStateInternal* IdleState;
 
@@ -15,7 +14,7 @@ typedef Bool (*ShouldWakeUpCallback)();
 CoreStateInterface IdleState_GetCoreStateInterface(IdleState instance);
 
 
-IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, WokeState* woke_state_ptr);
+IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, CoreStateInterface* woke_state_interface_ptr);
 void IdleState_Destruct(IdleState* instancePtr);
 
 
