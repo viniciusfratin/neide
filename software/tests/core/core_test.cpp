@@ -108,6 +108,39 @@ class CoreInitialWoke : public ::testing::Test
         }
 };
 
+class CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60 : public ::testing::Test
+{
+    private:
+        SoilHumidityCheckState soil_humidity_check_state;
+        GeneralStateMock irrigate_soil_state_mock;
+
+        CoreStateInterface soil_humidity_check_state_interface;
+        CoreStateInterface irrigate_soil_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {
+            soil_humidity_check_state = SoilHumidityCheckState_Construct(stub_get_soil_humidity_50_threshold_60, &irrigate_soil_state_mock_interface);
+            irrigate_soil_state_mock = GeneralStateMock_Construct(CORE_STATE_IRRIGATE_SOIL);
+
+            soil_humidity_check_state_interface = SoilHumidityCheckState_GetCoreStateInterface(soil_humidity_check_state);
+            irrigate_soil_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_soil_state_mock);
+
+            system_core = SystemCore_Construct(
+                soil_humidity_check_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&irrigate_soil_state_mock);
+            SoilHumidityCheckState_Destruct(&soil_humidity_check_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
 TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleWhenIdleState)
 {
 	/* Given fixture */
@@ -146,4 +179,14 @@ TEST_F(CoreInitialWoke, ShouldBeSoilHumidityCheckStateWhenWokeStateAndAdvancingC
 
 	/* Then */
 	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_HUMIDITY_CHECK);
+}
+
+TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60, ShouldBeIrrigateSoilWhenSoilHumidityCheckStateAndRelativeHumidityBelowThreshouldAndAdvancingCycle)
+{
+    /* Given fixture */
+	/* When */
+	SystemCore_AdvanceCycle(system_core);
+
+	/* Then */
+	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IRRIGATE_SOIL);
 }

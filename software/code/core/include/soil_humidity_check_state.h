@@ -19,7 +19,7 @@ typedef SoilHumidityInformation (*GetSoilHumidityInformationCallback)();
 CoreStateInterface SoilHumidityCheckState_GetCoreStateInterface(SoilHumidityCheckState instance);
 
 
-SoilHumidityCheckState SoilHumidityCheckState_Construct(GetSoilHumidityInformationCallback get_soil_humidity_information_callback);
+SoilHumidityCheckState SoilHumidityCheckState_Construct(GetSoilHumidityInformationCallback get_soil_humidity_information_callback, CoreStateInterface* irrigate_soil_state_interface_ptr);
 void SoilHumidityCheckState_Destruct(SoilHumidityCheckState* instancePtr);
 
 
