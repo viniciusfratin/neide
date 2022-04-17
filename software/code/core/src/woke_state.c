@@ -1,12 +1,15 @@
 #include "woke_state.h"
+#include "core_state_interface_private.h"
 #include <stdlib.h>
 
 typedef struct WokeStateInternal
 {
-    CoreStateHandle woke_state_handle;
+    CoreStateInterface woke_state_interface;
+    CoreState core_state;
 } WokeStateImplementation;
 
-static CoreStateHandle WokeState_HandleWokeState(void* state_instance);
+static CoreStateInterface WokeState_ExecuteWokeState(void* state_instance);
+static CoreState WokeState_GetCoreState(void* state_instance);
 
 WokeState WokeState_Construct()
 {
@@ -14,13 +17,17 @@ WokeState WokeState_Construct()
 
     if(instance != NULL)
     {
-        instance->woke_state_handle = CoreStateHandle_Construct(
+        instance->woke_state_interface = CoreStateInterface_Construct(
             (void*)instance,
-            CORE_STATE_WOKE,
-            WokeState_HandleWokeState
+            WokeState_GetCoreState,
+            WokeState_ExecuteWokeState
         );
 
-        if(instance->woke_state_handle == CORE_STATE_HANDLE_INVALID_INSTANCE)
+        if(instance->woke_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
+        {
+            instance->core_state = CORE_STATE_WOKE;
+        }
+        else
         {
             instance = WOKE_STATE_INVALID_INSTANCE;
         }
@@ -37,20 +44,29 @@ void WokeState_Destruct(WokeState* instancePtr)
 {
     if(instancePtr != NULL)
     {
+        CoreStateInterface_Destruct(&((*instancePtr)->woke_state_interface));
+
         free(*instancePtr);
         (*instancePtr) = WOKE_STATE_INVALID_INSTANCE;
     }
 }
 
-CoreStateHandle WokeState_GetCoreStateHandle(WokeState instance)
+CoreStateInterface WokeState_GetCoreStateInterface(WokeState instance)
 {
-    return instance->woke_state_handle;
+    return instance->woke_state_interface;
 }
 
-static CoreStateHandle WokeState_HandleWokeState(void* state_instance)
+static CoreStateInterface WokeState_ExecuteWokeState(void* state_instance)
 {
     WokeState instance = (WokeState)state_instance;
-    CoreStateHandle next_core_state_handle = WokeState_GetCoreStateHandle(instance);
+    CoreStateInterface next_core_state_handle = WokeState_GetCoreStateInterface(instance);
 
     return next_core_state_handle;
+}
+
+static CoreState WokeState_GetCoreState(void* state_instance)
+{
+    WokeState instance = (WokeState)state_instance;
+    
+    return instance->core_state;
 }

@@ -12,7 +12,7 @@ typedef struct IdleStateInternal* IdleState;
 typedef Bool (*ShouldWakeUpCallback)();
 
 
-CoreStateHandle IdleState_GetCoreStateHandle(IdleState instance);
+CoreStateInterface IdleState_GetCoreStateInterface(IdleState instance);
 
 
 IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, WokeState* woke_state_ptr);

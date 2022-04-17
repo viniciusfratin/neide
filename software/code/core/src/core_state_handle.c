@@ -1,46 +1,47 @@
 #include "core_state_handle.h"
+#include "core_state_interface_private.h"
 #include <stdlib.h>
 
-typedef struct CoreStateHandleInternal
+typedef struct CoreStateInterfaceInternal
 {
     void* state_instance;
-    CoreState core_state;
-    HandleStateCallback handle_state_callback;
-} CoreStateHandleImplementation;
+    GetCoreStateCallback get_core_state_callback;
+    ExecuteStateCallback execute_state_callback;
+} CoreStateInterfaceImplementation;
 
-CoreStateHandle CoreStateHandle_Construct(void* state_instance, CoreState core_state, HandleStateCallback handle_state_callback)
+CoreStateInterface CoreStateInterface_Construct(void* state_instance, GetCoreStateCallback get_core_state_callback, ExecuteStateCallback execute_state_callback)
 {
-    CoreStateHandle instance = (CoreStateHandle)malloc(sizeof(CoreStateHandleImplementation));
+    CoreStateInterface instance = (CoreStateInterface)malloc(sizeof(CoreStateInterfaceImplementation));
 
     if(instance != NULL)
     {
         instance->state_instance = (void*)state_instance;
-        instance->core_state = core_state;
-        instance->handle_state_callback = handle_state_callback;
+        instance->get_core_state_callback = get_core_state_callback;
+        instance->execute_state_callback = execute_state_callback;
     }
     else
     {
-        instance = CORE_STATE_HANDLE_INVALID_INSTANCE;
+        instance = CORE_STATE_INTERFACE_INVALID_INSTANCE;
     }
 
     return instance;
 }
 
-void CoreStateHandle_Destruct(CoreStateHandle* instancePtr)
+void CoreStateInterface_Destruct(CoreStateInterface* instancePtr)
 {
     if(instancePtr != NULL)
     {
         free(*instancePtr);
-        (*instancePtr) = CORE_STATE_HANDLE_INVALID_INSTANCE;
+        (*instancePtr) = CORE_STATE_INTERFACE_INVALID_INSTANCE;
     }
 }
 
-CoreStateHandle CoreStateHandle_ExecuteHandleState(CoreStateHandle instance)
+CoreStateInterface CoreStateInterface_ExecuteState(CoreStateInterface instance)
 {
-    return instance->handle_state_callback(instance->state_instance);
+    return instance->execute_state_callback(instance->state_instance);
 }
 
-CoreState CoreStateHandle_GetCoreState(CoreStateHandle instance)
+CoreState CoreStateInterface_GetCoreState(CoreStateInterface instance)
 {
-    return instance->core_state;
+    return instance->get_core_state_callback(instance->state_instance);
 }

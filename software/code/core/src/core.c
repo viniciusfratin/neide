@@ -3,10 +3,10 @@
 
 typedef struct SystemCoreInternal
 {
-    CoreStateHandle current_core_state_handle;
+    CoreStateInterface current_core_state_handle;
 } SystemCoreImplementation;
 
-SystemCore SystemCore_Construct(CoreStateHandle initial_core_state_handle)
+SystemCore SystemCore_Construct(CoreStateInterface initial_core_state_handle)
 {
     SystemCore instance = (SystemCore)malloc(sizeof(SystemCoreImplementation));
 
@@ -33,13 +33,13 @@ void SystemCore_Destruct(SystemCore* instancePtr)
 
 CoreState SystemCore_GetCurrentState(SystemCore instance)
 {
-    return CoreStateHandle_GetCoreState(instance->current_core_state_handle);
+    return CoreStateInterface_GetCoreState(instance->current_core_state_handle);
 }
 
 void SystemCore_AdvanceCycle(SystemCore instance)
 {
     instance->current_core_state_handle = 
-        CoreStateHandle_ExecuteHandleState(
+        CoreStateInterface_ExecuteState(
             instance->current_core_state_handle
         );
 }

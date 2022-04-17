@@ -13,7 +13,7 @@ CoreState SystemCore_GetCurrentState(SystemCore instance);
 void SystemCore_AdvanceCycle(SystemCore instance);
 
 
-SystemCore SystemCore_Construct(CoreStateHandle initial_core_state_handle);
+SystemCore SystemCore_Construct(CoreStateInterface initial_core_state_handle);
 void SystemCore_Destruct(SystemCore* instancePtr);
 
 

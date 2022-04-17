@@ -1,14 +1,17 @@
 #include "idle_state.h"
+#include "core_state_interface_private.h"
 #include <stdlib.h>
 
 typedef struct IdleStateInternal
 {
-    CoreStateHandle idle_state_handle;
+    CoreStateInterface idle_state_interface;
+    CoreState core_state;
     ShouldWakeUpCallback should_wake_up_callback;
     WokeState* woke_state_ptr;
 } IdleStateImplementation;
 
-static CoreStateHandle IdleState_HandleIdleState(void* state_instance);
+static CoreStateInterface IdleState_ExecuteIdleState(void* state_instance);
+static CoreState IdleState_GetCoreState(void* state_instance);
 
 IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, WokeState* woke_state_ptr)
 {
@@ -16,14 +19,15 @@ IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, Woke
 
     if(instance != NULL)
     {
-        instance->idle_state_handle = CoreStateHandle_Construct(
+        instance->idle_state_interface = CoreStateInterface_Construct(
             (void*)instance,
-            CORE_STATE_IDLE,
-            IdleState_HandleIdleState
+            IdleState_GetCoreState,
+            IdleState_ExecuteIdleState
         );
 
-        if(instance->idle_state_handle != CORE_STATE_HANDLE_INVALID_INSTANCE)
+        if(instance->idle_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
         {
+            instance->core_state = CORE_STATE_IDLE;
             instance->should_wake_up_callback = should_wake_up_callback;
             instance->woke_state_ptr = woke_state_ptr;
         }
@@ -44,29 +48,38 @@ void IdleState_Destruct(IdleState* instancePtr)
 {
     if(instancePtr != NULL)
     {
+        CoreStateInterface_Destruct(&((*instancePtr)->idle_state_interface));
+
         free(*instancePtr);
         (*instancePtr) = IDLE_STATE_INVALID_INSTANCE;
     }
 }
 
-CoreStateHandle IdleState_GetCoreStateHandle(IdleState instance)
+CoreStateInterface IdleState_GetCoreStateInterface(IdleState instance)
 {
-    return instance->idle_state_handle;
+    return instance->idle_state_interface;
 }
 
-static CoreStateHandle IdleState_HandleIdleState(void* state_instance)
+static CoreStateInterface IdleState_ExecuteIdleState(void* state_instance)
 {
     IdleState instance = (IdleState)state_instance;
-    CoreStateHandle next_core_state_handle = CORE_STATE_HANDLE_INVALID_INSTANCE;
+    CoreStateInterface next_core_state_handle = CORE_STATE_INTERFACE_INVALID_INSTANCE;
 
     if(instance->should_wake_up_callback())
     {
-        next_core_state_handle = WokeState_GetCoreStateHandle(*(instance->woke_state_ptr));
+        next_core_state_handle = WokeState_GetCoreStateInterface(*(instance->woke_state_ptr));
     }
     else
     {
-        next_core_state_handle = IdleState_GetCoreStateHandle(instance);
+        next_core_state_handle = IdleState_GetCoreStateInterface(instance);
     }
 
     return next_core_state_handle;
+}
+
+static CoreState IdleState_GetCoreState(void* state_instance)
+{
+    IdleState instance = (IdleState)state_instance;
+
+    return instance->core_state;
 }

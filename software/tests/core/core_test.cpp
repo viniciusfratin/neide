@@ -25,7 +25,7 @@ class CoreWithWakeUpTrue : public ::testing::Test
             woke_state = WokeState_Construct();
 
             system_core = SystemCore_Construct(
-                IdleState_GetCoreStateHandle(idle_state)
+                IdleState_GetCoreStateInterface(idle_state)
             );
         }
 
@@ -52,7 +52,7 @@ class CoreWithWakeUpFalse : public ::testing::Test
             woke_state = WokeState_Construct();
 
             system_core = SystemCore_Construct(
-                IdleState_GetCoreStateHandle(idle_state)
+                IdleState_GetCoreStateInterface(idle_state)
             );
         }
 

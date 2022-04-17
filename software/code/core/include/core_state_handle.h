@@ -1,20 +1,15 @@
-#ifndef CORE_STATE_HANDLE_H
-#define CORE_STATE_HANDLE_H
+#ifndef CORE_STATE_INTERFACE_H
+#define CORE_STATE_INTERFACE_H
 
 #include "core_states.h"
 
-typedef struct CoreStateHandleInternal* CoreStateHandle;
-typedef CoreStateHandle (*HandleStateCallback)(void* state_instance);
+typedef struct CoreStateInterfaceInternal* CoreStateInterface;
 
-#define CORE_STATE_HANDLE_INVALID_INSTANCE ((CoreStateHandle)NULL)
-
-
-CoreStateHandle CoreStateHandle_ExecuteHandleState(CoreStateHandle instance);
-CoreState CoreStateHandle_GetCoreState(CoreStateHandle instance);
+#define CORE_STATE_INTERFACE_INVALID_INSTANCE ((CoreStateInterface)NULL)
 
 
-CoreStateHandle CoreStateHandle_Construct(void* state_instance, CoreState core_state, HandleStateCallback handle_state_callback);
-void CoreStateHandle_Destruct(CoreStateHandle* instancePtr);
+CoreStateInterface CoreStateInterface_ExecuteState(CoreStateInterface instance);
+CoreState CoreStateInterface_GetCoreState(CoreStateInterface instance);
 
 
 #endif

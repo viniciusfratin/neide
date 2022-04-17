@@ -9,7 +9,7 @@ typedef struct WokeStateInternal* WokeState;
 #define WOKE_STATE_INVALID_INSTANCE ((WokeState)NULL)
 
 
-CoreStateHandle WokeState_GetCoreStateHandle(WokeState instance);
+CoreStateInterface WokeState_GetCoreStateInterface(WokeState instance);
 
 
 WokeState WokeState_Construct();
