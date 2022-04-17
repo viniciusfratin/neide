@@ -108,7 +108,7 @@ class CoreInitialWoke : public ::testing::Test
         }
 };
 
-TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleStateAfterInitialization)
+TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleWhenIdleState)
 {
 	/* Given fixture */
 	/* When */
