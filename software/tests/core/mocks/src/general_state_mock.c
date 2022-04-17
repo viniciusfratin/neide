@@ -1,5 +1,6 @@
 #include "general_state_mock.h"
-#include "core_state_interface_private.h"
+#include "core_state_interface.h"
+#include "core_state_interface_construction.h"
 #include <stdlib.h>
 
 typedef struct GeneralStateMockInternal

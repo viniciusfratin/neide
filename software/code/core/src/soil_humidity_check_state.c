@@ -1,5 +1,6 @@
 #include "soil_humidity_check_state.h"
-#include "core_state_interface_private.h"
+#include "core_state_interface.h"
+#include "core_state_interface_construction.h"
 #include <stdlib.h>
 
 typedef struct SoilHumidityCheckStateInternal

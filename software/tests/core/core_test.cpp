@@ -3,6 +3,7 @@
 extern "C"
 {
 #include "core_states.h"
+#include "core_state_interface.h"
 #include "core.h"
 #include "idle_state.h"
 #include "woke_state.h"
