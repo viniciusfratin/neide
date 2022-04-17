@@ -59,9 +59,9 @@ CoreStateInterface WokeState_GetCoreStateInterface(WokeState instance)
 static CoreStateInterface WokeState_ExecuteWokeState(void* state_instance)
 {
     WokeState instance = (WokeState)state_instance;
-    CoreStateInterface next_core_state_handle = WokeState_GetCoreStateInterface(instance);
+    CoreStateInterface next_core_state_interface = WokeState_GetCoreStateInterface(instance);
 
-    return next_core_state_handle;
+    return next_core_state_interface;
 }
 
 static CoreState WokeState_GetCoreState(void* state_instance)

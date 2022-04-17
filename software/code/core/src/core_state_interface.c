@@ -1,4 +1,4 @@
-#include "core_state_handle.h"
+#include "core_state_interface.h"
 #include "core_state_interface_private.h"
 #include <stdlib.h>
 

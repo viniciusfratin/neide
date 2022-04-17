@@ -2,7 +2,7 @@
 #define IDLE_STATE_H
 
 #include "common.h"
-#include "core_state_handle.h"
+#include "core_state_interface.h"
 #include "woke_state.h"
 
 typedef struct IdleStateInternal* IdleState;

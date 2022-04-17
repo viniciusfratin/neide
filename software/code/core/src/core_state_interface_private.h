@@ -1,7 +1,7 @@
 #ifndef CORE_STATE_INTERFACE_PRIVATE_H
 #define CORE_STATE_INTERFACE_PRIVATE_H
 
-#include "core_state_handle.h"
+#include "core_state_interface.h"
 
 typedef CoreStateInterface (*ExecuteStateCallback)(void* state_instance);
 typedef CoreState (*GetCoreStateCallback)(void* state_instance);

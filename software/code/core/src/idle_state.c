@@ -63,18 +63,18 @@ CoreStateInterface IdleState_GetCoreStateInterface(IdleState instance)
 static CoreStateInterface IdleState_ExecuteIdleState(void* state_instance)
 {
     IdleState instance = (IdleState)state_instance;
-    CoreStateInterface next_core_state_handle = CORE_STATE_INTERFACE_INVALID_INSTANCE;
+    CoreStateInterface next_core_state_interface = CORE_STATE_INTERFACE_INVALID_INSTANCE;
 
     if(instance->should_wake_up_callback())
     {
-        next_core_state_handle = WokeState_GetCoreStateInterface(*(instance->woke_state_ptr));
+        next_core_state_interface = WokeState_GetCoreStateInterface(*(instance->woke_state_ptr));
     }
     else
     {
-        next_core_state_handle = IdleState_GetCoreStateInterface(instance);
+        next_core_state_interface = IdleState_GetCoreStateInterface(instance);
     }
 
-    return next_core_state_handle;
+    return next_core_state_interface;
 }
 
 static CoreState IdleState_GetCoreState(void* state_instance)

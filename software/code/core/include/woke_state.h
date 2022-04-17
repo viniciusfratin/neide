@@ -2,7 +2,7 @@
 #define WOKE_STATE_H
 
 #include "common.h"
-#include "core_state_handle.h"
+#include "core_state_interface.h"
 
 typedef struct WokeStateInternal* WokeState;
 
