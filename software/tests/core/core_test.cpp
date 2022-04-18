@@ -241,9 +241,11 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
 {
     private:
         IrrigateSoilState irrigate_soil_state;
+        GeneralStateMock air_humidity_check_state_mock;
 
         CoreStateInterface irrigate_soil_state_interface;
         SoilIrrigatorInterface soil_irrigator_mock_interface;
+        CoreStateInterface air_humidity_check_state_mock_interface;
 
     protected:
         SystemCore system_core;
@@ -254,7 +256,13 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
             soil_irrigator_mock = SoilIrrigatorMock_Construct();
             soil_irrigator_mock_interface = SoilIrrigatorMock_GetSoilIrrigatorInterface(soil_irrigator_mock);
             
-            irrigate_soil_state = IrrigateSoilState_Construct(&soil_irrigator_mock_interface, 10);
+            air_humidity_check_state_mock = GeneralStateMock_Construct(CORE_STATE_AIR_HUMIDITY_CHECK);
+            air_humidity_check_state_mock_interface = GeneralStateMock_GetCoreStateInterface(air_humidity_check_state_mock);
+            
+            irrigate_soil_state = IrrigateSoilState_Construct(
+                &air_humidity_check_state_mock_interface,
+                &soil_irrigator_mock_interface,
+                10);
             irrigate_soil_state_interface = IrrigateSoilState_GetCoreStateInterface(irrigate_soil_state);
 
             system_core = SystemCore_Construct(
@@ -264,6 +272,7 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
 
         void TearDown() override
         {
+            GeneralStateMock_Destruct(&air_humidity_check_state_mock);
             IrrigateSoilState_Destruct(&irrigate_soil_state);
             SoilIrrigatorMock_Destruct(&soil_irrigator_mock);
             SystemCore_Destruct(&system_core);
@@ -348,4 +357,14 @@ TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldIrrigateSoilFor10SecondsWhenA
 
 	/* Then */
 	EXPECT_EQ(SoilIrrigatorMock_GetLastIrrigationTime(soil_irrigator_mock), 10);
+}
+
+TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldBeAirHumidityCheckStateWhenIrrigateSoilStateAndAdvancingCycle)
+{
+    /* Given fixture */
+	/* When */
+	SystemCore_AdvanceCycle(system_core);
+
+	/* Then */
+	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_HUMIDITY_CHECK);
 }

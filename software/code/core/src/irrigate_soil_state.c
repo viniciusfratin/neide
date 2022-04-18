@@ -8,6 +8,7 @@ typedef struct IrrigateSoilStateInternal
 {
     CoreStateInterface irrigate_soil_state_interface;
     CoreState core_state;
+    CoreStateInterface* air_humidity_check_state_interface_ptr;
     SoilIrrigatorInterface* soil_irrigator_interface_ptr;
     int irrigation_time_seconds;
 } IrrigateSoilStateImplementation;
@@ -15,7 +16,10 @@ typedef struct IrrigateSoilStateInternal
 static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* object_instance);
 static CoreState IrrigateSoilState_GetCoreState(void* object_instance);
 
-IrrigateSoilState IrrigateSoilState_Construct(SoilIrrigatorInterface* soil_irrigator_interface_ptr, int irrigation_time_seconds)
+IrrigateSoilState IrrigateSoilState_Construct(
+    CoreStateInterface* air_humidity_check_state_interface_ptr,
+    SoilIrrigatorInterface* soil_irrigator_interface_ptr,
+    int irrigation_time_seconds)
 {
     IrrigateSoilState instance = (IrrigateSoilState)malloc(sizeof(IrrigateSoilStateImplementation));
 
@@ -30,6 +34,7 @@ IrrigateSoilState IrrigateSoilState_Construct(SoilIrrigatorInterface* soil_irrig
         if(instance->irrigate_soil_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
         {
             instance->core_state = CORE_STATE_IRRIGATE_SOIL;
+            instance->air_humidity_check_state_interface_ptr = air_humidity_check_state_interface_ptr;
             instance->soil_irrigator_interface_ptr = soil_irrigator_interface_ptr;
             instance->irrigation_time_seconds = irrigation_time_seconds;
         }
@@ -65,7 +70,7 @@ CoreStateInterface IrrigateSoilState_GetCoreStateInterface(IrrigateSoilState ins
 static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* object_instance)
 {
     IrrigateSoilState instance = (IrrigateSoilState)object_instance;
-    CoreStateInterface next_core_state_interface = IrrigateSoilState_GetCoreStateInterface(instance);
+    CoreStateInterface next_core_state_interface = *(instance->air_humidity_check_state_interface_ptr);
     
     SoilIrrigatorInterface_IrrigateSoil(*(instance->soil_irrigator_interface_ptr), instance->irrigation_time_seconds);
     

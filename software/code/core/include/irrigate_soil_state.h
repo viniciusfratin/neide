@@ -12,7 +12,10 @@ typedef struct IrrigateSoilStateInternal* IrrigateSoilState;
 CoreStateInterface IrrigateSoilState_GetCoreStateInterface(IrrigateSoilState instance);
 
 
-IrrigateSoilState IrrigateSoilState_Construct(SoilIrrigatorInterface* soil_irrigator_interface_ptr, int irrigation_time_seconds);
+IrrigateSoilState IrrigateSoilState_Construct(
+    CoreStateInterface* air_humidity_check_state_interface_ptr,
+    SoilIrrigatorInterface* soil_irrigator_interface_ptr,
+    int irrigation_time_seconds);
 void IrrigateSoilState_Destruct(IrrigateSoilState* instancePtr);
 
 
