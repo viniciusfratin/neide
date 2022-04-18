@@ -8,6 +8,8 @@ extern "C"
 #include "idle_state.h"
 #include "woke_state.h"
 #include "soil_humidity_check_state.h"
+#include "irrigate_soil_state.h"
+#include "soil_irrigator_interface.h"
 }
 
 #include "stubs_cpp.hpp"
@@ -235,6 +237,39 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60 : public ::t
         }
 };
 
+class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
+{
+    private:
+        IrrigateSoilState irrigate_soil_state;
+
+        CoreStateInterface irrigate_soil_state_interface;
+        SoilIrrigatorInterface soil_irrigator_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        SoilIrrigatorMock soil_irrigator_mock;
+        
+        void SetUp() override
+        {
+            soil_irrigator_mock = SoilIrrigatorMock_Construct();
+            soil_irrigator_mock_interface = SoilIrrigatorMock_GetSoilIrrigatorInterface(soil_irrigator_mock);
+            
+            irrigate_soil_state = IrrigateSoilState_Construct(&soil_irrigator_mock_interface, 10);
+            irrigate_soil_state_interface = IrrigateSoilState_GetCoreStateInterface(irrigate_soil_state);
+
+            system_core = SystemCore_Construct(
+                irrigate_soil_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            IrrigateSoilState_Destruct(&irrigate_soil_state);
+            SoilIrrigatorMock_Destruct(&soil_irrigator_mock);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
 TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleWhenIdleState)
 {
 	/* Given fixture */
@@ -303,4 +338,14 @@ TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60, ShouldBeSo
 
 	/* Then */
 	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_PERIODIC_CHECK);
+}
+
+TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldIrrigateSoilFor10SecondsWhenAdvancingCycle)
+{
+    /* Given fixture */
+	/* When */
+	SystemCore_AdvanceCycle(system_core);
+
+	/* Then */
+	EXPECT_EQ(SoilIrrigatorMock_GetLastIrrigationTime(soil_irrigator_mock), 10);
 }

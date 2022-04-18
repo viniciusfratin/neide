@@ -15,7 +15,7 @@ CoreStateInterface CoreStateInterface_Construct(void* state_instance, GetCoreSta
 
     if(instance != NULL)
     {
-        instance->state_instance = (void*)state_instance;
+        instance->state_instance = state_instance;
         instance->get_core_state_callback = get_core_state_callback;
         instance->execute_state_callback = execute_state_callback;
     }

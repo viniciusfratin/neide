@@ -3,7 +3,9 @@ set (core_source_files
     "src/core_state_interface.c"
     "src/idle_state.c"
     "src/woke_state.c"
-    "src/soil_humidity_check_state.c")
+    "src/soil_humidity_check_state.c"
+    "src/irrigate_soil_state.c"
+    "src/soil_irrigator_interface.c")
 
 add_library (core "${core_source_files}")
 
