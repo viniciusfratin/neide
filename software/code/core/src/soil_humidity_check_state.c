@@ -9,12 +9,17 @@ typedef struct SoilHumidityCheckStateInternal
     CoreState core_state;
     GetSoilHumidityInformationCallback get_soil_humidity_information_callback;
     CoreStateInterface* irrigate_soil_state_interface_ptr;
+    CoreStateInterface* soil_periodic_check_state_interface_ptr;
 } SoilHumidityCheckStateImplementation;
 
 static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(void* state_instance);
 static CoreState SoilHumidityCheckState_GetCoreState(void* state_instance);
 
-SoilHumidityCheckState SoilHumidityCheckState_Construct(GetSoilHumidityInformationCallback get_soil_humidity_information_callback, CoreStateInterface* irrigate_soil_state_interface_ptr)
+SoilHumidityCheckState SoilHumidityCheckState_Construct(
+    GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
+    CoreStateInterface* irrigate_soil_state_interface_ptr,
+    CoreStateInterface* soil_periodic_check_state_interface_ptr
+)
 {
     SoilHumidityCheckState instance = (SoilHumidityCheckState)malloc(sizeof(SoilHumidityCheckStateImplementation));
 
@@ -31,6 +36,7 @@ SoilHumidityCheckState SoilHumidityCheckState_Construct(GetSoilHumidityInformati
             instance->core_state = CORE_STATE_SOIL_HUMIDITY_CHECK;
             instance->get_soil_humidity_information_callback = get_soil_humidity_information_callback;
             instance->irrigate_soil_state_interface_ptr = irrigate_soil_state_interface_ptr;
+            instance->soil_periodic_check_state_interface_ptr = soil_periodic_check_state_interface_ptr;
         }
         else
         {
@@ -74,7 +80,7 @@ static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(v
     }
     else
     {
-        next_core_state_interface = SoilHumidityCheckState_GetCoreStateInterface(instance);
+        next_core_state_interface = *(instance->soil_periodic_check_state_interface_ptr);
     }
     
     return next_core_state_interface;
