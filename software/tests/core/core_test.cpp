@@ -178,6 +178,48 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity70Threshold60 : public ::t
             soil_humidity_check_state_interface = SoilHumidityCheckState_GetCoreStateInterface(soil_humidity_check_state);
             irrigate_soil_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_soil_state_mock);
             soil_periodic_check_state_mock_interface = GeneralStateMock_GetCoreStateInterface(soil_periodic_check_state_mock);
+
+            system_core = SystemCore_Construct(
+                soil_humidity_check_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&soil_periodic_check_state_mock);
+            GeneralStateMock_Destruct(&irrigate_soil_state_mock);
+            SoilHumidityCheckState_Destruct(&soil_humidity_check_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
+class CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60 : public ::testing::Test
+{
+    private:
+        SoilHumidityCheckState soil_humidity_check_state;
+        GeneralStateMock irrigate_soil_state_mock;
+        GeneralStateMock soil_periodic_check_state_mock;
+
+        CoreStateInterface soil_humidity_check_state_interface;
+        CoreStateInterface irrigate_soil_state_mock_interface;
+        CoreStateInterface soil_periodic_check_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {
+            soil_humidity_check_state = SoilHumidityCheckState_Construct(
+                stub_get_soil_humidity_60_threshold_60,
+                &irrigate_soil_state_mock_interface,
+                &soil_periodic_check_state_mock_interface
+            );
+            irrigate_soil_state_mock = GeneralStateMock_Construct(CORE_STATE_IRRIGATE_SOIL);
+            soil_periodic_check_state_mock = GeneralStateMock_Construct(CORE_STATE_SOIL_PERIODIC_CHECK);
+
+            soil_humidity_check_state_interface = SoilHumidityCheckState_GetCoreStateInterface(soil_humidity_check_state);
+            irrigate_soil_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_soil_state_mock);
+            soil_periodic_check_state_mock_interface = GeneralStateMock_GetCoreStateInterface(soil_periodic_check_state_mock);
             
             system_core = SystemCore_Construct(
                 soil_humidity_check_state_interface
@@ -244,6 +286,16 @@ TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60, ShouldBeIr
 }
 
 TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity70Threshold60, ShouldBeSoilPeriodicCheckStateWhenSoilHumidityCheckStateAndRelativeHumidityAboveThresholdAndAdvancingCycle)
+{
+    /* Given fixture */
+	/* When */
+	SystemCore_AdvanceCycle(system_core);
+
+	/* Then */
+	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_PERIODIC_CHECK);
+}
+
+TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60, ShouldBeSoilPeriodicCheckStateWhenSoilHumidityCheckStateAndRelativeHumidityEqualThresholdAndAdvancingCycle)
 {
     /* Given fixture */
 	/* When */
