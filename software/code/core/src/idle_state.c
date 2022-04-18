@@ -11,8 +11,8 @@ typedef struct IdleStateInternal
     CoreStateInterface* woke_state_interface_ptr;
 } IdleStateImplementation;
 
-static CoreStateInterface IdleState_ExecuteIdleState(void* state_instance);
-static CoreState IdleState_GetCoreState(void* state_instance);
+static CoreStateInterface IdleState_ExecuteIdleState(void* object_instance);
+static CoreState IdleState_GetCoreState(void* object_instance);
 
 IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, CoreStateInterface* woke_state_interface_ptr)
 {
@@ -61,9 +61,9 @@ CoreStateInterface IdleState_GetCoreStateInterface(IdleState instance)
     return instance->idle_state_interface;
 }
 
-static CoreStateInterface IdleState_ExecuteIdleState(void* state_instance)
+static CoreStateInterface IdleState_ExecuteIdleState(void* object_instance)
 {
-    IdleState instance = (IdleState)state_instance;
+    IdleState instance = (IdleState)object_instance;
     CoreStateInterface next_core_state_interface = CORE_STATE_INTERFACE_INVALID_INSTANCE;
 
     if(instance->should_wake_up_callback())
@@ -78,9 +78,9 @@ static CoreStateInterface IdleState_ExecuteIdleState(void* state_instance)
     return next_core_state_interface;
 }
 
-static CoreState IdleState_GetCoreState(void* state_instance)
+static CoreState IdleState_GetCoreState(void* object_instance)
 {
-    IdleState instance = (IdleState)state_instance;
+    IdleState instance = (IdleState)object_instance;
 
     return instance->core_state;
 }

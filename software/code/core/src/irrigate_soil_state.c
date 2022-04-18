@@ -12,8 +12,8 @@ typedef struct IrrigateSoilStateInternal
     int irrigation_time_seconds;
 } IrrigateSoilStateImplementation;
 
-static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* state_instance);
-static CoreState IrrigateSoilState_GetCoreState(void* state_instance);
+static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* object_instance);
+static CoreState IrrigateSoilState_GetCoreState(void* object_instance);
 
 IrrigateSoilState IrrigateSoilState_Construct(SoilIrrigatorInterface* soil_irrigator_interface_ptr, int irrigation_time_seconds)
 {
@@ -62,9 +62,9 @@ CoreStateInterface IrrigateSoilState_GetCoreStateInterface(IrrigateSoilState ins
     return instance->irrigate_soil_state_interface;
 }
 
-static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* state_instance)
+static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* object_instance)
 {
-    IrrigateSoilState instance = (IrrigateSoilState)state_instance;
+    IrrigateSoilState instance = (IrrigateSoilState)object_instance;
     CoreStateInterface next_core_state_interface = IrrigateSoilState_GetCoreStateInterface(instance);
     
     SoilIrrigatorInterface_IrrigateSoil(*(instance->soil_irrigator_interface_ptr), instance->irrigation_time_seconds);
@@ -72,9 +72,9 @@ static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* state
     return next_core_state_interface;
 }
 
-static CoreState IrrigateSoilState_GetCoreState(void* state_instance)
+static CoreState IrrigateSoilState_GetCoreState(void* object_instance)
 {
-    IrrigateSoilState instance = (IrrigateSoilState)state_instance;
+    IrrigateSoilState instance = (IrrigateSoilState)object_instance;
     
     return instance->core_state;
 }

@@ -10,8 +10,8 @@ typedef struct WokeStateInternal
     CoreStateInterface* soil_humidity_check_state_interface_ptr;
 } WokeStateImplementation;
 
-static CoreStateInterface WokeState_ExecuteWokeState(void* state_instance);
-static CoreState WokeState_GetCoreState(void* state_instance);
+static CoreStateInterface WokeState_ExecuteWokeState(void* object_instance);
+static CoreState WokeState_GetCoreState(void* object_instance);
 
 WokeState WokeState_Construct(CoreStateInterface* soil_humidity_check_state_interface_ptr)
 {
@@ -59,17 +59,17 @@ CoreStateInterface WokeState_GetCoreStateInterface(WokeState instance)
     return instance->woke_state_interface;
 }
 
-static CoreStateInterface WokeState_ExecuteWokeState(void* state_instance)
+static CoreStateInterface WokeState_ExecuteWokeState(void* object_instance)
 {
-    WokeState instance = (WokeState)state_instance;
+    WokeState instance = (WokeState)object_instance;
     CoreStateInterface next_core_state_interface = *(instance->soil_humidity_check_state_interface_ptr);
 
     return next_core_state_interface;
 }
 
-static CoreState WokeState_GetCoreState(void* state_instance)
+static CoreState WokeState_GetCoreState(void* object_instance)
 {
-    WokeState instance = (WokeState)state_instance;
+    WokeState instance = (WokeState)object_instance;
     
     return instance->core_state;
 }

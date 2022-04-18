@@ -9,8 +9,8 @@ typedef struct GeneralStateMockInternal
     CoreState core_state;
 } GeneralStateMockImplementation;
 
-static CoreStateInterface GeneralStateMock_ExecuteGeneralStateMock(void* state_instance);
-static CoreState GeneralStateMock_GetCoreState(void* state_instance);
+static CoreStateInterface GeneralStateMock_ExecuteGeneralStateMock(void* object_instance);
+static CoreState GeneralStateMock_GetCoreState(void* object_instance);
 
 GeneralStateMock GeneralStateMock_Construct(CoreState core_state)
 {
@@ -57,17 +57,17 @@ CoreStateInterface GeneralStateMock_GetCoreStateInterface(GeneralStateMock insta
     return instance->general_state_interface;
 }
 
-static CoreStateInterface GeneralStateMock_ExecuteGeneralStateMock(void* state_instance)
+static CoreStateInterface GeneralStateMock_ExecuteGeneralStateMock(void* object_instance)
 {
-    GeneralStateMock instance = (GeneralStateMock)state_instance;
+    GeneralStateMock instance = (GeneralStateMock)object_instance;
     CoreStateInterface next_core_state_interface = GeneralStateMock_GetCoreStateInterface(instance);
 
     return next_core_state_interface;
 }
 
-static CoreState GeneralStateMock_GetCoreState(void* state_instance)
+static CoreState GeneralStateMock_GetCoreState(void* object_instance)
 {
-    GeneralStateMock instance = (GeneralStateMock)state_instance;
+    GeneralStateMock instance = (GeneralStateMock)object_instance;
 
     return instance->core_state;
 }

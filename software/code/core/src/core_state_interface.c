@@ -4,18 +4,18 @@
 
 typedef struct CoreStateInterfaceInternal
 {
-    void* state_instance;
+    void* object_instance;
     GetCoreStateCallback get_core_state_callback;
     ExecuteStateCallback execute_state_callback;
 } CoreStateInterfaceImplementation;
 
-CoreStateInterface CoreStateInterface_Construct(void* state_instance, GetCoreStateCallback get_core_state_callback, ExecuteStateCallback execute_state_callback)
+CoreStateInterface CoreStateInterface_Construct(void* object_instance, GetCoreStateCallback get_core_state_callback, ExecuteStateCallback execute_state_callback)
 {
     CoreStateInterface instance = (CoreStateInterface)malloc(sizeof(CoreStateInterfaceImplementation));
 
     if(instance != NULL)
     {
-        instance->state_instance = state_instance;
+        instance->object_instance = object_instance;
         instance->get_core_state_callback = get_core_state_callback;
         instance->execute_state_callback = execute_state_callback;
     }
@@ -38,10 +38,10 @@ void CoreStateInterface_Destruct(CoreStateInterface* instancePtr)
 
 CoreStateInterface CoreStateInterface_ExecuteState(CoreStateInterface instance)
 {
-    return instance->execute_state_callback(instance->state_instance);
+    return instance->execute_state_callback(instance->object_instance);
 }
 
 CoreState CoreStateInterface_GetCoreState(CoreStateInterface instance)
 {
-    return instance->get_core_state_callback(instance->state_instance);
+    return instance->get_core_state_callback(instance->object_instance);
 }

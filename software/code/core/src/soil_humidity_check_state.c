@@ -12,8 +12,8 @@ typedef struct SoilHumidityCheckStateInternal
     CoreStateInterface* soil_periodic_check_state_interface_ptr;
 } SoilHumidityCheckStateImplementation;
 
-static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(void* state_instance);
-static CoreState SoilHumidityCheckState_GetCoreState(void* state_instance);
+static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(void* object_instance);
+static CoreState SoilHumidityCheckState_GetCoreState(void* object_instance);
 
 SoilHumidityCheckState SoilHumidityCheckState_Construct(
     GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
@@ -67,9 +67,9 @@ CoreStateInterface SoilHumidityCheckState_GetCoreStateInterface(SoilHumidityChec
     return instance->soil_humidity_check_state_interface;
 }
 
-static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(void* state_instance)
+static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(void* object_instance)
 {
-    SoilHumidityCheckState instance = (SoilHumidityCheckState)state_instance;
+    SoilHumidityCheckState instance = (SoilHumidityCheckState)object_instance;
     CoreStateInterface next_core_state_interface = CORE_STATE_INTERFACE_INVALID_INSTANCE;
     
     SoilHumidityInformation soil_humidity_information = instance->get_soil_humidity_information_callback();
@@ -86,9 +86,9 @@ static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(v
     return next_core_state_interface;
 }
 
-static CoreState SoilHumidityCheckState_GetCoreState(void* state_instance)
+static CoreState SoilHumidityCheckState_GetCoreState(void* object_instance)
 {
-    SoilHumidityCheckState instance = (SoilHumidityCheckState)state_instance;
+    SoilHumidityCheckState instance = (SoilHumidityCheckState)object_instance;
     
     return instance->core_state;
 }
