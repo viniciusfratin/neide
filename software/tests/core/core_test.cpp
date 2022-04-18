@@ -281,90 +281,90 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
 
 TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleWhenIdleState)
 {
-	/* Given fixture */
-	/* When */
-	CoreState current_state = SystemCore_GetCurrentState(system_core);
+    /* Given fixture */
+    /* When */
+    CoreState current_state = SystemCore_GetCurrentState(system_core);
 
-	/* Then */
-	EXPECT_EQ(current_state, CORE_STATE_IDLE);
+    /* Then */
+    EXPECT_EQ(current_state, CORE_STATE_IDLE);
 }
 
 TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeWokeStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsTrue)
 {
-	/* Given fixture */
-	/* When */
-	SystemCore_AdvanceCycle(system_core);
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
 
-	/* Then */
-	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_WOKE);
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_WOKE);
 }
 
 TEST_F(CoreInitialIdleWithWakeUpFalse, ShouldBeIdleStateWhenIdleStateAndAdvancingCycleAndWakeUpCallbackIsFalse)
 {
-	/* Given fixture */
-	/* When */
-	SystemCore_AdvanceCycle(system_core);
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
 
-	/* Then */
-	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IDLE);
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IDLE);
 }
 
 TEST_F(CoreInitialWoke, ShouldBeSoilHumidityCheckStateWhenWokeStateAndAdvancingCycle)
 {
-	/* Given fixture */
-	/* When */
-	SystemCore_AdvanceCycle(system_core);
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
 
-	/* Then */
-	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_HUMIDITY_CHECK);
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_HUMIDITY_CHECK);
 }
 
 TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60, ShouldBeIrrigateSoilWhenSoilHumidityCheckStateAndRelativeHumidityBelowThresholdAndAdvancingCycle)
 {
     /* Given fixture */
-	/* When */
-	SystemCore_AdvanceCycle(system_core);
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
 
-	/* Then */
-	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IRRIGATE_SOIL);
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IRRIGATE_SOIL);
 }
 
 TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity70Threshold60, ShouldBeSoilPeriodicCheckStateWhenSoilHumidityCheckStateAndRelativeHumidityAboveThresholdAndAdvancingCycle)
 {
     /* Given fixture */
-	/* When */
-	SystemCore_AdvanceCycle(system_core);
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
 
-	/* Then */
-	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_PERIODIC_CHECK);
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_PERIODIC_CHECK);
 }
 
 TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60, ShouldBeSoilPeriodicCheckStateWhenSoilHumidityCheckStateAndRelativeHumidityEqualThresholdAndAdvancingCycle)
 {
     /* Given fixture */
-	/* When */
-	SystemCore_AdvanceCycle(system_core);
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
 
-	/* Then */
-	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_PERIODIC_CHECK);
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_PERIODIC_CHECK);
 }
 
 TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldIrrigateSoilFor10SecondsWhenAdvancingCycle)
 {
     /* Given fixture */
-	/* When */
-	SystemCore_AdvanceCycle(system_core);
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
 
-	/* Then */
-	EXPECT_EQ(SoilIrrigatorMock_GetLastIrrigationTime(soil_irrigator_mock), 10);
+    /* Then */
+    EXPECT_EQ(SoilIrrigatorMock_GetLastIrrigationTime(soil_irrigator_mock), 10);
 }
 
 TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldBeAirHumidityCheckStateWhenIrrigateSoilStateAndAdvancingCycle)
 {
     /* Given fixture */
-	/* When */
-	SystemCore_AdvanceCycle(system_core);
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
 
-	/* Then */
-	EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_HUMIDITY_CHECK);
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_HUMIDITY_CHECK);
 }

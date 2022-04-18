@@ -2,12 +2,12 @@
 
 Bool stub_should_wake_up_true()
 {
-	return TRUE;
+    return TRUE;
 }
 
 Bool stub_should_wake_up_false()
 {
-	return FALSE;
+    return FALSE;
 }
 
 SoilHumidityInformation stub_get_soil_humidity_50_threshold_60()
