@@ -10,6 +10,7 @@ extern "C"
 #include "soil_humidity_check_state.h"
 #include "irrigate_soil_state.h"
 #include "soil_irrigator_interface.h"
+#include "air_humidity_check_state.h"
 }
 
 #include "stubs_cpp.hpp"
@@ -279,6 +280,132 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
         }
 };
 
+class CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60 : public ::testing::Test
+{
+    private:
+        AirHumidityCheckState air_humidity_check_state;
+        GeneralStateMock irrigate_air_state_mock;
+        GeneralStateMock air_periodic_check_state_mock;
+
+        CoreStateInterface air_humidity_check_state_interface;
+        CoreStateInterface irrigate_air_state_mock_interface;
+        CoreStateInterface air_periodic_check_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {
+            air_humidity_check_state = AirHumidityCheckState_Construct(
+                stub_get_air_humidity_50_threshold_60,
+                &irrigate_air_state_mock_interface,
+                &air_periodic_check_state_mock_interface
+            );
+            irrigate_air_state_mock = GeneralStateMock_Construct(CORE_STATE_IRRIGATE_AIR);
+            air_periodic_check_state_mock = GeneralStateMock_Construct(CORE_STATE_AIR_PERIODIC_CHECK);
+            
+            air_humidity_check_state_interface = AirHumidityCheckState_GetCoreStateInterface(air_humidity_check_state);
+            irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
+            air_periodic_check_state_mock_interface = GeneralStateMock_GetCoreStateInterface(air_periodic_check_state_mock);
+
+            system_core = SystemCore_Construct(
+                air_humidity_check_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&air_periodic_check_state_mock);
+            GeneralStateMock_Destruct(&irrigate_air_state_mock);
+            AirHumidityCheckState_Destruct(&air_humidity_check_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
+class CoreInitialAirHumidityCheckWithRelativeHumidity70Threshold60 : public ::testing::Test
+{
+    private:
+        AirHumidityCheckState air_humidity_check_state;
+        GeneralStateMock irrigate_air_state_mock;
+        GeneralStateMock air_periodic_check_state_mock;
+
+        CoreStateInterface air_humidity_check_state_interface;
+        CoreStateInterface irrigate_air_state_mock_interface;
+        CoreStateInterface air_periodic_check_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {
+            air_humidity_check_state = AirHumidityCheckState_Construct(
+                stub_get_air_humidity_70_threshold_60,
+                &irrigate_air_state_mock_interface,
+                &air_periodic_check_state_mock_interface
+            );
+            irrigate_air_state_mock = GeneralStateMock_Construct(CORE_STATE_IRRIGATE_AIR);
+            air_periodic_check_state_mock = GeneralStateMock_Construct(CORE_STATE_AIR_PERIODIC_CHECK);
+
+            air_humidity_check_state_interface = AirHumidityCheckState_GetCoreStateInterface(air_humidity_check_state);
+            irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
+            air_periodic_check_state_mock_interface = GeneralStateMock_GetCoreStateInterface(air_periodic_check_state_mock);
+
+            system_core = SystemCore_Construct(
+                air_humidity_check_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&air_periodic_check_state_mock);
+            GeneralStateMock_Destruct(&irrigate_air_state_mock);
+            AirHumidityCheckState_Destruct(&air_humidity_check_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
+class CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60 : public ::testing::Test
+{
+    private:
+        AirHumidityCheckState air_humidity_check_state;
+        GeneralStateMock irrigate_air_state_mock;
+        GeneralStateMock air_periodic_check_state_mock;
+
+        CoreStateInterface air_humidity_check_state_interface;
+        CoreStateInterface irrigate_air_state_mock_interface;
+        CoreStateInterface air_periodic_check_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {
+            air_humidity_check_state = AirHumidityCheckState_Construct(
+                stub_get_air_humidity_60_threshold_60,
+                &irrigate_air_state_mock_interface,
+                &air_periodic_check_state_mock_interface
+            );
+            irrigate_air_state_mock = GeneralStateMock_Construct(CORE_STATE_IRRIGATE_AIR);
+            air_periodic_check_state_mock = GeneralStateMock_Construct(CORE_STATE_AIR_PERIODIC_CHECK);
+
+            air_humidity_check_state_interface = AirHumidityCheckState_GetCoreStateInterface(air_humidity_check_state);
+            irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
+            air_periodic_check_state_mock_interface = GeneralStateMock_GetCoreStateInterface(air_periodic_check_state_mock);
+            
+            system_core = SystemCore_Construct(
+                air_humidity_check_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&air_periodic_check_state_mock);
+            GeneralStateMock_Destruct(&irrigate_air_state_mock);
+            AirHumidityCheckState_Destruct(&air_humidity_check_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
 TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleWhenIdleState)
 {
     /* Given fixture */
@@ -367,4 +494,34 @@ TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldBeAirHumidityCheckStateWhenIr
 
     /* Then */
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_HUMIDITY_CHECK);
+}
+
+TEST_F(CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60, ShouldBeIrrigateAirWhenAirHumidityCheckStateAndRelativeHumidityBelowThresholdAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IRRIGATE_AIR);
+}
+
+TEST_F(CoreInitialAirHumidityCheckWithRelativeHumidity70Threshold60, ShouldBeAirPeriodicCheckStateWhenAirHumidityCheckStateAndRelativeHumidityAboveThresholdAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_PERIODIC_CHECK);
+}
+
+TEST_F(CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60, ShouldBeAirPeriodicCheckStateWhenAirHumidityCheckStateAndRelativeHumidityEqualThresholdAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_PERIODIC_CHECK);
 }
