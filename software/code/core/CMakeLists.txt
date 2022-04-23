@@ -4,6 +4,7 @@ set (core_source_files
     "src/idle_state.c"
     "src/woke_state.c"
     "src/soil_humidity_check_state.c"
+    "src/soil_periodic_check_state.c"
     "src/irrigate_soil_state.c"
     "src/air_humidity_check_state.c"
     "src/irrigate_air_state.c"

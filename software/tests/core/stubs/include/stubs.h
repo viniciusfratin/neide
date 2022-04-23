@@ -13,5 +13,8 @@ SoilHumidityInformation stub_get_soil_humidity_60_threshold_60();
 AirHumidityInformation stub_get_air_humidity_50_threshold_60();
 AirHumidityInformation stub_get_air_humidity_70_threshold_60();
 AirHumidityInformation stub_get_air_humidity_60_threshold_60();
+int stub_get_time_from_last_irrigation_2_hours();
+int stub_get_time_from_last_irrigation_3_hours();
+int stub_get_time_from_last_irrigation_4_hours();
 
 #endif

@@ -69,3 +69,18 @@ AirHumidityInformation stub_get_air_humidity_60_threshold_60()
 
     return air_humidity_information;
 }
+
+int stub_get_time_from_last_irrigation_2_hours()
+{
+    return 2 * 60 * 60;
+}
+
+int stub_get_time_from_last_irrigation_3_hours()
+{
+    return 3 * 60 * 60;
+}
+
+int stub_get_time_from_last_irrigation_4_hours()
+{
+    return 4 * 60 * 60;
+}
