@@ -5,8 +5,9 @@ set (core_source_files
     "src/woke_state.c"
     "src/soil_humidity_check_state.c"
     "src/irrigate_soil_state.c"
-    "src/soil_irrigator_interface.c"
-    "src/air_humidity_check_state.c")
+    "src/air_humidity_check_state.c"
+    "src/irrigate_air_state.c"
+    "src/irrigator_interface.c")
 
 add_library (core "${core_source_files}")
 

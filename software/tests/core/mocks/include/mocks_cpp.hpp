@@ -4,7 +4,7 @@
 extern "C"
 {
     #include "general_state_mock.h"
-    #include "soil_irrigator_mock.h"
+    #include "irrigator_mock.h"
 }
 
 #endif

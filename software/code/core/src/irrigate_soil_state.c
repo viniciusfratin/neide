@@ -1,5 +1,5 @@
 #include "irrigate_soil_state.h"
-#include "soil_irrigator_interface.h"
+#include "irrigator_interface.h"
 #include "core_state_interface.h"
 #include "core_state_interface_construction.h"
 #include <stdlib.h>
@@ -9,7 +9,7 @@ typedef struct IrrigateSoilStateInternal
     CoreStateInterface irrigate_soil_state_interface;
     CoreState core_state;
     CoreStateInterface* air_humidity_check_state_interface_ptr;
-    SoilIrrigatorInterface* soil_irrigator_interface_ptr;
+    IrrigatorInterface* soil_irrigator_interface_ptr;
     int irrigation_time_seconds;
 } IrrigateSoilStateImplementation;
 
@@ -18,7 +18,7 @@ static CoreState IrrigateSoilState_GetCoreState(void* object_instance);
 
 IrrigateSoilState IrrigateSoilState_Construct(
     CoreStateInterface* air_humidity_check_state_interface_ptr,
-    SoilIrrigatorInterface* soil_irrigator_interface_ptr,
+    IrrigatorInterface* soil_irrigator_interface_ptr,
     int irrigation_time_seconds)
 {
     IrrigateSoilState instance = (IrrigateSoilState)malloc(sizeof(IrrigateSoilStateImplementation));
@@ -72,7 +72,7 @@ static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* objec
     IrrigateSoilState instance = (IrrigateSoilState)object_instance;
     CoreStateInterface next_core_state_interface = *(instance->air_humidity_check_state_interface_ptr);
     
-    SoilIrrigatorInterface_IrrigateSoil(*(instance->soil_irrigator_interface_ptr), instance->irrigation_time_seconds);
+    IrrigatorInterface_Irrigate(*(instance->soil_irrigator_interface_ptr), instance->irrigation_time_seconds);
     
     return next_core_state_interface;
 }

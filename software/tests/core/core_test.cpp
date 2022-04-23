@@ -9,8 +9,9 @@ extern "C"
 #include "woke_state.h"
 #include "soil_humidity_check_state.h"
 #include "irrigate_soil_state.h"
-#include "soil_irrigator_interface.h"
+#include "irrigator_interface.h"
 #include "air_humidity_check_state.h"
+#include "irrigate_air_state.h"
 }
 
 #include "stubs_cpp.hpp"
@@ -245,17 +246,17 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
         GeneralStateMock air_humidity_check_state_mock;
 
         CoreStateInterface irrigate_soil_state_interface;
-        SoilIrrigatorInterface soil_irrigator_mock_interface;
+        IrrigatorInterface soil_irrigator_mock_interface;
         CoreStateInterface air_humidity_check_state_mock_interface;
 
     protected:
         SystemCore system_core;
-        SoilIrrigatorMock soil_irrigator_mock;
+        IrrigatorMock soil_irrigator_mock;
         
         void SetUp() override
         {
-            soil_irrigator_mock = SoilIrrigatorMock_Construct();
-            soil_irrigator_mock_interface = SoilIrrigatorMock_GetSoilIrrigatorInterface(soil_irrigator_mock);
+            soil_irrigator_mock = IrrigatorMock_Construct();
+            soil_irrigator_mock_interface = IrrigatorMock_GetIrrigatorInterface(soil_irrigator_mock);
             
             air_humidity_check_state_mock = GeneralStateMock_Construct(CORE_STATE_AIR_HUMIDITY_CHECK);
             air_humidity_check_state_mock_interface = GeneralStateMock_GetCoreStateInterface(air_humidity_check_state_mock);
@@ -275,7 +276,7 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
         {
             GeneralStateMock_Destruct(&air_humidity_check_state_mock);
             IrrigateSoilState_Destruct(&irrigate_soil_state);
-            SoilIrrigatorMock_Destruct(&soil_irrigator_mock);
+            IrrigatorMock_Destruct(&soil_irrigator_mock);
             SystemCore_Destruct(&system_core);
         }
 };
@@ -406,6 +407,48 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60 : public ::te
         }
 };
 
+class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
+{
+    private:
+        IrrigateAirState irrigate_air_state;
+        GeneralStateMock wrap_up_state_mock;
+
+        CoreStateInterface irrigate_air_state_interface;
+        IrrigatorInterface air_irrigator_mock_interface;
+        CoreStateInterface wrap_up_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        IrrigatorMock air_irrigator_mock;
+        
+        void SetUp() override
+        {
+            air_irrigator_mock = IrrigatorMock_Construct();
+            air_irrigator_mock_interface = IrrigatorMock_GetIrrigatorInterface(air_irrigator_mock);
+            
+            wrap_up_state_mock = GeneralStateMock_Construct(CORE_STATE_WRAP_UP);
+            wrap_up_state_mock_interface = GeneralStateMock_GetCoreStateInterface(wrap_up_state_mock);
+            
+            irrigate_air_state = IrrigateAirState_Construct(
+                &wrap_up_state_mock_interface,
+                &air_irrigator_mock_interface,
+                10);
+            irrigate_air_state_interface = IrrigateAirState_GetCoreStateInterface(irrigate_air_state);
+
+            system_core = SystemCore_Construct(
+                irrigate_air_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&wrap_up_state_mock);
+            IrrigateAirState_Destruct(&irrigate_air_state);
+            IrrigatorMock_Destruct(&air_irrigator_mock);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
 TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleWhenIdleState)
 {
     /* Given fixture */
@@ -436,6 +479,16 @@ TEST_F(CoreInitialIdleWithWakeUpFalse, ShouldBeIdleStateWhenIdleStateAndAdvancin
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IDLE);
 }
 
+TEST_F(CoreInitialWoke, ShouldBeWokeWhenWokeState)
+{
+    /* Given fixture */
+    /* When */
+    CoreState current_state = SystemCore_GetCurrentState(system_core);
+
+    /* Then */
+    EXPECT_EQ(current_state, CORE_STATE_WOKE);
+}
+
 TEST_F(CoreInitialWoke, ShouldBeSoilHumidityCheckStateWhenWokeStateAndAdvancingCycle)
 {
     /* Given fixture */
@@ -444,6 +497,16 @@ TEST_F(CoreInitialWoke, ShouldBeSoilHumidityCheckStateWhenWokeStateAndAdvancingC
 
     /* Then */
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_HUMIDITY_CHECK);
+}
+
+TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60, ShouldBeSoilHumidityCheckWhenSoilHumidityCheckState)
+{
+    /* Given fixture */
+    /* When */
+    CoreState current_state = SystemCore_GetCurrentState(system_core);
+
+    /* Then */
+    EXPECT_EQ(current_state, CORE_STATE_SOIL_HUMIDITY_CHECK);
 }
 
 TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60, ShouldBeIrrigateSoilWhenSoilHumidityCheckStateAndRelativeHumidityBelowThresholdAndAdvancingCycle)
@@ -476,6 +539,16 @@ TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60, ShouldBeSo
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_PERIODIC_CHECK);
 }
 
+TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldBeIrrigateSoilWhenIrrigateSoilState)
+{
+    /* Given fixture */
+    /* When */
+    CoreState current_state = SystemCore_GetCurrentState(system_core);
+
+    /* Then */
+    EXPECT_EQ(current_state, CORE_STATE_IRRIGATE_SOIL);
+}
+
 TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldIrrigateSoilFor10SecondsWhenAdvancingCycle)
 {
     /* Given fixture */
@@ -483,7 +556,7 @@ TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldIrrigateSoilFor10SecondsWhenA
     SystemCore_AdvanceCycle(system_core);
 
     /* Then */
-    EXPECT_EQ(SoilIrrigatorMock_GetLastIrrigationTime(soil_irrigator_mock), 10);
+    EXPECT_EQ(IrrigatorMock_GetLastIrrigationTime(soil_irrigator_mock), 10);
 }
 
 TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldBeAirHumidityCheckStateWhenIrrigateSoilStateAndAdvancingCycle)
@@ -494,6 +567,16 @@ TEST_F(CoreInitialIrrigateSoilWith10Seconds, ShouldBeAirHumidityCheckStateWhenIr
 
     /* Then */
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_HUMIDITY_CHECK);
+}
+
+TEST_F(CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60, ShouldBeAirHumidityCheckWhenAirHumidityCheckState)
+{
+    /* Given fixture */
+    /* When */
+    CoreState current_state = SystemCore_GetCurrentState(system_core);
+
+    /* Then */
+    EXPECT_EQ(current_state, CORE_STATE_AIR_HUMIDITY_CHECK);
 }
 
 TEST_F(CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60, ShouldBeIrrigateAirWhenAirHumidityCheckStateAndRelativeHumidityBelowThresholdAndAdvancingCycle)
@@ -524,4 +607,34 @@ TEST_F(CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60, ShouldBeAir
 
     /* Then */
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_PERIODIC_CHECK);
+}
+
+TEST_F(CoreInitialIrrigateAirWith10Seconds, ShouldBeIrrigateAirWhenIrrigateAirState)
+{
+    /* Given fixture */
+    /* When */
+    CoreState current_state = SystemCore_GetCurrentState(system_core);
+
+    /* Then */
+    EXPECT_EQ(current_state, CORE_STATE_IRRIGATE_AIR);
+}
+
+TEST_F(CoreInitialIrrigateAirWith10Seconds, ShouldIrrigateAirFor10SecondsWhenAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(IrrigatorMock_GetLastIrrigationTime(air_irrigator_mock), 10);
+}
+
+TEST_F(CoreInitialIrrigateAirWith10Seconds, ShouldBeWrapUpStateWhenIrrigateAirStateAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_WRAP_UP);
 }
