@@ -12,6 +12,7 @@ extern "C"
 #include "irrigate_soil_state.h"
 #include "irrigator_interface.h"
 #include "air_humidity_check_state.h"
+#include "air_periodic_check_state.h"
 #include "irrigate_air_state.h"
 }
 
@@ -540,6 +541,138 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60 : public ::te
         }
 };
 
+class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public ::testing::Test
+{
+    private:
+        AirPeriodicCheckState air_periodic_check_state;
+        GeneralStateMock irrigate_air_state_mock;
+        GeneralStateMock wrap_up_state_mock;
+
+        CoreStateInterface air_periodic_check_state_interface;
+        CoreStateInterface irrigate_air_state_mock_interface;
+        CoreStateInterface wrap_up_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {   
+            wrap_up_state_mock = GeneralStateMock_Construct(CORE_STATE_WRAP_UP);
+            wrap_up_state_mock_interface = GeneralStateMock_GetCoreStateInterface(wrap_up_state_mock);
+
+            irrigate_air_state_mock = GeneralStateMock_Construct(CORE_STATE_IRRIGATE_AIR);
+            irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
+            
+            air_periodic_check_state = AirPeriodicCheckState_Construct(
+                stub_get_time_from_last_irrigation_2_hours,
+                &irrigate_air_state_mock_interface,
+                &wrap_up_state_mock_interface,
+                3 * 60 * 60);
+
+            air_periodic_check_state_interface = AirPeriodicCheckState_GetCoreStateInterface(air_periodic_check_state);
+
+            system_core = SystemCore_Construct(
+                air_periodic_check_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&wrap_up_state_mock);
+            GeneralStateMock_Destruct(&irrigate_air_state_mock);
+            AirPeriodicCheckState_Destruct(&air_periodic_check_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
+class CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public ::testing::Test
+{
+    private:
+        AirPeriodicCheckState air_periodic_check_state;
+        GeneralStateMock irrigate_air_state_mock;
+        GeneralStateMock wrap_up_state_mock;
+
+        CoreStateInterface air_periodic_check_state_interface;
+        CoreStateInterface irrigate_air_state_mock_interface;
+        CoreStateInterface wrap_up_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {   
+            wrap_up_state_mock = GeneralStateMock_Construct(CORE_STATE_WRAP_UP);
+            wrap_up_state_mock_interface = GeneralStateMock_GetCoreStateInterface(wrap_up_state_mock);
+
+            irrigate_air_state_mock = GeneralStateMock_Construct(CORE_STATE_IRRIGATE_AIR);
+            irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
+            
+            air_periodic_check_state = AirPeriodicCheckState_Construct(
+                stub_get_time_from_last_irrigation_3_hours,
+                &irrigate_air_state_mock_interface,
+                &wrap_up_state_mock_interface,
+                3 * 60 * 60);
+
+            air_periodic_check_state_interface = AirPeriodicCheckState_GetCoreStateInterface(air_periodic_check_state);
+
+            system_core = SystemCore_Construct(
+                air_periodic_check_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&wrap_up_state_mock);
+            GeneralStateMock_Destruct(&irrigate_air_state_mock);
+            AirPeriodicCheckState_Destruct(&air_periodic_check_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
+class CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public ::testing::Test
+{
+    private:
+        AirPeriodicCheckState air_periodic_check_state;
+        GeneralStateMock irrigate_air_state_mock;
+        GeneralStateMock wrap_up_state_mock;
+
+        CoreStateInterface air_periodic_check_state_interface;
+        CoreStateInterface irrigate_air_state_mock_interface;
+        CoreStateInterface wrap_up_state_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        
+        void SetUp() override
+        {   
+            wrap_up_state_mock = GeneralStateMock_Construct(CORE_STATE_WRAP_UP);
+            wrap_up_state_mock_interface = GeneralStateMock_GetCoreStateInterface(wrap_up_state_mock);
+
+            irrigate_air_state_mock = GeneralStateMock_Construct(CORE_STATE_IRRIGATE_AIR);
+            irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
+            
+            air_periodic_check_state = AirPeriodicCheckState_Construct(
+                stub_get_time_from_last_irrigation_4_hours,
+                &irrigate_air_state_mock_interface,
+                &wrap_up_state_mock_interface,
+                3 * 60 * 60);
+
+            air_periodic_check_state_interface = AirPeriodicCheckState_GetCoreStateInterface(air_periodic_check_state);
+
+            system_core = SystemCore_Construct(
+                air_periodic_check_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            GeneralStateMock_Destruct(&wrap_up_state_mock);
+            GeneralStateMock_Destruct(&irrigate_air_state_mock);
+            AirPeriodicCheckState_Destruct(&air_periodic_check_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
 class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
 {
     private:
@@ -672,7 +805,7 @@ TEST_F(CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60, ShouldBeSo
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_SOIL_PERIODIC_CHECK);
 }
 
-TEST_F(CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation, ShouldBeSoilPeriodicCheckWhenSoilPeriodicCheck)
+TEST_F(CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation, ShouldBeSoilPeriodicCheckWhenSoilPeriodicCheckState)
 {
     /* Given fixture */
     /* When */
@@ -702,7 +835,7 @@ TEST_F(CoreInitialSoilPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation, Should
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_HUMIDITY_CHECK);
 }
 
-TEST_F(CoreInitialSoilPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation, ShouldBeAirHumidityCheckStateWhenSoilPeriodicCheckStateAndTimeFromLastIrrigationIsEqualToMaximumPeriodAndAdvancingCycle)
+TEST_F(CoreInitialSoilPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation, ShouldBeAirHumidityCheckStateWhenSoilPeriodicCheckStateAndTimeFromLastIrrigationIsGreaterThanMaximumPeriodAndAdvancingCycle)
 {
     /* Given fixture */
     /* When */
@@ -780,6 +913,46 @@ TEST_F(CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60, ShouldBeAir
 
     /* Then */
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_AIR_PERIODIC_CHECK);
+}
+
+TEST_F(CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation, ShouldBeAirPeriodicCheckWhenAirPeriodicCheckState)
+{
+    /* Given fixture */
+    /* When */
+    CoreState current_state = SystemCore_GetCurrentState(system_core);
+
+    /* Then */
+    EXPECT_EQ(current_state, CORE_STATE_AIR_PERIODIC_CHECK);
+}
+
+TEST_F(CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation, ShouldBeWrapUpStateWhenAirPeriodicCheckStateAndTimeFromLastIrrigationIsLessThanMaximumPeriodAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_WRAP_UP);
+}
+
+TEST_F(CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation, ShouldBeWrapUpStateWhenAirPeriodicCheckStateAndTimeFromLastIrrigationIsEqualToMaximumPeriodAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_WRAP_UP);
+}
+
+TEST_F(CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation, ShouldBeWrapUpStateWhenAirPeriodicCheckStateAndTimeFromLastIrrigationIsGreaterThanMaximumPeriodAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IRRIGATE_AIR);
 }
 
 TEST_F(CoreInitialIrrigateAirWith10Seconds, ShouldBeIrrigateAirWhenIrrigateAirState)
