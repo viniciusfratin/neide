@@ -264,7 +264,7 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public
             irrigate_soil_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_soil_state_mock);
             
             soil_periodic_check_state = SoilPeriodicCheckState_Construct(
-                stub_get_time_from_last_irrigation_2_hours,
+                stub_get_time_from_last_soil_irrigation_2_hours,
                 &irrigate_soil_state_mock_interface,
                 &air_humidity_check_state_mock_interface,
                 3 * 60 * 60);
@@ -308,7 +308,7 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public
             irrigate_soil_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_soil_state_mock);
             
             soil_periodic_check_state = SoilPeriodicCheckState_Construct(
-                stub_get_time_from_last_irrigation_3_hours,
+                stub_get_time_from_last_soil_irrigation_3_hours,
                 &irrigate_soil_state_mock_interface,
                 &air_humidity_check_state_mock_interface,
                 3 * 60 * 60);
@@ -352,7 +352,7 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public
             irrigate_soil_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_soil_state_mock);
             
             soil_periodic_check_state = SoilPeriodicCheckState_Construct(
-                stub_get_time_from_last_irrigation_4_hours,
+                stub_get_time_from_last_soil_irrigation_4_hours,
                 &irrigate_soil_state_mock_interface,
                 &air_humidity_check_state_mock_interface,
                 3 * 60 * 60);
@@ -564,7 +564,7 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public 
             irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
             
             air_periodic_check_state = AirPeriodicCheckState_Construct(
-                stub_get_time_from_last_irrigation_2_hours,
+                stub_get_time_from_last_air_irrigation_2_hours,
                 &irrigate_air_state_mock_interface,
                 &wrap_up_state_mock_interface,
                 3 * 60 * 60);
@@ -608,7 +608,7 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public 
             irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
             
             air_periodic_check_state = AirPeriodicCheckState_Construct(
-                stub_get_time_from_last_irrigation_3_hours,
+                stub_get_time_from_last_air_irrigation_3_hours,
                 &irrigate_air_state_mock_interface,
                 &wrap_up_state_mock_interface,
                 3 * 60 * 60);
@@ -652,7 +652,7 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public 
             irrigate_air_state_mock_interface = GeneralStateMock_GetCoreStateInterface(irrigate_air_state_mock);
             
             air_periodic_check_state = AirPeriodicCheckState_Construct(
-                stub_get_time_from_last_irrigation_4_hours,
+                stub_get_time_from_last_air_irrigation_4_hours,
                 &irrigate_air_state_mock_interface,
                 &wrap_up_state_mock_interface,
                 3 * 60 * 60);
