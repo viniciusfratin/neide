@@ -5,18 +5,28 @@ Home garden sprinkler system.
 ### Setup
 Make sure you have Docker installed.
 
-In order to create the Docker image after cloning this repository, run
+In order to create the Docker images after cloning this repository, run
 
 > cd neide/
 >
-> docker build --tag viniciusfratin/neide:v0.1 --file ./docker/Dockerfile .
+> docker build --tag viniciusfratin/neide_test:v0.1 --target neide_test --file ./docker/Dockerfile .
+> docker build --tag viniciusfratin/neide_run_main:v0.1 --target neide_run_main --file ./docker/Dockerfile .
+
+The built code will be inside both images.
 
 **Note**: This command needs not to be executed again, unless there is some change to the code.
 
-### Build and Tests
-In order to build the code and execute the tests, run
+### Tests
+In order to execute the tests, run
 
-> docker run --name neide --rm --tty viniciusfratin/neide:v0.1
+> docker run --name neide_test --rm --tty viniciusfratin/neide_test:v0.1
+
+In case you make a change to the code, refer to the **Note** in the previous section.
+
+### Run sample
+In order to run a sample for the system with mocked external data, run
+
+> docker run --name neide_run_main --rm --tty viniciusfratin/neide_run_main:v0.1
 
 In case you make a change to the code, refer to the **Note** in the previous section.
 
@@ -42,3 +52,10 @@ followed by
 In order to execute the test suite, build the system and then run
 
 > ctest --test-dir build/tests/
+
+### Run sample
+In order to run a sample for the system with mocked external data, run
+
+> ./build/code/main/main
+
+Note that the executable extension can vary between platforms, e.g., it would be called "main" in Linux and "main.exe" in Windows.
