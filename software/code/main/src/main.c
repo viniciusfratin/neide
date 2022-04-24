@@ -18,7 +18,7 @@ Bool should_wake_up()
 SoilHumidityInformation get_soil_humidity_information()
 {
     SoilHumidityInformation information;
-    information.current_relative_humidity = 50.0f;
+    information.current_relative_humidity = 70.0f;
     information.relative_humidity_threshold = 60.0f;
 
     printf("- Soil humidity information:\n");

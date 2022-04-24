@@ -60,7 +60,7 @@ StandardConfiguration StandardConfiguration_Construct(
         );
         SoilPeriodicCheckState soil_periodic_check_state = SoilPeriodicCheckState_Construct(
             get_time_from_last_soil_irrigation_callback,
-            &instance->irrigate_air_state_interface,
+            &instance->irrigate_soil_state_interface,
             &instance->air_humidity_check_state_interface,
             soil_periodic_check_maximum_period
         );
