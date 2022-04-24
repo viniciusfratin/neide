@@ -55,7 +55,7 @@ In order to execute the test suite, build the system and then run
 > ctest --test-dir build/tests/
 
 ### Run sample
-In order to run a sample for the system with mocked external data, run
+In order to run a sample for the system with mocked external data, build the system and then run
 
 > ./build/code/main/main
 
