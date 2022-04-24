@@ -14,14 +14,23 @@ typedef struct StandardConfigurationInternal
 {
     SystemCore system_core;
     IdleState idle_state;
+    CoreStateInterface idle_state_interface;
     WokeState woke_state;
+    CoreStateInterface woke_state_interface;
     SoilHumidityCheckState soil_humidity_check_state;
+    CoreStateInterface soil_humidity_check_state_interface;
     SoilPeriodicCheckState soil_periodic_check_state;
+    CoreStateInterface soil_periodic_check_state_interface;
     IrrigateSoilState irrigate_soil_state;
+    CoreStateInterface irrigate_soil_state_interface;
     AirHumidityCheckState air_humidity_check_state;
+    CoreStateInterface air_humidity_check_state_interface;
     AirPeriodicCheckState air_periodic_check_state;
+    CoreStateInterface air_periodic_check_state_interface;
     IrrigateAirState irrigate_air_state;
+    CoreStateInterface irrigate_air_state_interface;
     WrapUpState wrap_up_state;
+    CoreStateInterface wrap_up_state_interface;
 } StandardConfigurationImplementation;
 
 StandardConfiguration StandardConfiguration_Construct(
@@ -42,53 +51,43 @@ StandardConfiguration StandardConfiguration_Construct(
 
     if(instance != NULL)
     {
-        CoreStateInterface idle_state_interface;
-        CoreStateInterface woke_state_interface;
-        CoreStateInterface soil_humidity_check_state_interface;
-        CoreStateInterface soil_periodic_check_state_interface;
-        CoreStateInterface irrigate_soil_state_interface;
-        CoreStateInterface air_humidity_check_state_interface;
-        CoreStateInterface air_periodic_check_state_interface;
-        CoreStateInterface irrigate_air_state_interface;
-        CoreStateInterface wrap_up_state_interface;
-
-        IdleState idle_state = IdleState_Construct(should_wake_up_callback, &woke_state_interface);
-        WokeState woke_state = WokeState_Construct(&soil_humidity_check_state_interface);
+        IdleState idle_state = IdleState_Construct(should_wake_up_callback, &instance->woke_state_interface);
+        WokeState woke_state = WokeState_Construct(&instance->soil_humidity_check_state_interface);
         SoilHumidityCheckState soil_humidity_check_state = SoilHumidityCheckState_Construct(
             get_soil_humidity_information_callback,
-            &irrigate_soil_state_interface,
-            &soil_periodic_check_state_interface
+            &instance->irrigate_soil_state_interface,
+            &instance->soil_periodic_check_state_interface
         );
         SoilPeriodicCheckState soil_periodic_check_state = SoilPeriodicCheckState_Construct(
             get_time_from_last_soil_irrigation_callback,
-            &irrigate_air_state_interface,
-            &air_humidity_check_state_interface,
+            &instance->irrigate_air_state_interface,
+            &instance->air_humidity_check_state_interface,
             soil_periodic_check_maximum_period
         );
         IrrigateSoilState irrigate_soil_state = IrrigateSoilState_Construct(
-            &air_humidity_check_state_interface,
+            &instance->air_humidity_check_state_interface,
             soil_irrigator_ptr,
             soil_irrigation_time
         );
         AirHumidityCheckState air_humidity_check_state = AirHumidityCheckState_Construct(
             get_air_humidity_information_callback,
-            &irrigate_air_state_interface,
-            &air_periodic_check_state_interface
+            &instance->irrigate_air_state_interface,
+            &instance->air_periodic_check_state_interface
         );
         AirPeriodicCheckState air_periodic_check_state = AirPeriodicCheckState_Construct(
             get_time_from_last_air_irrigation_callback,
-            &irrigate_air_state_interface,
-            &wrap_up_state_interface,
+            &instance->irrigate_air_state_interface,
+            &instance->wrap_up_state_interface,
             air_periodic_check_maximum_period
         );
         IrrigateAirState irrigate_air_state = IrrigateAirState_Construct(
-            &wrap_up_state_interface,
+            &instance->wrap_up_state_interface,
             air_irrigator_ptr,
             air_irrigation_time
         );
         WrapUpState wrap_up_state = WrapUpState_Construct(
             wrap_up_action_ptr,
-            &idle_state_interface
+            &instance->idle_state_interface
         );
 
         if(idle_state != IDLE_STATE_INVALID_INSTANCE &&
@@ -101,17 +100,17 @@ StandardConfiguration StandardConfiguration_Construct(
             irrigate_air_state != IRRIGATE_AIR_STATE_INVALID_INSTANCE &&
             wrap_up_state != WRAP_UP_STATE_INVALID_INSTANCE)
         {
-            idle_state_interface = IdleState_GetCoreStateInterface(idle_state);
-            woke_state_interface = WokeState_GetCoreStateInterface(woke_state);
-            soil_humidity_check_state_interface = SoilHumidityCheckState_GetCoreStateInterface(soil_humidity_check_state);
-            soil_periodic_check_state_interface = SoilPeriodicCheckState_GetCoreStateInterface(soil_periodic_check_state);
-            irrigate_soil_state_interface = IrrigateSoilState_GetCoreStateInterface(irrigate_soil_state);
-            air_humidity_check_state_interface = AirHumidityCheckState_GetCoreStateInterface(air_humidity_check_state);
-            air_periodic_check_state_interface = AirPeriodicCheckState_GetCoreStateInterface(air_periodic_check_state);
-            irrigate_air_state_interface = IrrigateAirState_GetCoreStateInterface(irrigate_air_state);
-            wrap_up_state_interface = WrapUpState_GetCoreStateInterface(wrap_up_state);
+            instance->idle_state_interface = IdleState_GetCoreStateInterface(idle_state);
+            instance->woke_state_interface = WokeState_GetCoreStateInterface(woke_state);
+            instance->soil_humidity_check_state_interface = SoilHumidityCheckState_GetCoreStateInterface(soil_humidity_check_state);
+            instance->soil_periodic_check_state_interface = SoilPeriodicCheckState_GetCoreStateInterface(soil_periodic_check_state);
+            instance->irrigate_soil_state_interface = IrrigateSoilState_GetCoreStateInterface(irrigate_soil_state);
+            instance->air_humidity_check_state_interface = AirHumidityCheckState_GetCoreStateInterface(air_humidity_check_state);
+            instance->air_periodic_check_state_interface = AirPeriodicCheckState_GetCoreStateInterface(air_periodic_check_state);
+            instance->irrigate_air_state_interface = IrrigateAirState_GetCoreStateInterface(irrigate_air_state);
+            instance->wrap_up_state_interface = WrapUpState_GetCoreStateInterface(wrap_up_state);
 
-            SystemCore system_core = SystemCore_Construct(idle_state_interface);
+            SystemCore system_core = SystemCore_Construct(instance->idle_state_interface);
             if(system_core != SYSTEM_CORE_INVALID_INSTANCE)
             {
                 instance->idle_state = idle_state;
