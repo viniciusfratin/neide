@@ -10,6 +10,7 @@ In order to create the Docker images after cloning this repository, run
 > cd neide/
 >
 > docker build --tag viniciusfratin/neide_test:v0.1 --target neide_test --file ./docker/Dockerfile .
+>
 > docker build --tag viniciusfratin/neide_run_main:v0.1 --target neide_run_main --file ./docker/Dockerfile .
 
 The built code will be inside both images.
