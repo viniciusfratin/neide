@@ -1,5 +1,7 @@
 set (main_source_files
-    "src/main.c")
+    "src/main.c"
+    "src/irrigator.c"
+    "src/wrap_up_action.c")
 
 add_executable (main "${main_source_files}")
 
