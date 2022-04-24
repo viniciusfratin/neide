@@ -9,7 +9,9 @@ set (core_source_files
     "src/air_humidity_check_state.c"
     "src/air_periodic_check_state.c"
     "src/irrigate_air_state.c"
-    "src/irrigator_interface.c")
+    "src/wrap_up_state.c"
+    "src/irrigator_interface.c"
+    "src/wrap_up_action_interface.c")
 
 add_library (core "${core_source_files}")
 

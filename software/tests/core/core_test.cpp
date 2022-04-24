@@ -11,9 +11,11 @@ extern "C"
 #include "soil_periodic_check_state.h"
 #include "irrigate_soil_state.h"
 #include "irrigator_interface.h"
+#include "wrap_up_action_interface.h"
 #include "air_humidity_check_state.h"
 #include "air_periodic_check_state.h"
 #include "irrigate_air_state.h"
+#include "wrap_up_state.h"
 }
 
 #include "stubs_cpp.hpp"
@@ -715,6 +717,45 @@ class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
         }
 };
 
+class CoreInitialWrapUp : public ::testing::Test
+{
+    private:
+        WrapUpState wrap_up_state;
+        GeneralStateMock idle_state_mock;
+        
+        CoreStateInterface wrap_up_state_interface;
+        CoreStateInterface idle_state_mock_interface;
+        WrapUpActionInterface wrap_up_action_mock_interface;
+
+    protected:
+        SystemCore system_core;
+        WrapUpActionMock wrap_up_action_mock;
+        
+        void SetUp() override
+        {
+            wrap_up_state = WrapUpState_Construct(&wrap_up_action_mock_interface, &idle_state_mock_interface);
+            wrap_up_state_interface = WrapUpState_GetCoreStateInterface(wrap_up_state);
+
+            idle_state_mock = GeneralStateMock_Construct(CORE_STATE_IDLE);
+            idle_state_mock_interface = GeneralStateMock_GetCoreStateInterface(idle_state_mock);
+
+            wrap_up_action_mock = WrapUpActionMock_Construct();
+            wrap_up_action_mock_interface = WrapUpActionMock_GetWrapUpActionInterface(wrap_up_action_mock);
+
+            system_core = SystemCore_Construct(
+                wrap_up_state_interface
+            );
+        }
+
+        void TearDown() override
+        {
+            WrapUpActionMock_Destruct(&wrap_up_action_mock);
+            GeneralStateMock_Destruct(&idle_state_mock);
+            WrapUpState_Destruct(&wrap_up_state);
+            SystemCore_Destruct(&system_core);
+        }
+};
+
 TEST_F(CoreInitialIdleWithWakeUpTrue, ShouldBeIdleWhenIdleState)
 {
     /* Given fixture */
@@ -983,4 +1024,34 @@ TEST_F(CoreInitialIrrigateAirWith10Seconds, ShouldBeWrapUpStateWhenIrrigateAirSt
 
     /* Then */
     EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_WRAP_UP);
+}
+
+TEST_F(CoreInitialWrapUp, ShouldBeWrapUpWhenWrapUpState)
+{
+    /* Given fixture */
+    /* When */
+    CoreState current_state = SystemCore_GetCurrentState(system_core);
+
+    /* Then */
+    EXPECT_EQ(current_state, CORE_STATE_WRAP_UP);
+}
+
+TEST_F(CoreInitialWrapUp, ShouldExecuteWrapUpActionWhenWrapUpStateAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(WrapUpActionMock_GetNumberOfCalls(wrap_up_action_mock), 1);
+}
+
+TEST_F(CoreInitialWrapUp, ShouldBeIdleWhenWrapUpStateAndAdvancingCycle)
+{
+    /* Given fixture */
+    /* When */
+    SystemCore_AdvanceCycle(system_core);
+
+    /* Then */
+    EXPECT_EQ(SystemCore_GetCurrentState(system_core), CORE_STATE_IDLE);
 }
