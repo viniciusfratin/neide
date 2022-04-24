@@ -7,7 +7,7 @@ typedef struct SoilPeriodicCheckStateInternal
 {
     CoreStateInterface soil_periodic_check_state_interface;
     CoreState core_state;
-    GetTimeFromLastIrrigationCallback get_time_from_last_irrigation_callback;
+    GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback;
     CoreStateInterface* irrigate_soil_state_interface_ptr;
     CoreStateInterface* air_humidity_check_state_interface_ptr;
     int maximum_period_seconds;
@@ -17,7 +17,7 @@ static CoreStateInterface SoilPeriodicCheckState_ExecuteSoilPeriodicCheckState(v
 static CoreState SoilPeriodicCheckState_GetCoreState(void* object_instance);
 
 SoilPeriodicCheckState SoilPeriodicCheckState_Construct(
-    GetTimeFromLastIrrigationCallback get_time_from_last_irrigation_callback,
+    GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
     CoreStateInterface* irrigate_soil_state_interface_ptr,
     CoreStateInterface* air_humidity_check_state_interface_ptr,
     int maximum_period_seconds

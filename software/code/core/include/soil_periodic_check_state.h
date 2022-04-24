@@ -7,14 +7,14 @@ typedef struct SoilPeriodicCheckStateInternal* SoilPeriodicCheckState;
 
 #define SOIL_PERIODIC_CHECK_STATE_INVALID_INSTANCE ((SoilPeriodicCheckState)NULL)
 
-typedef int (*GetTimeFromLastIrrigationCallback)();
+typedef int (*GetTimeFromLastSoilIrrigationCallback)();
 
 
 CoreStateInterface SoilPeriodicCheckState_GetCoreStateInterface(SoilPeriodicCheckState instance);
 
 
 SoilPeriodicCheckState SoilPeriodicCheckState_Construct(
-    GetTimeFromLastIrrigationCallback get_time_from_last_irrigation_callback,
+    GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
     CoreStateInterface* irrigate_soil_state_interface_ptr,
     CoreStateInterface* air_humidity_check_state_interface_ptr,
     int maximum_period_seconds

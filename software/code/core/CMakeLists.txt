@@ -11,7 +11,8 @@ set (core_source_files
     "src/irrigate_air_state.c"
     "src/wrap_up_state.c"
     "src/irrigator_interface.c"
-    "src/wrap_up_action_interface.c")
+    "src/wrap_up_action_interface.c"
+    "src/standard_configuration.c")
 
 add_library (core "${core_source_files}")
 

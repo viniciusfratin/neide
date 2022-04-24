@@ -7,7 +7,7 @@ typedef struct AirPeriodicCheckStateInternal
 {
     CoreStateInterface air_periodic_check_state_interface;
     CoreState core_state;
-    GetTimeFromLastIrrigationCallback get_time_from_last_irrigation_callback;
+    GetTimeFromLastAirIrrigationCallback get_time_from_last_irrigation_callback;
     CoreStateInterface* irrigate_air_state_interface_ptr;
     CoreStateInterface* wrap_up_state_interface_ptr;
     int maximum_period_seconds;
@@ -17,7 +17,7 @@ static CoreStateInterface AirPeriodicCheckState_ExecuteAirPeriodicCheckState(voi
 static CoreState AirPeriodicCheckState_GetCoreState(void* object_instance);
 
 AirPeriodicCheckState AirPeriodicCheckState_Construct(
-    GetTimeFromLastIrrigationCallback get_time_from_last_irrigation_callback,
+    GetTimeFromLastAirIrrigationCallback get_time_from_last_irrigation_callback,
     CoreStateInterface* irrigate_air_state_interface_ptr,
     CoreStateInterface* wrap_up_state_interface_ptr,
     int maximum_period_seconds
