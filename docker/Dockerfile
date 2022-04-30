@@ -37,7 +37,7 @@ RUN mkdir -p /neide
 RUN mkdir -p /neide_out
 WORKDIR /neide
 COPY ./software /neide/software
-RUN cmake --toolchain /neide/software/generic-gcc-avr.cmake \
+RUN cmake --toolchain /neide/software/toolchains/generic-gcc-avr.cmake \
     -S software/ -B build/ \
     && cmake --build build/ \
     && cp \
