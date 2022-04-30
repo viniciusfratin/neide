@@ -76,7 +76,7 @@ You can build by running
 
 > cd neide/
 >
-> cmake --toolchain /neide/software/generic-gcc-avr.cmake -S software/ -B build/
+> cmake --toolchain absolute/path/to/neide/software/generic-gcc-avr.cmake -S software/ -B build/
 
 followed by
 
