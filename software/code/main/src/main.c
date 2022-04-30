@@ -5,7 +5,6 @@
 #include "irrigator.h"
 #include "wrap_up_action.h"
 #include <stdio.h>
-#include <unistd.h>
 
 Bool should_wake_up()
 {
@@ -93,7 +92,6 @@ int main()
         printf("Current state: %d\n", SystemCore_GetCurrentState(system_core));
         
         SystemCore_AdvanceCycle(system_core);
-        sleep(1);
     }
 
     return 0;

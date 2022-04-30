@@ -4,12 +4,12 @@ set(core_tests_sources
     "mocks/src/mocks_cpp.cpp"
 )
 
-add_executable(
+neide_add_executable(
     core_tests
     "${core_tests_sources}"
 )
 
-target_include_directories (
+neide_target_include_directories (
     core_tests
     PRIVATE
     "stubs/include"
@@ -17,12 +17,12 @@ target_include_directories (
 )
 
 if(MSVC)
-    target_compile_options(core_tests PRIVATE /W4 /WX)
+    neide_target_executable_compile_options(core_tests PRIVATE /W4 /WX)
 else()
-    target_compile_options(core_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    neide_target_executable_compile_options(core_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 
-target_link_libraries(
+neide_target_link_libraries(
     core_tests
     gtest_main
     core

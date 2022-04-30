@@ -56,3 +56,6 @@ build/
 
 # Visual Studio Code
 .vscode/
+
+# Target files
+target_files/
