@@ -6,6 +6,8 @@
 #include "wrap_up_action.h"
 #include <stdio.h>
 
+#define NUMBER_OF_SAMPLE_CYCLES 50
+
 Bool should_wake_up()
 {
     Bool should_wake_up = TRUE;
@@ -87,7 +89,7 @@ int main()
 
     SystemCore system_core = StandardConfiguration_GetSystemCore(standard_configuration);
 
-    while(1)
+    for(int num_cycles = 0; num_cycles < NUMBER_OF_SAMPLE_CYCLES; num_cycles++)
     {
         printf("Current state: %d\n", SystemCore_GetCurrentState(system_core));
         
