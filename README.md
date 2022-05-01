@@ -66,9 +66,9 @@ In order to execute the test suite, build the system and then run
 #### Run sample
 In order to run a sample for the system with mocked external data, build the system and then run
 
-> ./build/code/main/main
+> ./build/code/sample/sample
 
-Note that the executable extension can vary between platforms, e.g., it would be called "main" in Linux and "main.exe" in Windows.
+Note that the executable extension can vary between platforms, e.g., it would be called "sample" in Linux and "sample.exe" in Windows.
 
 ### Target environment
 #### Build
@@ -82,9 +82,9 @@ followed by
 
 > cmake --build build/
 
-The target hardware files will be located at "build/code/main/". They are the following: 
-- main-atmega328p.elf
-- main-atmega328p.lst
-- main-atmega328p-eeprom.hex
-- main-atmega328p.hex
-- main-atmega328p.map
+The target hardware files will be located at "build/code/sample/". They are the following: 
+- sample-atmega328p.elf
+- sample-atmega328p.lst
+- sample-atmega328p-eeprom.hex
+- sample-atmega328p.hex
+- sample-atmega328p.map

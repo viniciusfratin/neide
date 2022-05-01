@@ -28,9 +28,9 @@ FROM neide_build_host AS neide_test
 WORKDIR /neide
 CMD ctest --test-dir build/tests/ --rerun-failed --output-on-failure
 
-FROM neide_build_host AS neide_run_main
+FROM neide_build_host AS neide_run_sample
 WORKDIR /neide
-CMD ./build/code/main/main
+CMD ./build/code/sample/sample
 
 FROM neide_base_target AS neide_build_target
 RUN mkdir -p /neide
@@ -41,9 +41,9 @@ RUN cmake --toolchain /neide/software/toolchains/generic-gcc-avr.cmake \
     -S software/ -B build/ \
     && cmake --build build/ \
     && cp \
-    build/code/main/main-atmega328p.elf \
-    build/code/main/main-atmega328p.lst \
-    build/code/main/main-atmega328p-eeprom.hex \
-    build/code/main/main-atmega328p.hex \
-    build/code/main/main-atmega328p.map \
+    build/code/sample/sample-atmega328p.elf \
+    build/code/sample/sample-atmega328p.lst \
+    build/code/sample/sample-atmega328p-eeprom.hex \
+    build/code/sample/sample-atmega328p.hex \
+    build/code/sample/sample-atmega328p.map \
     /neide_out
