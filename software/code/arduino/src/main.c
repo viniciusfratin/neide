@@ -6,6 +6,7 @@
 #include "wrap_up_action.h"
 #include "air_sensors/dht11.h"
 #include "air_interface/air_interface.h"
+#include "user_configuration/air_configuration.h"
 #include <avr/io.h>
 
 #define DHT11_DATA_PIN_INPUT_REGISTER_PTR (&PINB)
@@ -68,7 +69,9 @@ void setup()
         DHT11_DATA_PIN
     );
 
-    AirInterface_Initialize(DHT11_GetAirInformation);
+    AirConfiguration_Initialize();
+
+    AirInterface_Initialize(DHT11_GetAirInformation, AirConfiguration_GetAirUserConfiguration);
 
     Irrigator soil_irrigator = Irrigator_Construct();
     IrrigatorInterface soil_irrigator_interface = Irrigator_GetIrrigatorInterface(soil_irrigator);

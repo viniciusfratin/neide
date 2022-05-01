@@ -9,9 +9,17 @@ typedef struct AirInformationInternal
     float temperature;
 } AirInformation;
 
-typedef AirInformation (*GetAirInformationCallback)();
+typedef struct AirUserConfigurationInterface
+{
+    float relative_humidity_threshold;
+} AirUserConfiguration;
 
-void AirInterface_Initialize(GetAirInformationCallback get_air_information_callback);
+typedef AirInformation (*GetAirInformationCallback)();
+typedef AirUserConfiguration (*GetAirUserConfigurationCallback)();
+
+void AirInterface_Initialize(GetAirInformationCallback get_air_information_callback, 
+    GetAirUserConfigurationCallback get_air_user_configuration_callback
+);
 AirHumidityInformation AirInterface_GetAirHumidityInformation();
 
 #endif
