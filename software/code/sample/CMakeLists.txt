@@ -5,6 +5,8 @@ set (sample_source_files
 
 neide_add_executable (sample "${sample_source_files}")
 
+neide_target_include_directories (sample PRIVATE "src")
+
 neide_target_link_libraries (sample LINK_PRIVATE core)
 
 if(MSVC)

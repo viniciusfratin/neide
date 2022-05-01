@@ -4,9 +4,12 @@
 #include "wrap_up_action_interface.h"
 #include "irrigator.h"
 #include "wrap_up_action.h"
-#include "air_humidity_sensors/dht11.h"
+#include "air_sensors/dht11.h"
+#include "air_interface/air_interface.h"
 #include <avr/io.h>
 
+#define DHT11_DATA_PIN_INPUT_REGISTER_PTR (&PINB)
+#define DHT11_DATA_PIN_DDR_PTR (&DDRB)
 #define DHT11_DATA_PIN_PORT_PTR (&PORTB)
 #define DHT11_DATA_PIN (PB6)
 
@@ -59,7 +62,13 @@ int main()
 
 void setup()
 {
-    DHT11_Initialize(DHT11_DATA_PIN_PORT_PTR, DHT11_DATA_PIN);
+    DHT11_Initialize(DHT11_DATA_PIN_INPUT_REGISTER_PTR,
+        DHT11_DATA_PIN_DDR_PTR,
+        DHT11_DATA_PIN_PORT_PTR, 
+        DHT11_DATA_PIN
+    );
+
+    AirInterface_Initialize(DHT11_GetAirInformation);
 
     Irrigator soil_irrigator = Irrigator_Construct();
     IrrigatorInterface soil_irrigator_interface = Irrigator_GetIrrigatorInterface(soil_irrigator);
@@ -78,7 +87,7 @@ void setup()
         3 * 60 * 60,
         &soil_irrigator_interface,
         10,
-        DHT11_GetAirHumidityInformation,
+        AirInterface_GetAirHumidityInformation,
         get_time_from_last_air_irrigation,
         3 * 60 * 60,
         &air_irrigator_interface,

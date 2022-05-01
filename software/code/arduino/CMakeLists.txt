@@ -2,9 +2,13 @@ set (arduino_source_files
     "src/main.c"
     "src/irrigator.c"
     "src/wrap_up_action.c"
-    "src/air_humidity_sensors/dht11.c")
+    "src/air_sensors/dht11.c"
+    "src/air_interface/air_interface.c"
+    "src/pin_utils.c")
 
 neide_add_executable (arduino "${arduino_source_files}")
+
+neide_target_include_directories (arduino PRIVATE "src")
 
 neide_target_link_libraries (arduino LINK_PRIVATE core)
 
