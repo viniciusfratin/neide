@@ -5,7 +5,7 @@ set (arduino_source_files
     "src/air_sensors/dht11.c"
     "src/air_interface/air_interface.c"
     "src/user_configuration/air_configuration.c"
-    "src/pin_utils.c")
+    "src/pin_utils/gpio_utils.c")
 
 neide_add_executable (arduino "${arduino_source_files}")
 

@@ -1,6 +1,6 @@
 #include "dht11.h"
 #include "common.h"
-#include "pin_utils.h"
+#include "pin_utils/gpio_utils.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <avr/io.h>
@@ -128,19 +128,19 @@ static DHT11InterchangeData DHT11_GetSensorData()
 
 static void DHT11_ProtocolRequest()
 {
-    set_pin_as_output(singleton.data_pin_ddr_ptr, singleton.data_pin);
-    set_pin_to_low(singleton.data_pin_ddr_ptr, singleton.data_pin_port_ptr, singleton.data_pin);
+    set_gpio_pin_as_output(singleton.data_pin_ddr_ptr, singleton.data_pin);
+    set_gpio_pin_to_low(singleton.data_pin_ddr_ptr, singleton.data_pin_port_ptr, singleton.data_pin);
     _delay_ms(30);
-    set_pin_to_high(singleton.data_pin_ddr_ptr, singleton.data_pin_port_ptr, singleton.data_pin);
+    set_gpio_pin_to_high(singleton.data_pin_ddr_ptr, singleton.data_pin_port_ptr, singleton.data_pin);
     _delay_us(30);
 }
 
 static void DHT11_ProtocolWaitForResponse()
 {
-    set_pin_as_input(singleton.data_pin_ddr_ptr, singleton.data_pin);
+    set_gpio_pin_as_input(singleton.data_pin_ddr_ptr, singleton.data_pin);
     _delay_us(20);
-    while(read_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
-    while(read_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
+    while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
+    while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
 }
 
 static int DHT11_ProcotolReceiveByte()
@@ -148,10 +148,10 @@ static int DHT11_ProcotolReceiveByte()
     int received_byte = 0;
     for(int i = 0; i < 8; i++)
 	{
-		while(read_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
+		while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
 		_delay_us(40);
 
-		if(read_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1)
+		if(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1)
         {
 		    received_byte = (received_byte << 1) | (0x0001);
         }
@@ -160,7 +160,7 @@ static int DHT11_ProcotolReceiveByte()
 		    received_byte = (received_byte << 1);
         }
 
-		while(read_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
+		while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
 	}
     
 	return received_byte;
@@ -168,8 +168,8 @@ static int DHT11_ProcotolReceiveByte()
 
 static void DHT11_ProtocolFinishInterchange()
 {
-    while(read_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
-	while(read_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
+    while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
+	while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
 }
 
 static float DHT11_GetFloatingPointFromDecimalPart(int decimal_part)
