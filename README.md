@@ -82,9 +82,9 @@ followed by
 
 > cmake --build build/
 
-The target hardware files will be located at "build/code/sample/". They are the following: 
-- sample-atmega328p.elf
-- sample-atmega328p.lst
-- sample-atmega328p-eeprom.hex
-- sample-atmega328p.hex
-- sample-atmega328p.map
+The target hardware files will be located at "build/code/arduino/". They are the following: 
+- arduino-atmega328p.elf
+- arduino-atmega328p.lst
+- arduino-atmega328p-eeprom.hex
+- arduino-atmega328p.hex
+- arduino-atmega328p.map

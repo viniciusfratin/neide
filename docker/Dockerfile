@@ -34,16 +34,16 @@ CMD ./build/code/sample/sample
 
 FROM neide_base_target AS neide_build_target
 RUN mkdir -p /neide
-RUN mkdir -p /neide_out
+RUN mkdir -p /neide_out/arduino
 WORKDIR /neide
 COPY ./software /neide/software
 RUN cmake --toolchain /neide/software/toolchains/generic-gcc-avr.cmake \
     -S software/ -B build/ \
     && cmake --build build/ \
     && cp \
-    build/code/sample/sample-atmega328p.elf \
-    build/code/sample/sample-atmega328p.lst \
-    build/code/sample/sample-atmega328p-eeprom.hex \
-    build/code/sample/sample-atmega328p.hex \
-    build/code/sample/sample-atmega328p.map \
-    /neide_out
+    build/code/arduino/arduino-atmega328p.elf \
+    build/code/arduino/arduino-atmega328p.lst \
+    build/code/arduino/arduino-atmega328p-eeprom.hex \
+    build/code/arduino/arduino-atmega328p.hex \
+    build/code/arduino/arduino-atmega328p.map \
+    /neide_out/arduino
