@@ -5,7 +5,8 @@ set (arduino_source_files
     "src/air_sensors/dht11.c"
     "src/air_interface/air_interface.c"
     "src/user_configuration/air_configuration.c"
-    "src/pin_utils/gpio_utils.c")
+    "src/pin_utils/gpio_utils.c"
+    "src/pin_utils/adc_utils.c")
 
 neide_add_executable (arduino "${arduino_source_files}")
 
@@ -19,4 +20,16 @@ else()
     neide_target_executable_compile_options(arduino PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 
-neide_target_compile_definitions(arduino PRIVATE "F_CPU=${MCU_SPEED}")
+if(NOT DEFINED MCU_SPEED)
+    message(FATAL_ERROR "Target arduino must have MCU_SPEED specified.")
+endif()
+
+if(NOT DEFINED MCU_A_VCC)
+    message(FATAL_ERROR "Target arduino must have MCU_A_VCC specified.")
+endif()
+
+neide_target_compile_definitions(
+    arduino
+    PRIVATE "F_CPU=${MCU_SPEED}"
+    PRIVATE "A_VCC=${MCU_A_VCC}"
+)

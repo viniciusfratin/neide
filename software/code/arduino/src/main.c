@@ -7,12 +7,13 @@
 #include "air_sensors/dht11.h"
 #include "air_interface/air_interface.h"
 #include "user_configuration/air_configuration.h"
+#include "pin_utils/adc_defs.h"
 #include <avr/io.h>
 
 #define DHT11_DATA_PIN_INPUT_REGISTER_PTR (&PINB)
 #define DHT11_DATA_PIN_DDR_PTR (&DDRB)
 #define DHT11_DATA_PIN_PORT_PTR (&PORTB)
-#define DHT11_DATA_PIN (PB6)
+#define DHT11_DATA_PIN (PIN6)
 
 Bool should_wake_up()
 {
@@ -69,7 +70,7 @@ void setup()
         DHT11_DATA_PIN
     );
 
-    AirConfiguration_Initialize();
+    AirConfiguration_Initialize(IDENTIFIER_ADC0);
 
     AirInterface_Initialize(DHT11_GetAirInformation, AirConfiguration_GetAirUserConfiguration);
 
