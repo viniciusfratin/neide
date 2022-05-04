@@ -1,6 +1,5 @@
 #include "dht11.h"
 #include "common.h"
-#include "pin_utils/gpio_utils.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <avr/io.h>
@@ -28,12 +27,14 @@ static DHT11State singleton = {FALSE, NULL, NULL, NULL, 0U};
 
 static AirInformation DHT11_ReadAirInformationFromSensor();
 
+static DHT11InterchangeData DHT11_GetSensorData();
+
+#define DHT_TIMEOUT 200
 static void DHT11_ProtocolRequest();
 static void DHT11_ProtocolWaitForResponse();
-static int DHT11_ProcotolReceiveByte();
+static int DHT11_ProtocolReceiveByte();
 static void DHT11_ProtocolFinishInterchange();
 
-static DHT11InterchangeData DHT11_GetSensorData();
 
 static float DHT11_GetFloatingPointFromDecimalPart(int decimal_part);
 
@@ -76,9 +77,8 @@ static AirInformation DHT11_ReadAirInformationFromSensor()
         relative_humidity = (float)sensor_data.relative_humidity_integral_part;
         relative_humidity += DHT11_GetFloatingPointFromDecimalPart(sensor_data.relative_humidity_decimal_part);
 
-        temperature = (float)sensor_data.relative_humidity_integral_part;
-        temperature += DHT11_GetFloatingPointFromDecimalPart(sensor_data.relative_humidity_decimal_part);
-        
+        temperature = (float)sensor_data.temperature_integral_part;
+        temperature += DHT11_GetFloatingPointFromDecimalPart(sensor_data.temperature_decimal_part);
     }
     else
     {
@@ -92,21 +92,77 @@ static AirInformation DHT11_ReadAirInformationFromSensor()
     return information;
 }
 
+static void DHT11_ProtocolRequest()
+{
+	(*singleton.data_pin_ddr_ptr) |= _BV(singleton.data_pin);
+
+	(*singleton.data_pin_port_ptr) |= _BV(singleton.data_pin);
+    _delay_ms(100);
+	
+    (*singleton.data_pin_port_ptr) &= ~(_BV(singleton.data_pin));
+    _delay_ms(18);
+	
+    (*singleton.data_pin_port_ptr) |= _BV(singleton.data_pin);
+}
+
+static void DHT11_ProtocolWaitForResponse()
+{
+    (*singleton.data_pin_ddr_ptr) &= ~(_BV(singleton.data_pin));
+	
+    _delay_us(40);
+
+	while(((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin)) == 0);
+	while(((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin)) != 0);
+}
+
+static int DHT11_ProtocolReceiveByte()
+{
+    int result = 0;
+
+    for(int i = 0; i < 8; i++)
+    {
+        while(((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin)) == 0);
+
+        _delay_us(30);
+        if((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin))
+        {
+            result = ((result << 1) | 0x01);
+        }
+        else
+        {
+            result = (result << 1);
+        }
+
+        while(((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin)) != 0);
+    }
+
+    return result;
+}
+
+static void DHT11_ProtocolFinishInterchange()
+{
+	(*singleton.data_pin_ddr_ptr) |= _BV(singleton.data_pin);
+
+	(*singleton.data_pin_port_ptr) |= _BV(singleton.data_pin);
+	_delay_ms(100);
+}
+
 static DHT11InterchangeData DHT11_GetSensorData()
 {
     DHT11InterchangeData interchange_data;
     int received_checksum;
     int calculated_checksum;
-
+    
     DHT11_ProtocolRequest();
     DHT11_ProtocolWaitForResponse();
-    
-    interchange_data.relative_humidity_integral_part = DHT11_ProcotolReceiveByte();  
-    interchange_data.relative_humidity_decimal_part = DHT11_ProcotolReceiveByte();
-    interchange_data.temperature_integral_part = DHT11_ProcotolReceiveByte();
-    interchange_data.temperature_decimal_part = DHT11_ProcotolReceiveByte();
-    received_checksum = DHT11_ProcotolReceiveByte();
-    DHT11_ProtocolFinishInterchange();
+	
+    interchange_data.relative_humidity_integral_part = DHT11_ProtocolReceiveByte();
+    interchange_data.relative_humidity_decimal_part = DHT11_ProtocolReceiveByte();
+    interchange_data.temperature_integral_part = DHT11_ProtocolReceiveByte();
+    interchange_data.temperature_decimal_part = DHT11_ProtocolReceiveByte();
+    received_checksum = DHT11_ProtocolReceiveByte();
+
+	DHT11_ProtocolFinishInterchange();
 
     calculated_checksum = interchange_data.relative_humidity_integral_part;
     calculated_checksum += interchange_data.relative_humidity_decimal_part;
@@ -124,52 +180,6 @@ static DHT11InterchangeData DHT11_GetSensorData()
     }
 
     return interchange_data;
-}
-
-static void DHT11_ProtocolRequest()
-{
-    set_gpio_pin_as_output(singleton.data_pin_ddr_ptr, singleton.data_pin);
-    set_gpio_pin_to_low(singleton.data_pin_ddr_ptr, singleton.data_pin_port_ptr, singleton.data_pin);
-    _delay_ms(30);
-    set_gpio_pin_to_high(singleton.data_pin_ddr_ptr, singleton.data_pin_port_ptr, singleton.data_pin);
-    _delay_us(30);
-}
-
-static void DHT11_ProtocolWaitForResponse()
-{
-    set_gpio_pin_as_input(singleton.data_pin_ddr_ptr, singleton.data_pin);
-    _delay_us(20);
-    while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
-    while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
-}
-
-static int DHT11_ProcotolReceiveByte()
-{
-    int received_byte = 0;
-    for(int i = 0; i < 8; i++)
-	{
-		while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
-		_delay_us(40);
-
-		if(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1)
-        {
-		    received_byte = (received_byte << 1) | (0x0001);
-        }
-		else
-        {
-		    received_byte = (received_byte << 1);
-        }
-
-		while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
-	}
-    
-	return received_byte;
-}
-
-static void DHT11_ProtocolFinishInterchange()
-{
-    while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
-	while(read_gpio_pin(singleton.data_pin_ddr_ptr, singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
 }
 
 static float DHT11_GetFloatingPointFromDecimalPart(int decimal_part)

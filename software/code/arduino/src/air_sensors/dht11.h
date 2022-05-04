@@ -11,5 +11,6 @@ void DHT11_Initialize(volatile uint8_t* data_pin_input_register_ptr,
 );
 
 AirInformation DHT11_GetAirInformation();
+AirInformation test();
 
 #endif
