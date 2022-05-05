@@ -1,10 +1,10 @@
 #include "dht11.h"
 #include "common.h"
+#include "pin_utils/gpio_utils.h"
 #include <stdint.h>
 #include <stddef.h>
-#include <avr/io.h>
 #include <util/delay.h>
-#include "pin_utils/gpio_utils.h"
+
 
 typedef struct DHT11StateInternal
 {
@@ -27,15 +27,13 @@ typedef struct DHT11InterchangeDataInternal
 static DHT11State singleton = {FALSE, NULL, NULL, NULL, 0U};
 
 static AirInformation DHT11_ReadAirInformationFromSensor();
-
 static DHT11InterchangeData DHT11_GetSensorData();
 
-#define DHT_TIMEOUT 200
+#define DHT_TIMEOUT_CYCLES 2000
 static void DHT11_ProtocolRequest();
 static void DHT11_ProtocolWaitForResponse();
 static int DHT11_ProtocolReceiveByte();
 static void DHT11_ProtocolFinishInterchange();
-
 
 static float DHT11_GetFloatingPointFromDecimalPart(int decimal_part);
 
@@ -108,11 +106,11 @@ static void DHT11_ProtocolRequest()
 
 static void DHT11_ProtocolWaitForResponse()
 {
-	SET_GPIO_PIN_AS_INPUT(singleton.data_pin_ddr_ptr, singleton.data_pin)
+	SET_GPIO_PIN_AS_INPUT(singleton.data_pin_ddr_ptr, singleton.data_pin);
     _delay_us(40);
 
-	while(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
-	while(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
+    wait_for_gpio_low(singleton.data_pin_input_register_ptr, singleton.data_pin, DHT_TIMEOUT_CYCLES);
+    wait_for_gpio_high(singleton.data_pin_input_register_ptr, singleton.data_pin, DHT_TIMEOUT_CYCLES);
 }
 
 static int DHT11_ProtocolReceiveByte()
@@ -121,7 +119,7 @@ static int DHT11_ProtocolReceiveByte()
 
     for(int i = 0; i < 8; i++)
     {
-        while(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
+        wait_for_gpio_low(singleton.data_pin_input_register_ptr, singleton.data_pin, DHT_TIMEOUT_CYCLES);
 
         _delay_us(30);
         if(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 1)
@@ -133,7 +131,7 @@ static int DHT11_ProtocolReceiveByte()
             result = (result << 1);
         }
 
-        while(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
+        wait_for_gpio_high(singleton.data_pin_input_register_ptr, singleton.data_pin, DHT_TIMEOUT_CYCLES);
     }
 
     return result;
