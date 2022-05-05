@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include "pin_utils/gpio_utils.h"
 
 typedef struct DHT11StateInternal
 {
@@ -94,25 +95,24 @@ static AirInformation DHT11_ReadAirInformationFromSensor()
 
 static void DHT11_ProtocolRequest()
 {
-	(*singleton.data_pin_ddr_ptr) |= _BV(singleton.data_pin);
+    SET_GPIO_PIN_AS_OUTPUT(singleton.data_pin_ddr_ptr, singleton.data_pin);
 
-	(*singleton.data_pin_port_ptr) |= _BV(singleton.data_pin);
+    SET_GPIO_PIN_TO_HIGH(singleton.data_pin_port_ptr, singleton.data_pin);
     _delay_ms(100);
 	
-    (*singleton.data_pin_port_ptr) &= ~(_BV(singleton.data_pin));
+    SET_GPIO_PIN_TO_LOW(singleton.data_pin_port_ptr, singleton.data_pin);
     _delay_ms(18);
 	
-    (*singleton.data_pin_port_ptr) |= _BV(singleton.data_pin);
+    SET_GPIO_PIN_TO_HIGH(singleton.data_pin_port_ptr, singleton.data_pin);
 }
 
 static void DHT11_ProtocolWaitForResponse()
 {
-    (*singleton.data_pin_ddr_ptr) &= ~(_BV(singleton.data_pin));
-	
+	SET_GPIO_PIN_AS_INPUT(singleton.data_pin_ddr_ptr, singleton.data_pin)
     _delay_us(40);
 
-	while(((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin)) == 0);
-	while(((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin)) != 0);
+	while(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
+	while(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
 }
 
 static int DHT11_ProtocolReceiveByte()
@@ -121,10 +121,10 @@ static int DHT11_ProtocolReceiveByte()
 
     for(int i = 0; i < 8; i++)
     {
-        while(((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin)) == 0);
+        while(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 0);
 
         _delay_us(30);
-        if((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin))
+        if(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 1)
         {
             result = ((result << 1) | 0x01);
         }
@@ -133,7 +133,7 @@ static int DHT11_ProtocolReceiveByte()
             result = (result << 1);
         }
 
-        while(((*singleton.data_pin_input_register_ptr) & _BV(singleton.data_pin)) != 0);
+        while(READ_GPIO_PIN(singleton.data_pin_input_register_ptr, singleton.data_pin) == 1);
     }
 
     return result;
@@ -141,9 +141,9 @@ static int DHT11_ProtocolReceiveByte()
 
 static void DHT11_ProtocolFinishInterchange()
 {
-	(*singleton.data_pin_ddr_ptr) |= _BV(singleton.data_pin);
+    SET_GPIO_PIN_AS_OUTPUT(singleton.data_pin_ddr_ptr, singleton.data_pin);
 
-	(*singleton.data_pin_port_ptr) |= _BV(singleton.data_pin);
+    SET_GPIO_PIN_TO_HIGH(singleton.data_pin_port_ptr, singleton.data_pin);
 	_delay_ms(100);
 }
 
