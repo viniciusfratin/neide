@@ -78,8 +78,8 @@ static void begin_read()
     ADCSRA |= _BV(ADPS1);
     ADCSRA |= _BV(ADPS0);
 
-    ADCSRA &= ~(_BV(ADEN));
-    ADCSRA &= ~(_BV(ADSC));
+    ADCSRA |= _BV(ADEN);
+    ADCSRA |= _BV(ADSC);
 }
 
 static float get_read_value()
@@ -87,7 +87,7 @@ static float get_read_value()
     float actual_value;
     int raw_value = 0;
 
-    while((ADCSRA & _BV(ADSC)) == 1);
+    while((ADCSRA & _BV(ADSC)) != 0);
     raw_value = ADCL;
     raw_value |= (ADCH << 8);
 

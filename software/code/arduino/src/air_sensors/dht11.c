@@ -38,7 +38,7 @@ static DHT11State singleton = {FALSE, NULL, NULL, NULL, 0U};
 static AirInformation DHT11_ReadAirInformationFromSensor();
 static DHT11InterchangeData DHT11_GetSensorData();
 
-#define DHT_TIMEOUT_CYCLES 2000
+#define DHT_TIMEOUT_CYCLES 200
 static void DHT11_ProtocolRequest();
 static void DHT11_ProtocolWaitForResponse();
 static int DHT11_ProtocolReceiveByte();
