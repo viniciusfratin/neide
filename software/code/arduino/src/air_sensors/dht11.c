@@ -1,3 +1,12 @@
+/*
+ * DHT Sensor for AVR-GCC Family
+ *
+ * Author      : David Feng
+ * Updated     : June 26th, 2018
+ * Description : DHT Sensor Library for AVR-GCC compiler
+ * Usage       : Use library with AVR-GCC for Atmega family of microcontrollers (tested with Atmega 1284)
+ */
+
 #include "dht11.h"
 #include "common.h"
 #include "pin_utils/gpio_utils.h"
