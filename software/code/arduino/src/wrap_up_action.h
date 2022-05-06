@@ -9,7 +9,6 @@ typedef struct WrapUpActionInternal* WrapUpAction;
 
 
 WrapUpActionInterface WrapUpAction_GetWrapUpActionInterface(WrapUpAction instance);
-int WrapUpAction_GetNumberOfCalls(WrapUpAction instance);
 
 
 WrapUpAction WrapUpAction_Construct();

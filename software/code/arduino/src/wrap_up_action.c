@@ -6,7 +6,7 @@
 typedef struct WrapUpActionInternal
 {
     WrapUpActionInterface wrap_up_action_interface;
-    int number_of_calls;
+    int dummy;
 } WrapUpActionImplementation;
 
 static void WrapUpAction_WrapUp(void* object_instance);
@@ -24,7 +24,7 @@ WrapUpAction WrapUpAction_Construct()
 
         if(instance->wrap_up_action_interface != WRAP_UP_ACTION_INTERFACE_INVALID_INSTANCE)
         {
-            instance->number_of_calls = 0;
+            instance->dummy = 0;
         }
         else
         {
@@ -55,15 +55,10 @@ WrapUpActionInterface WrapUpAction_GetWrapUpActionInterface(WrapUpAction instanc
     return instance->wrap_up_action_interface;
 }
 
-int WrapUpAction_GetNumberOfCalls(WrapUpAction instance)
-{
-    return instance->number_of_calls;
-}
-
 static void WrapUpAction_WrapUp(void* object_instance)
 {
     WrapUpAction instance = (WrapUpAction)object_instance;
-    instance->number_of_calls += 1;
+    instance->dummy = 0;
 }
 
 
