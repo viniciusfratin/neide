@@ -9,7 +9,8 @@ set (arduino_source_files
     "src/user_configuration/air_configuration.c"
     "src/user_configuration/soil_configuration.c"
     "src/pin_utils/gpio_utils.c"
-    "src/pin_utils/adc_utils.c")
+    "src/pin_utils/adc_utils.c"
+    "src/system_timer/system_timer.c")
 
 neide_add_executable (arduino "${arduino_source_files}")
 
