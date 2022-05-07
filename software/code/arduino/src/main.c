@@ -97,12 +97,12 @@ void setup()
         get_time_from_last_soil_irrigation,
         3 * 60 * 60,
         &soil_irrigator_interface,
-        10,
+        60,
         AirInterface_GetAirHumidityInformation,
         get_time_from_last_air_irrigation,
         3 * 60 * 60,
         &air_irrigator_interface,
-        10,
+        60,
         &wrap_up_action_interface
     );
 
@@ -123,7 +123,7 @@ Bool should_wake_up()
     Bool should_wake_up = FALSE;
     int current_time = SystemTimer_GetCurrentTimeSeconds();
 
-    if((current_time - last_wake_up_time) >= 15)
+    if((current_time - last_wake_up_time) >= (15 * 60))
     {
         should_wake_up = TRUE;
         last_wake_up_time = current_time;
