@@ -1,6 +1,7 @@
 set (arduino_source_files
     "src/main.c"
-    "src/irrigator.c"
+    "src/soil_irrigator.c"
+    "src/air_irrigator.c"
     "src/wrap_up_action.c"
     "src/air_sensors/dht11.c"
     "src/soil_sensors/hl69.c"

@@ -2,7 +2,8 @@
 #include "standard_configuration.h"
 #include "irrigator_interface.h"
 #include "wrap_up_action_interface.h"
-#include "irrigator.h"
+#include "soil_irrigator.h"
+#include "air_irrigator.h"
 #include "wrap_up_action.h"
 #include "air_sensors/dht11.h"
 #include "soil_sensors/hl69.h"
@@ -30,8 +31,8 @@
 #define AIR_IRRIGATOR_DATA_PIN (PD3)
 
 static IrrigatorInterface soil_irrigator_interface;
-static Irrigator soil_irrigator;
-static Irrigator air_irrigator;
+static SoilIrrigator soil_irrigator;
+static AirIrrigator air_irrigator;
 static IrrigatorInterface air_irrigator_interface;
 static WrapUpAction wrap_up_action;
 static WrapUpActionInterface wrap_up_action_interface;
@@ -73,19 +74,19 @@ void setup()
     SoilConfiguration_Initialize(IDENTIFIER_ADC2);
     SoilInterface_Initialize(HL69_GetSoilInformation, SoilConfiguration_GetSoilUserConfiguration);
 
-    soil_irrigator = Irrigator_Construct(SystemTimer_GetCurrentTimeSeconds, 
+    soil_irrigator = SoilIrrigator_Construct(SystemTimer_GetCurrentTimeSeconds, 
         SOIL_IRRIGATOR_DATA_PIN_DDR_PTR, 
         SOIL_IRRIGATOR_DATA_PIN_PORT_PTR, 
         SOIL_IRRIGATOR_DATA_PIN
     );
-    soil_irrigator_interface = Irrigator_GetIrrigatorInterface(soil_irrigator);
+    soil_irrigator_interface = SoilIrrigator_GetIrrigatorInterface(soil_irrigator);
 
-    air_irrigator = Irrigator_Construct(SystemTimer_GetCurrentTimeSeconds, 
+    air_irrigator = AirIrrigator_Construct(SystemTimer_GetCurrentTimeSeconds, 
         AIR_IRRIGATOR_DATA_PIN_DDR_PTR, 
         AIR_IRRIGATOR_DATA_PIN_PORT_PTR, 
         AIR_IRRIGATOR_DATA_PIN
     );
-    air_irrigator_interface = Irrigator_GetIrrigatorInterface(air_irrigator);
+    air_irrigator_interface = AirIrrigator_GetIrrigatorInterface(air_irrigator);
 
     wrap_up_action = WrapUpAction_Construct();
     wrap_up_action_interface = WrapUpAction_GetWrapUpActionInterface(wrap_up_action);
@@ -95,14 +96,14 @@ void setup()
         should_wake_up,
         SoilInterface_GetSoilHumidityInformation,
         get_time_from_last_soil_irrigation,
-        24 * 60 * 60,
+        3 * 60 * 60,
         &soil_irrigator_interface,
-        60,
+        15,
         AirInterface_GetAirHumidityInformation,
         get_time_from_last_air_irrigation,
-        24 * 60 * 60,
+        3 * 60 * 60,
         &air_irrigator_interface,
-        60,
+        15,
         &wrap_up_action_interface
     );
 
@@ -138,10 +139,10 @@ Bool should_wake_up()
 
 int get_time_from_last_soil_irrigation()
 {
-    return Irrigator_GetTimeFromLastIrrigation(soil_irrigator);
+    return SoilIrrigator_GetTimeFromLastIrrigation(soil_irrigator);
 }
 
 int get_time_from_last_air_irrigation()
 {
-    return Irrigator_GetTimeFromLastIrrigation(air_irrigator);
+    return AirIrrigator_GetTimeFromLastIrrigation(air_irrigator);
 }

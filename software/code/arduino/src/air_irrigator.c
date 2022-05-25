@@ -1,10 +1,10 @@
-#include "irrigator.h"
+#include "air_irrigator.h"
 #include "irrigator_interface.h"
 #include "irrigator_interface_construction.h"
 #include "pin_utils/gpio_utils.h"
 #include <stdlib.h>
 
-typedef struct IrrigatorInternal
+typedef struct AirIrrigatorInternal
 {
     IrrigatorInterface irrigator_interface;
     int last_irrigation_time;
@@ -12,19 +12,19 @@ typedef struct IrrigatorInternal
     volatile uint8_t* pin_ddr_ptr;
     volatile uint8_t* pin_port_ptr; 
     uint8_t pin;
-} IrrigatorImplementation;
+} AirIrrigatorImplementation;
 
-static void Irrigator_Irrigate(void* object_instance, int irrigation_time_seconds);
+static void AirIrrigator_Irrigate(void* object_instance, int irrigation_time_seconds);
 
-Irrigator Irrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin)
+AirIrrigator AirIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin)
 {
-    Irrigator instance = (Irrigator)malloc(sizeof(IrrigatorImplementation));
+    AirIrrigator instance = (AirIrrigator)malloc(sizeof(AirIrrigatorImplementation));
 
     if(instance != NULL)
     {
         instance->irrigator_interface = IrrigatorInterface_Construct(
             (void*)instance,
-            Irrigator_Irrigate
+            AirIrrigator_Irrigate
         );
 
         if(instance->irrigator_interface != IRRIGATOR_INTERFACE_INVALID_INSTANCE)
@@ -40,43 +40,43 @@ Irrigator Irrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_sec
         }
         else
         {
-            instance = IRRIGATOR_INVALID_INSTANCE;
+            instance = AIR_IRRIGATOR_INVALID_INSTANCE;
         }
     }
     else
     {
-        instance = IRRIGATOR_INVALID_INSTANCE;
+        instance = AIR_IRRIGATOR_INVALID_INSTANCE;
     }
 
     return instance;
 }
 
-void Irrigator_Destruct(Irrigator* instancePtr)
+void AirIrrigator_Destruct(AirIrrigator* instancePtr)
 {
     if(instancePtr != NULL)
     {
         IrrigatorInterface_Destruct(&((*instancePtr)->irrigator_interface));
 
         free(*instancePtr);
-        (*instancePtr) = IRRIGATOR_INVALID_INSTANCE;
+        (*instancePtr) = AIR_IRRIGATOR_INVALID_INSTANCE;
     }
 }
 
-IrrigatorInterface Irrigator_GetIrrigatorInterface(Irrigator instance)
+IrrigatorInterface AirIrrigator_GetIrrigatorInterface(AirIrrigator instance)
 {
     return instance->irrigator_interface;
 }
 
-int Irrigator_GetTimeFromLastIrrigation(Irrigator instance)
+int AirIrrigator_GetTimeFromLastIrrigation(AirIrrigator instance)
 {
     int current_time = instance->get_current_time_seconds_callback();
 
     return (current_time - instance->last_irrigation_time);
 }
 
-static void Irrigator_Irrigate(void* object_instance, int irrigation_time_seconds)
+static void AirIrrigator_Irrigate(void* object_instance, int irrigation_time_seconds)
 {
-    Irrigator instance = (Irrigator)object_instance;
+    AirIrrigator instance = (AirIrrigator)object_instance;
     instance->last_irrigation_time = instance->get_current_time_seconds_callback();
 
     SET_GPIO_PIN_TO_HIGH(instance->pin_port_ptr, instance->pin);
