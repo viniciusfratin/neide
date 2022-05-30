@@ -2,6 +2,7 @@
 #define IRRIGATOR_MOCK_H
 
 #include "irrigator_interface.h"
+#include <stdint.h>
 
 typedef struct IrrigatorMockInternal* IrrigatorMock;
 
@@ -9,7 +10,7 @@ typedef struct IrrigatorMockInternal* IrrigatorMock;
 
 
 IrrigatorInterface IrrigatorMock_GetIrrigatorInterface(IrrigatorMock instance);
-int IrrigatorMock_GetLastIrrigationTime(IrrigatorMock instance);
+int32_t IrrigatorMock_GetLastIrrigationTime(IrrigatorMock instance);
 
 
 IrrigatorMock IrrigatorMock_Construct();

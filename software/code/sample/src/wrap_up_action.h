@@ -2,6 +2,7 @@
 #define WRAP_UP_ACTION_H
 
 #include "wrap_up_action_interface.h"
+#include <stdint.h>
 
 typedef struct WrapUpActionInternal* WrapUpAction;
 
@@ -9,7 +10,7 @@ typedef struct WrapUpActionInternal* WrapUpAction;
 
 
 WrapUpActionInterface WrapUpAction_GetWrapUpActionInterface(WrapUpAction instance);
-int WrapUpAction_GetNumberOfCalls(WrapUpAction instance);
+int32_t WrapUpAction_GetNumberOfCalls(WrapUpAction instance);
 
 
 WrapUpAction WrapUpAction_Construct();

@@ -6,7 +6,7 @@
 typedef struct WrapUpActionMockInternal
 {
     WrapUpActionInterface wrap_up_action_interface;
-    int number_of_calls;
+    int32_t number_of_calls;
 } WrapUpActionMockImplementation;
 
 static void WrapUpActionMock_WrapUp(void* object_instance);
@@ -55,7 +55,7 @@ WrapUpActionInterface WrapUpActionMock_GetWrapUpActionInterface(WrapUpActionMock
     return instance->wrap_up_action_interface;
 }
 
-int WrapUpActionMock_GetNumberOfCalls(WrapUpActionMock instance)
+int32_t WrapUpActionMock_GetNumberOfCalls(WrapUpActionMock instance)
 {
     return instance->number_of_calls;
 }

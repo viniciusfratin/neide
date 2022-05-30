@@ -10,7 +10,7 @@ typedef struct IrrigateSoilStateInternal
     CoreState core_state;
     CoreStateInterface* air_humidity_check_state_interface_ptr;
     IrrigatorInterface* soil_irrigator_interface_ptr;
-    int irrigation_time_seconds;
+    int32_t irrigation_time_seconds;
 } IrrigateSoilStateImplementation;
 
 static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* object_instance);
@@ -19,7 +19,7 @@ static CoreState IrrigateSoilState_GetCoreState(void* object_instance);
 IrrigateSoilState IrrigateSoilState_Construct(
     CoreStateInterface* air_humidity_check_state_interface_ptr,
     IrrigatorInterface* soil_irrigator_interface_ptr,
-    int irrigation_time_seconds)
+    int32_t irrigation_time_seconds)
 {
     IrrigateSoilState instance = (IrrigateSoilState)malloc(sizeof(IrrigateSoilStateImplementation));
 

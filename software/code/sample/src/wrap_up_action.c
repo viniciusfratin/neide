@@ -7,7 +7,7 @@
 typedef struct WrapUpActionInternal
 {
     WrapUpActionInterface wrap_up_action_interface;
-    int number_of_calls;
+    int32_t number_of_calls;
 } WrapUpActionImplementation;
 
 static void WrapUpAction_WrapUp(void* object_instance);
@@ -56,7 +56,7 @@ WrapUpActionInterface WrapUpAction_GetWrapUpActionInterface(WrapUpAction instanc
     return instance->wrap_up_action_interface;
 }
 
-int WrapUpAction_GetNumberOfCalls(WrapUpAction instance)
+int32_t WrapUpAction_GetNumberOfCalls(WrapUpAction instance)
 {
     return instance->number_of_calls;
 }

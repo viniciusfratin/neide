@@ -7,10 +7,10 @@
 typedef struct IrrigatorInternal
 {
     IrrigatorInterface irrigator_interface;
-    int last_irrigation_time;
+    int32_t last_irrigation_time;
 } IrrigatorImplementation;
 
-static void Irrigator_Irrigate(void* object_instance, int irrigation_time_seconds);
+static void Irrigator_Irrigate(void* object_instance, int32_t irrigation_time_seconds);
 
 Irrigator Irrigator_Construct()
 {
@@ -56,12 +56,12 @@ IrrigatorInterface Irrigator_GetIrrigatorInterface(Irrigator instance)
     return instance->irrigator_interface;
 }
 
-int Irrigator_GetLastIrrigationTime(Irrigator instance)
+int32_t Irrigator_GetLastIrrigationTime(Irrigator instance)
 {
     return instance->last_irrigation_time;
 }
 
-static void Irrigator_Irrigate(void* object_instance, int irrigation_time_seconds)
+static void Irrigator_Irrigate(void* object_instance, int32_t irrigation_time_seconds)
 {
     Irrigator instance = (Irrigator)object_instance;
     instance->last_irrigation_time = irrigation_time_seconds;

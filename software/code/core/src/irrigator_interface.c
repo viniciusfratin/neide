@@ -34,7 +34,7 @@ void IrrigatorInterface_Destruct(IrrigatorInterface* instancePtr)
     }
 }
 
-void IrrigatorInterface_Irrigate(IrrigatorInterface instance, int irrigation_time_seconds)
+void IrrigatorInterface_Irrigate(IrrigatorInterface instance, int32_t irrigation_time_seconds)
 {
     instance->irrigate_callback(instance->object_instance, irrigation_time_seconds);
 }

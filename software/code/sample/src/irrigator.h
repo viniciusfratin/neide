@@ -9,7 +9,7 @@ typedef struct IrrigatorInternal* Irrigator;
 
 
 IrrigatorInterface Irrigator_GetIrrigatorInterface(Irrigator instance);
-int Irrigator_GetLastIrrigationTime(Irrigator instance);
+int32_t Irrigator_GetLastIrrigationTime(Irrigator instance);
 
 
 Irrigator Irrigator_Construct();

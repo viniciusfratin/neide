@@ -10,7 +10,7 @@ typedef struct IrrigateAirStateInternal
     CoreState core_state;
     CoreStateInterface* wrap_up_state_interface_ptr;
     IrrigatorInterface* air_irrigator_interface_ptr;
-    int irrigation_time_seconds;
+    int32_t irrigation_time_seconds;
 } IrrigateAirStateImplementation;
 
 static CoreStateInterface IrrigateAirState_ExecuteIrrigateAirState(void* object_instance);
@@ -19,7 +19,7 @@ static CoreState IrrigateAirState_GetCoreState(void* object_instance);
 IrrigateAirState IrrigateAirState_Construct(
     CoreStateInterface* wrap_up_state_interface_ptr,
     IrrigatorInterface* air_irrigator_interface_ptr,
-    int irrigation_time_seconds)
+    int32_t irrigation_time_seconds)
 {
     IrrigateAirState instance = (IrrigateAirState)malloc(sizeof(IrrigateAirStateImplementation));
 

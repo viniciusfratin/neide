@@ -9,7 +9,7 @@ typedef struct WrapUpActionMockInternal* WrapUpActionMock;
 
 
 WrapUpActionInterface WrapUpActionMock_GetWrapUpActionInterface(WrapUpActionMock instance);
-int WrapUpActionMock_GetNumberOfCalls(WrapUpActionMock instance);
+int32_t WrapUpActionMock_GetNumberOfCalls(WrapUpActionMock instance);
 
 
 WrapUpActionMock WrapUpActionMock_Construct();

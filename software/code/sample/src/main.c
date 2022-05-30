@@ -5,6 +5,7 @@
 #include "irrigator.h"
 #include "wrap_up_action.h"
 #include <stdio.h>
+#include <stdint.h>
 
 #define NUMBER_OF_SAMPLE_CYCLES 50
 
@@ -28,9 +29,9 @@ SoilHumidityInformation get_soil_humidity_information()
     return information;
 }
 
-int get_time_from_last_soil_irrigation()
+int32_t get_time_from_last_soil_irrigation()
 {
-    int time = 4 * 60 * 60;
+    int32_t time = 4 * 60 * 60;
 
     printf("- Time from last soil irrigation: %d\n", time);
 
@@ -49,16 +50,16 @@ AirHumidityInformation get_air_humidity_information()
     return information;
 }
 
-int get_time_from_last_air_irrigation()
+int32_t get_time_from_last_air_irrigation()
 {
-    int time = 5 * 60 * 60;
+    int32_t time = 5 * 60 * 60;
 
     printf("- Time from last air irrigation: %d\n", time);
 
     return time;
 }
 
-int main()
+int32_t main()
 {
     printf("neide system.\n");
 
@@ -89,7 +90,7 @@ int main()
 
     SystemCore system_core = StandardConfiguration_GetSystemCore(standard_configuration);
 
-    for(int num_cycles = 0; num_cycles < NUMBER_OF_SAMPLE_CYCLES; num_cycles++)
+    for(int32_t num_cycles = 0; num_cycles < NUMBER_OF_SAMPLE_CYCLES; num_cycles++)
     {
         printf("Current state: %d\n", SystemCore_GetCurrentState(system_core));
         

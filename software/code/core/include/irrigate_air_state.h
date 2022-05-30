@@ -3,6 +3,7 @@
 
 #include "core_state_interface.h"
 #include "irrigator_interface.h"
+#include <stdint.h>
 
 typedef struct IrrigateAirStateInternal* IrrigateAirState;
 
@@ -15,7 +16,7 @@ CoreStateInterface IrrigateAirState_GetCoreStateInterface(IrrigateAirState insta
 IrrigateAirState IrrigateAirState_Construct(
     CoreStateInterface* wrap_up_state_interface_ptr,
     IrrigatorInterface* air_irrigator_interface_ptr,
-    int irrigation_time_seconds);
+    int32_t irrigation_time_seconds);
 void IrrigateAirState_Destruct(IrrigateAirState* instancePtr);
 
 

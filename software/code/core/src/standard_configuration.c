@@ -37,14 +37,14 @@ StandardConfiguration StandardConfiguration_Construct(
     ShouldWakeUpCallback should_wake_up_callback,
     GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
     GetTimeFromLastSoilIrrigationCallback get_time_from_last_soil_irrigation_callback,
-    int soil_periodic_check_maximum_period,
+    int32_t soil_periodic_check_maximum_period,
     IrrigatorInterface* soil_irrigator_ptr,
-    int soil_irrigation_time,
+    int32_t soil_irrigation_time,
     GetAirHumidityInformationCallback get_air_humidity_information_callback,
     GetTimeFromLastAirIrrigationCallback get_time_from_last_air_irrigation_callback,
-    int air_periodic_check_maximum_period,
+    int32_t air_periodic_check_maximum_period,
     IrrigatorInterface* air_irrigator_ptr,
-    int air_irrigation_time,
+    int32_t air_irrigation_time,
     WrapUpActionInterface* wrap_up_action_ptr)
 {
     StandardConfiguration instance = (StandardConfiguration)malloc(sizeof(StandardConfigurationImplementation));

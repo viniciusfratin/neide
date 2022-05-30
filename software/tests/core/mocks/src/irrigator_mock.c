@@ -6,10 +6,10 @@
 typedef struct IrrigatorMockInternal
 {
     IrrigatorInterface irrigator_interface;
-    int last_irrigation_time;
+    int32_t last_irrigation_time;
 } IrrigatorMockImplementation;
 
-static void IrrigatorMock_Irrigate(void* object_instance, int irrigation_time_seconds);
+static void IrrigatorMock_Irrigate(void* object_instance, int32_t irrigation_time_seconds);
 
 IrrigatorMock IrrigatorMock_Construct()
 {
@@ -55,12 +55,12 @@ IrrigatorInterface IrrigatorMock_GetIrrigatorInterface(IrrigatorMock instance)
     return instance->irrigator_interface;
 }
 
-int IrrigatorMock_GetLastIrrigationTime(IrrigatorMock instance)
+int32_t IrrigatorMock_GetLastIrrigationTime(IrrigatorMock instance)
 {
     return instance->last_irrigation_time;
 }
 
-static void IrrigatorMock_Irrigate(void* object_instance, int irrigation_time_seconds)
+static void IrrigatorMock_Irrigate(void* object_instance, int32_t irrigation_time_seconds)
 {
     IrrigatorMock instance = (IrrigatorMock)object_instance;
     instance->last_irrigation_time = irrigation_time_seconds;
