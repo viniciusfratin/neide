@@ -16,6 +16,7 @@
 #include "system_timer/system_timer.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdint.h>
 
 #define DHT11_DATA_PIN_INPUT_REGISTER_PTR (&PINB)
 #define DHT11_DATA_PIN_DDR_PTR (&DDRB)
@@ -43,8 +44,8 @@ void setup();
 void loop();
 
 Bool should_wake_up();
-int get_time_from_last_soil_irrigation();
-int get_time_from_last_air_irrigation();
+int32_t get_time_from_last_soil_irrigation();
+int32_t get_time_from_last_air_irrigation();
 
 int main()
 {
@@ -82,8 +83,8 @@ void setup()
     soil_irrigator_interface = SoilIrrigator_GetIrrigatorInterface(soil_irrigator);
 
     air_irrigator = AirIrrigator_Construct(SystemTimer_GetCurrentTimeSeconds, 
-        AIR_IRRIGATOR_DATA_PIN_DDR_PTR, 
-        AIR_IRRIGATOR_DATA_PIN_PORT_PTR, 
+        AIR_IRRIGATOR_DATA_PIN_DDR_PTR,
+        AIR_IRRIGATOR_DATA_PIN_PORT_PTR,
         AIR_IRRIGATOR_DATA_PIN
     );
     air_irrigator_interface = AirIrrigator_GetIrrigatorInterface(air_irrigator);
@@ -96,12 +97,12 @@ void setup()
         should_wake_up,
         SoilInterface_GetSoilHumidityInformation,
         get_time_from_last_soil_irrigation,
-        3 * 60 * 60,
+        24 * 60 * 60,
         &soil_irrigator_interface,
         15,
         AirInterface_GetAirHumidityInformation,
         get_time_from_last_air_irrigation,
-        3 * 60 * 60,
+        8 * 60 * 60,
         &air_irrigator_interface,
         15,
         &wrap_up_action_interface
@@ -119,10 +120,10 @@ void loop()
 
 Bool should_wake_up()
 {
-    static int last_wake_up_time = 0;
+    static int32_t last_wake_up_time = 0;
 
     Bool should_wake_up = FALSE;
-    int current_time = SystemTimer_GetCurrentTimeSeconds();
+    int32_t current_time = SystemTimer_GetCurrentTimeSeconds();
 
     if((current_time - last_wake_up_time) >= (15 * 60))
     {
@@ -137,12 +138,12 @@ Bool should_wake_up()
     return should_wake_up;
 }
 
-int get_time_from_last_soil_irrigation()
+int32_t get_time_from_last_soil_irrigation()
 {
     return SoilIrrigator_GetTimeFromLastIrrigation(soil_irrigator);
 }
 
-int get_time_from_last_air_irrigation()
+int32_t get_time_from_last_air_irrigation()
 {
     return AirIrrigator_GetTimeFromLastIrrigation(air_irrigator);
 }

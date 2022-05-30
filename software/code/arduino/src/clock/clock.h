@@ -1,6 +1,8 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
-typedef int (*GetCurrentTimeSecondsCallback)();
+#include <stdint.h>
+
+typedef int32_t (*GetCurrentTimeSecondsCallback)();
 
 #endif

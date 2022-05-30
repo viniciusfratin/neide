@@ -2,11 +2,12 @@
 #include "wrap_up_action_interface.h"
 #include "wrap_up_action_interface_construction.h"
 #include <stdlib.h>
+#include <stdint.h>
 
 typedef struct WrapUpActionInternal
 {
     WrapUpActionInterface wrap_up_action_interface;
-    int dummy;
+    int32_t dummy;
 } WrapUpActionImplementation;
 
 static void WrapUpAction_WrapUp(void* object_instance);

@@ -26,10 +26,10 @@ typedef struct DHT11StateInternal
 
 typedef struct DHT11InterchangeDataInternal
 {
-    int relative_humidity_integral_part;
-    int relative_humidity_decimal_part;
-    int temperature_integral_part;
-    int temperature_decimal_part;
+    int32_t relative_humidity_integral_part;
+    int32_t relative_humidity_decimal_part;
+    int32_t temperature_integral_part;
+    int32_t temperature_decimal_part;
     Bool is_valid;
 } DHT11InterchangeData;
 
@@ -41,10 +41,10 @@ static DHT11InterchangeData DHT11_GetSensorData();
 #define DHT_TIMEOUT_CYCLES 200
 static void DHT11_ProtocolRequest();
 static void DHT11_ProtocolWaitForResponse();
-static int DHT11_ProtocolReceiveByte();
+static int32_t DHT11_ProtocolReceiveByte();
 static void DHT11_ProtocolFinishInterchange();
 
-static float DHT11_GetFloatingPointFromDecimalPart(int decimal_part);
+static float DHT11_GetFloatingPointFromDecimalPart(int32_t decimal_part);
 
 void DHT11_Initialize(volatile uint8_t* data_pin_input_register_ptr,
     volatile uint8_t* data_pin_ddr_ptr, 
@@ -122,11 +122,11 @@ static void DHT11_ProtocolWaitForResponse()
     wait_for_gpio_high(singleton.data_pin_input_register_ptr, singleton.data_pin, DHT_TIMEOUT_CYCLES);
 }
 
-static int DHT11_ProtocolReceiveByte()
+static int32_t DHT11_ProtocolReceiveByte()
 {
-    int result = 0;
+    int32_t result = 0;
 
-    for(int i = 0; i < 8; i++)
+    for(int32_t i = 0; i < 8; i++)
     {
         wait_for_gpio_low(singleton.data_pin_input_register_ptr, singleton.data_pin, DHT_TIMEOUT_CYCLES);
 
@@ -157,8 +157,8 @@ static void DHT11_ProtocolFinishInterchange()
 static DHT11InterchangeData DHT11_GetSensorData()
 {
     DHT11InterchangeData interchange_data;
-    int received_checksum;
-    int calculated_checksum;
+    int32_t received_checksum;
+    int32_t calculated_checksum;
     
     DHT11_ProtocolRequest();
     DHT11_ProtocolWaitForResponse();
@@ -189,7 +189,7 @@ static DHT11InterchangeData DHT11_GetSensorData()
     return interchange_data;
 }
 
-static float DHT11_GetFloatingPointFromDecimalPart(int decimal_part)
+static float DHT11_GetFloatingPointFromDecimalPart(int32_t decimal_part)
 {
     float floating_point_decimal_part = (float)decimal_part;
     while(!(floating_point_decimal_part < 1.0f))

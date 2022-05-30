@@ -7,14 +7,14 @@
 typedef struct SoilIrrigatorInternal
 {
     IrrigatorInterface irrigator_interface;
-    int last_irrigation_time;
+    int32_t last_irrigation_time;
     GetCurrentTimeSecondsCallback get_current_time_seconds_callback;
     volatile uint8_t* pin_ddr_ptr;
     volatile uint8_t* pin_port_ptr; 
     uint8_t pin;
 } SoilIrrigatorImplementation;
 
-static void SoilIrrigator_Irrigate(void* object_instance, int irrigation_time_seconds);
+static void SoilIrrigator_Irrigate(void* object_instance, int32_t irrigation_time_seconds);
 
 SoilIrrigator SoilIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin)
 {
@@ -67,14 +67,14 @@ IrrigatorInterface SoilIrrigator_GetIrrigatorInterface(SoilIrrigator instance)
     return instance->irrigator_interface;
 }
 
-int SoilIrrigator_GetTimeFromLastIrrigation(SoilIrrigator instance)
+int32_t SoilIrrigator_GetTimeFromLastIrrigation(SoilIrrigator instance)
 {
-    int current_time = instance->get_current_time_seconds_callback();
+    int32_t current_time = instance->get_current_time_seconds_callback();
 
     return (current_time - instance->last_irrigation_time);
 }
 
-static void SoilIrrigator_Irrigate(void* object_instance, int irrigation_time_seconds)
+static void SoilIrrigator_Irrigate(void* object_instance, int32_t irrigation_time_seconds)
 {
     SoilIrrigator instance = (SoilIrrigator)object_instance;
     instance->last_irrigation_time = instance->get_current_time_seconds_callback();

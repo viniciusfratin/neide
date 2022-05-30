@@ -11,7 +11,7 @@ typedef struct SoilIrrigatorInternal* SoilIrrigator;
 
 
 IrrigatorInterface SoilIrrigator_GetIrrigatorInterface(SoilIrrigator instance);
-int SoilIrrigator_GetTimeFromLastIrrigation(SoilIrrigator instance);
+int32_t SoilIrrigator_GetTimeFromLastIrrigation(SoilIrrigator instance);
 
 
 SoilIrrigator SoilIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin);

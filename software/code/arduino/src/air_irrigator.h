@@ -11,7 +11,7 @@ typedef struct AirIrrigatorInternal* AirIrrigator;
 
 
 IrrigatorInterface AirIrrigator_GetIrrigatorInterface(AirIrrigator instance);
-int AirIrrigator_GetTimeFromLastIrrigation(AirIrrigator instance);
+int32_t AirIrrigator_GetTimeFromLastIrrigation(AirIrrigator instance);
 
 
 AirIrrigator AirIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin);

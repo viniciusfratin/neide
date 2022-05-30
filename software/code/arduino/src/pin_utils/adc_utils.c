@@ -85,7 +85,7 @@ static void begin_read()
 static float get_read_value()
 {
     float actual_value;
-    int raw_value = 0;
+    int32_t raw_value = 0;
 
     while((ADCSRA & _BV(ADSC)) != 0);
     raw_value = ADCL;

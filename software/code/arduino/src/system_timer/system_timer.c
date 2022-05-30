@@ -7,8 +7,8 @@
 typedef struct SystemTimerStateInternal
 {
     Bool is_initialized;
-    volatile int current_time_seconds;
-    volatile int current_num_of_overflows;
+    volatile int32_t current_time_seconds;
+    volatile int32_t current_num_of_overflows;
 } SystemTimerState;
 
 static SystemTimerState singleton = {FALSE, 0, 0};
@@ -44,7 +44,7 @@ void SystemTimer_Initialize()
     TIMSK0 = timsk0_value;
 }
 
-int SystemTimer_GetCurrentTimeSeconds()
+int32_t SystemTimer_GetCurrentTimeSeconds()
 {
     return singleton.current_time_seconds;
 }
