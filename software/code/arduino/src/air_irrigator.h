@@ -2,6 +2,7 @@
 #define AIR_IRRIGATOR_H
 
 #include "irrigator_interface.h"
+#include "pin_utils/adc_utils.h"
 #include "clock/clock.h"
 #include <stdint.h>
 
@@ -14,7 +15,7 @@ IrrigatorInterface AirIrrigator_GetIrrigatorInterface(AirIrrigator instance);
 int32_t AirIrrigator_GetTimeFromLastIrrigation(AirIrrigator instance);
 
 
-AirIrrigator AirIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin);
+AirIrrigator AirIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin, ADCIdentifier configuration_adc);
 void AirIrrigator_Destruct(AirIrrigator* instancePtr);
 
 

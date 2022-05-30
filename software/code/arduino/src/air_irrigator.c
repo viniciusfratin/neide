@@ -16,11 +16,12 @@ typedef struct AirIrrigatorInternal
     volatile uint8_t* pin_ddr_ptr;
     volatile uint8_t* pin_port_ptr;
     uint8_t pin;
+    ADCIdentifier configuration_adc;
 } AirIrrigatorImplementation;
 
 static void AirIrrigator_Irrigate(void* object_instance, int32_t irrigation_time_seconds);
 
-AirIrrigator AirIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin)
+AirIrrigator AirIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin, ADCIdentifier configuration_adc)
 {
     AirIrrigator instance = (AirIrrigator)malloc(sizeof(AirIrrigatorImplementation));
 
@@ -38,12 +39,13 @@ AirIrrigator AirIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_ti
             instance->pin_ddr_ptr = pin_ddr_ptr;
             instance->pin_port_ptr = pin_port_ptr;
             instance->pin = pin;
+            instance->configuration_adc = configuration_adc;
 
             SET_GPIO_PIN_AS_OUTPUT(instance->pin_ddr_ptr, instance->pin);
             SET_GPIO_PIN_TO_LOW(instance->pin_port_ptr, instance->pin);
 
             /* Set fast PWM on pin 9 with maximum frequency, initially turned off. */
-            TCCR1A |= _BV(WGM10);
+            TCCR1A |= _BV(COM1A1) | _BV(WGM10);
 	        TCCR1B |= _BV(CS10) | _BV(WGM12);
             PWM_DDR_PIN &= ~(_BV(PWM_PIN));
         }
@@ -87,6 +89,10 @@ static void AirIrrigator_Irrigate(void* object_instance, int32_t irrigation_time
 {
     AirIrrigator instance = (AirIrrigator)object_instance;
     instance->last_irrigation_time = instance->get_current_time_seconds_callback();
+
+    /* Set PWM duty cycle to the trim pot in ADC pin. */
+    uint8_t duty_cycle = (uint8_t)((read_adc(instance->configuration_adc) / A_VCC) * 255);
+    OCR1A = duty_cycle;
 
     /* Turn on indication LED. */
     SET_GPIO_PIN_TO_HIGH(instance->pin_port_ptr, instance->pin);

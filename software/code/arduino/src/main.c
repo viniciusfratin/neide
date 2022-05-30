@@ -85,7 +85,8 @@ void setup()
     air_irrigator = AirIrrigator_Construct(SystemTimer_GetCurrentTimeSeconds, 
         AIR_IRRIGATOR_DATA_PIN_DDR_PTR,
         AIR_IRRIGATOR_DATA_PIN_PORT_PTR,
-        AIR_IRRIGATOR_DATA_PIN
+        AIR_IRRIGATOR_DATA_PIN,
+        IDENTIFIER_ADC3
     );
     air_irrigator_interface = AirIrrigator_GetIrrigatorInterface(air_irrigator);
 
