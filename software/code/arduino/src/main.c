@@ -97,14 +97,14 @@ void setup()
         should_wake_up,
         SoilInterface_GetSoilHumidityInformation,
         get_time_from_last_soil_irrigation,
-        24 * 60 * 60,
+        24L * 60L * 60L,
         &soil_irrigator_interface,
-        15,
+        15L,
         AirInterface_GetAirHumidityInformation,
         get_time_from_last_air_irrigation,
-        8 * 60 * 60,
+        8L * 60L * 60L,
         &air_irrigator_interface,
-        15,
+        15L,
         &wrap_up_action_interface
     );
 

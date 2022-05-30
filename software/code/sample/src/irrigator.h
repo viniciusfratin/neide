@@ -2,6 +2,7 @@
 #define IRRIGATOR_H
 
 #include "irrigator_interface.h"
+#include <stdint.h>
 
 typedef struct IrrigatorInternal* Irrigator;
 
