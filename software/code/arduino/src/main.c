@@ -98,7 +98,7 @@ void setup()
         should_wake_up,
         SoilInterface_GetSoilHumidityInformation,
         get_time_from_last_soil_irrigation,
-        24L * 60L * 60L,
+        12L * 60L * 60L,
         &soil_irrigator_interface,
         15L,
         AirInterface_GetAirHumidityInformation,
