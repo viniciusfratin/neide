@@ -95,6 +95,6 @@ In order to burn to ATmega328P, you can use a tool called "avrdude", which is op
 After generating the target files (see above), the following command suffices, but may need to slighty
 changed depending on your bootloader version (e.g., by changing the baud rate):
 
-> avrdude -v -p atmega328p -c arduino -P COM5 -b 57600 -D -U flash:w:your\path\to\repo\neide\target_files\arduino\arduino-atmega328p.hex:i
+> avrdude -v -p atmega328p -c arduino -P COM5 -b 57600 -D -U flash:w:your/path/to/repo/neide/target_files/arduino/arduino-atmega328p.hex:i
 
 Also make sure that the COM port ("COM5" in the case above) matches the one to which your device is connected.
