@@ -89,7 +89,7 @@ The target hardware files will be located at "build/code/arduino/". They are the
 - arduino-atmega328p.hex
 - arduino-atmega328p.map
 
-#### Burning to microcontroller
+## Burning to microcontroller
 In order to burn to ATmega328P, you can use a tool called "avrdude", which is open source and free.
 
 After generating the target files (see above), the following command suffices, but may need to slighty
