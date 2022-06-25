@@ -1,18 +1,18 @@
 set (core_source_files
-    "src/core.c"
-    "src/core_state_interface.c"
-    "src/idle_state.c"
-    "src/woke_state.c"
-    "src/soil_humidity_check_state.c"
-    "src/soil_periodic_check_state.c"
-    "src/irrigate_soil_state.c"
-    "src/air_humidity_check_state.c"
-    "src/air_periodic_check_state.c"
-    "src/irrigate_air_state.c"
-    "src/wrap_up_state.c"
-    "src/irrigator_interface.c"
-    "src/wrap_up_action_interface.c"
-    "src/standard_configuration.c")
+    "src/core.cpp"
+    "src/core_state_interface.cpp"
+    "src/idle_state.cpp"
+    "src/woke_state.cpp"
+    "src/soil_humidity_check_state.cpp"
+    "src/soil_periodic_check_state.cpp"
+    "src/irrigate_soil_state.cpp"
+    "src/air_humidity_check_state.cpp"
+    "src/air_periodic_check_state.cpp"
+    "src/irrigate_air_state.cpp"
+    "src/wrap_up_state.cpp"
+    "src/irrigator_interface.cpp"
+    "src/wrap_up_action_interface.cpp"
+    "src/standard_configuration.cpp")
 
 neide_add_library (core "${core_source_files}")
 

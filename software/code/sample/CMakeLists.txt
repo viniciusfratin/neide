@@ -1,7 +1,7 @@
 set (sample_source_files
-    "src/main.c"
-    "src/irrigator.c"
-    "src/wrap_up_action.c")
+    "src/main.cpp"
+    "src/irrigator.cpp"
+    "src/wrap_up_action.cpp")
 
 neide_add_executable (sample "${sample_source_files}")
 

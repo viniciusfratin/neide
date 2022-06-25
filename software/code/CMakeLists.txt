@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.23)
 
-project (neide_code LANGUAGES C)
+project (neide_code LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory (core)
 

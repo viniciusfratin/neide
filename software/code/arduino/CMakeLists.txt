@@ -1,17 +1,17 @@
 set (arduino_source_files
-    "src/main.c"
-    "src/soil_irrigator.c"
-    "src/air_irrigator.c"
-    "src/wrap_up_action.c"
-    "src/air_sensors/dht11.c"
-    "src/soil_sensors/hl69.c"
-    "src/air_interface/air_interface.c"
-    "src/soil_interface/soil_interface.c"
-    "src/user_configuration/air_configuration.c"
-    "src/user_configuration/soil_configuration.c"
-    "src/pin_utils/gpio_utils.c"
-    "src/pin_utils/adc_utils.c"
-    "src/system_timer/system_timer.c")
+    "src/main.cpp"
+    "src/soil_irrigator.cpp"
+    "src/air_irrigator.cpp"
+    "src/wrap_up_action.cpp"
+    "src/air_sensors/dht11.cpp"
+    "src/soil_sensors/hl69.cpp"
+    "src/air_interface/air_interface.cpp"
+    "src/soil_interface/soil_interface.cpp"
+    "src/user_configuration/air_configuration.cpp"
+    "src/user_configuration/soil_configuration.cpp"
+    "src/pin_utils/gpio_utils.cpp"
+    "src/pin_utils/adc_utils.cpp"
+    "src/system_timer/system_timer.cpp")
 
 neide_add_executable (arduino "${arduino_source_files}")
 
