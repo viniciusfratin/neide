@@ -1,5 +1,5 @@
-#ifndef SYSTEM_TIMER_H
-#define SYSTEM_TIMER_H
+#ifndef SYSTEM_TIMER_HPP
+#define SYSTEM_TIMER_HPP
 
 #include "clock/clock.hpp"
 

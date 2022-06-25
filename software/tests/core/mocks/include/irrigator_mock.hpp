@@ -1,5 +1,5 @@
-#ifndef IRRIGATOR_MOCK_H
-#define IRRIGATOR_MOCK_H
+#ifndef IRRIGATOR_MOCK_HPP
+#define IRRIGATOR_MOCK_HPP
 
 #include "irrigator_interface.hpp"
 

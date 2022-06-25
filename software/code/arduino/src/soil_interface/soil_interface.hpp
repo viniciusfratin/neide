@@ -1,5 +1,5 @@
-#ifndef SOIL_INTERFACE_H
-#define SOIL_INTERFACE_H
+#ifndef SOIL_INTERFACE_HPP
+#define SOIL_INTERFACE_HPP
 
 #include "soil_humidity_check_state.hpp"
 

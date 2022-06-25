@@ -1,5 +1,5 @@
-#ifndef DHT11_H
-#define DHT11_H
+#ifndef DHT11_HPP
+#define DHT11_HPP
 
 #include "air_interface/air_interface.hpp"
 

@@ -1,5 +1,5 @@
-#ifndef CLOCK_H
-#define CLOCK_H
+#ifndef CLOCK_HPP
+#define CLOCK_HPP
 
 
 typedef long (*GetCurrentTimeSecondsCallback)();

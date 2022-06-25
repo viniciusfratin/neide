@@ -1,5 +1,5 @@
-#ifndef ADC_DEFS_H
-#define ADC_DEFS_H
+#ifndef ADC_DEFS_HPP
+#define ADC_DEFS_HPP
 
 typedef enum ADCIdentifierInternal
 {

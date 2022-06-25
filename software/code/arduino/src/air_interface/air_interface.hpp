@@ -1,5 +1,5 @@
-#ifndef AIR_INTERFACE_H
-#define AIR_INTERFACE_H
+#ifndef AIR_INTERFACE_HPP
+#define AIR_INTERFACE_HPP
 
 #include "air_humidity_check_state.hpp"
 

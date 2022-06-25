@@ -1,5 +1,5 @@
-#ifndef ADC_UTILS_H
-#define ADC_UTILS_H
+#ifndef ADC_UTILS_HPP
+#define ADC_UTILS_HPP
 
 #include "adc_defs.hpp"
 

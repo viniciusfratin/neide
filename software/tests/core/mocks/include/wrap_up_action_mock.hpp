@@ -1,5 +1,5 @@
-#ifndef WRAP_UP_ACTION_MOCK_H
-#define WRAP_UP_ACTION_MOCK_H
+#ifndef WRAP_UP_ACTION_MOCK_HPP
+#define WRAP_UP_ACTION_MOCK_HPP
 
 #include "wrap_up_action_interface.hpp"
 
