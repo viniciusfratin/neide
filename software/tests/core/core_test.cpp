@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 
-
 #include "core_states.hpp"
 #include "core_state_interface.hpp"
 #include "core.hpp"
@@ -21,19 +20,20 @@
 #include "irrigator_mock.hpp"
 #include "wrap_up_action_mock.hpp"
 
-
-class CoreInitialIdleWithWakeUpTrue : public ::testing::Test
+class CoreInitialIdle : public ::testing::Test
 {
     private:
         IdleState* idle_state;
         GeneralStateMock* woke_state_mock;
+
+        virtual ShouldWakeUpCallback GetStub() = 0;
 
     protected:
         SystemCore* system_core;
         
         void SetUp() override
         {
-            idle_state = new IdleState(stub_should_wake_up_true);
+            idle_state = new IdleState(GetStub());
             woke_state_mock = new GeneralStateMock(CoreState::CORE_STATE_WOKE);
 
             idle_state->SetTransitions(woke_state_mock);
@@ -51,33 +51,22 @@ class CoreInitialIdleWithWakeUpTrue : public ::testing::Test
         }
 };
 
-class CoreInitialIdleWithWakeUpFalse : public ::testing::Test
+class CoreInitialIdleWithWakeUpTrue : public CoreInitialIdle
 {
     private:
-        IdleState* idle_state;
-        GeneralStateMock* woke_state_mock;
+    ShouldWakeUpCallback GetStub()
+    {
+        return stub_should_wake_up_true;
+    }
+};
 
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {
-            idle_state = new IdleState(stub_should_wake_up_false);
-            woke_state_mock = new GeneralStateMock(CoreState::CORE_STATE_WOKE);
-
-            idle_state->SetTransitions(woke_state_mock);
-
-            system_core = new SystemCore(
-                idle_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete woke_state_mock;
-            delete idle_state;
-        }
+class CoreInitialIdleWithWakeUpFalse : public CoreInitialIdle
+{
+    private:
+    ShouldWakeUpCallback GetStub()
+    {
+        return stub_should_wake_up_false;
+    }
 };
 
 class CoreInitialWoke : public ::testing::Test
@@ -108,19 +97,21 @@ class CoreInitialWoke : public ::testing::Test
         }
 };
 
-class CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60 : public ::testing::Test
+class CoreInitialSoilHumidityCheck : public ::testing::Test
 {
     private:
         SoilHumidityCheckState* soil_humidity_check_state;
         GeneralStateMock* irrigate_soil_state_mock;
         GeneralStateMock* soil_periodic_check_state_mock;
 
+        virtual GetSoilHumidityInformationCallback GetStub() = 0;
+
     protected:
         SystemCore* system_core;
         
         void SetUp() override
         {
-            soil_humidity_check_state = new SoilHumidityCheckState(stub_get_soil_humidity_50_threshold_60);
+            soil_humidity_check_state = new SoilHumidityCheckState(GetStub());
             irrigate_soil_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_SOIL);
             soil_periodic_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_SOIL_PERIODIC_CHECK);
 
@@ -143,82 +134,41 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60 : public ::t
         }
 };
 
-class CoreInitialSoilHumidityCheckWithRelativeHumidity70Threshold60 : public ::testing::Test
+class CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60 : public CoreInitialSoilHumidityCheck
 {
     private:
-        SoilHumidityCheckState* soil_humidity_check_state;
-        GeneralStateMock* irrigate_soil_state_mock;
-        GeneralStateMock* soil_periodic_check_state_mock;
-
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {
-            soil_humidity_check_state = new SoilHumidityCheckState(stub_get_soil_humidity_70_threshold_60);
-            irrigate_soil_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_SOIL);
-            soil_periodic_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_SOIL_PERIODIC_CHECK);
-
-            soil_humidity_check_state->SetTransitions(
-                irrigate_soil_state_mock,
-                soil_periodic_check_state_mock
-            );
-
-            system_core = new SystemCore(
-                soil_humidity_check_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete soil_periodic_check_state_mock;
-            delete irrigate_soil_state_mock;
-            delete soil_humidity_check_state;
-        }
+    GetSoilHumidityInformationCallback GetStub()
+    {
+        return stub_get_soil_humidity_50_threshold_60;
+    }
 };
 
-class CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60 : public ::testing::Test
+class CoreInitialSoilHumidityCheckWithRelativeHumidity70Threshold60 : public CoreInitialSoilHumidityCheck
 {
     private:
-        SoilHumidityCheckState* soil_humidity_check_state;
-        GeneralStateMock* irrigate_soil_state_mock;
-        GeneralStateMock* soil_periodic_check_state_mock;
-
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {
-            soil_humidity_check_state = new SoilHumidityCheckState(stub_get_soil_humidity_60_threshold_60);
-            irrigate_soil_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_SOIL);
-            soil_periodic_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_SOIL_PERIODIC_CHECK);
-
-            soil_humidity_check_state->SetTransitions(
-                irrigate_soil_state_mock,
-                soil_periodic_check_state_mock
-            );
-
-            system_core = new SystemCore(
-                soil_humidity_check_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete soil_periodic_check_state_mock;
-            delete irrigate_soil_state_mock;
-            delete soil_humidity_check_state;
-        }
+    GetSoilHumidityInformationCallback GetStub()
+    {
+        return stub_get_soil_humidity_70_threshold_60;
+    }
 };
 
-class CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public ::testing::Test
+class CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60 : public CoreInitialSoilHumidityCheck
+{
+    private:
+    GetSoilHumidityInformationCallback GetStub()
+    {
+        return stub_get_soil_humidity_60_threshold_60;
+    }
+};
+
+class CoreInitialSoilPeriodicCheck : public ::testing::Test
 {
     private:
         SoilPeriodicCheckState* soil_periodic_check_state;
         GeneralStateMock* irrigate_soil_state_mock;
         GeneralStateMock* air_humidity_check_state_mock;
+
+        virtual GetTimeFromLastSoilIrrigationCallback GetStub() = 0;
 
     protected:
         SystemCore* system_core;
@@ -226,7 +176,7 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public
         void SetUp() override
         {   
             soil_periodic_check_state = new SoilPeriodicCheckState(
-                stub_get_time_from_last_soil_irrigation_2_hours,
+                GetStub(),
                 3 * 60 * 60
             );
 
@@ -252,82 +202,31 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public
         }
 };
 
-class CoreInitialSoilPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public ::testing::Test
+class CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public CoreInitialSoilPeriodicCheck
 {
     private:
-        SoilPeriodicCheckState* soil_periodic_check_state;
-        GeneralStateMock* irrigate_soil_state_mock;
-        GeneralStateMock* air_humidity_check_state_mock;
-
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {   
-            soil_periodic_check_state = new SoilPeriodicCheckState(
-                stub_get_time_from_last_soil_irrigation_3_hours,
-                3 * 60 * 60
-            );
-
-            irrigate_soil_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_SOIL);
-            air_humidity_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_AIR_HUMIDITY_CHECK);
-            
-            soil_periodic_check_state->SetTransitions(
-                irrigate_soil_state_mock,
-                air_humidity_check_state_mock
-            );
-
-            system_core = new SystemCore(
-                soil_periodic_check_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete air_humidity_check_state_mock;
-            delete irrigate_soil_state_mock;
-            delete soil_periodic_check_state;
-        }
+    GetTimeFromLastSoilIrrigationCallback GetStub()
+    {
+        return stub_get_time_from_last_soil_irrigation_2_hours;
+    }
 };
 
-class CoreInitialSoilPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public ::testing::Test
+class CoreInitialSoilPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public CoreInitialSoilPeriodicCheck
 {
     private:
-        SoilPeriodicCheckState* soil_periodic_check_state;
-        GeneralStateMock* irrigate_soil_state_mock;
-        GeneralStateMock* air_humidity_check_state_mock;
+    GetTimeFromLastSoilIrrigationCallback GetStub()
+    {
+        return stub_get_time_from_last_soil_irrigation_3_hours;
+    }
+};
 
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {   
-            soil_periodic_check_state = new SoilPeriodicCheckState(
-                stub_get_time_from_last_soil_irrigation_4_hours,
-                3 * 60 * 60
-            );
-
-            irrigate_soil_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_SOIL);
-            air_humidity_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_AIR_HUMIDITY_CHECK);
-            
-            soil_periodic_check_state->SetTransitions(
-                irrigate_soil_state_mock,
-                air_humidity_check_state_mock
-            );
-
-            system_core = new SystemCore(
-                soil_periodic_check_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete air_humidity_check_state_mock;
-            delete irrigate_soil_state_mock;
-            delete soil_periodic_check_state;
-        }
+class CoreInitialSoilPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public CoreInitialSoilPeriodicCheck
+{
+    private:
+    GetTimeFromLastSoilIrrigationCallback GetStub()
+    {
+        return stub_get_time_from_last_soil_irrigation_4_hours;
+    }
 };
 
 class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
@@ -362,19 +261,21 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
         }
 };
 
-class CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60 : public ::testing::Test
+class CoreInitialAirHumidityCheck : public ::testing::Test
 {
     private:
         AirHumidityCheckState* air_humidity_check_state;
         GeneralStateMock* irrigate_air_state_mock;
         GeneralStateMock* air_periodic_check_state_mock;
 
+        virtual GetAirHumidityInformationCallback GetStub() = 0;
+
     protected:
         SystemCore* system_core;
-        
+
         void SetUp() override
         {
-            air_humidity_check_state = new AirHumidityCheckState(stub_get_air_humidity_50_threshold_60);
+            air_humidity_check_state = new AirHumidityCheckState(GetStub());
             irrigate_air_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_AIR);
             air_periodic_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_AIR_PERIODIC_CHECK);
 
@@ -397,89 +298,48 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60 : public ::te
         }
 };
 
-class CoreInitialAirHumidityCheckWithRelativeHumidity70Threshold60 : public ::testing::Test
+class CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60 : public CoreInitialAirHumidityCheck
 {
     private:
-        AirHumidityCheckState* air_humidity_check_state;
-        GeneralStateMock* irrigate_air_state_mock;
-        GeneralStateMock* air_periodic_check_state_mock;
-
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {
-            air_humidity_check_state = new AirHumidityCheckState(stub_get_air_humidity_70_threshold_60);
-            irrigate_air_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_AIR);
-            air_periodic_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_AIR_PERIODIC_CHECK);
-
-            air_humidity_check_state->SetTransitions(
-                irrigate_air_state_mock,
-                air_periodic_check_state_mock
-            );
-
-            system_core = new SystemCore(
-                air_humidity_check_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete air_periodic_check_state_mock;
-            delete irrigate_air_state_mock;
-            delete air_humidity_check_state;
-        }
+    GetAirHumidityInformationCallback GetStub() override
+    {
+        return stub_get_air_humidity_50_threshold_60;
+    }
 };
 
-class CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60 : public ::testing::Test
+class CoreInitialAirHumidityCheckWithRelativeHumidity70Threshold60 : public CoreInitialAirHumidityCheck
 {
     private:
-        AirHumidityCheckState* air_humidity_check_state;
-        GeneralStateMock* irrigate_air_state_mock;
-        GeneralStateMock* air_periodic_check_state_mock;
-
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {
-            air_humidity_check_state = new AirHumidityCheckState(stub_get_air_humidity_60_threshold_60);
-            irrigate_air_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_AIR);
-            air_periodic_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_AIR_PERIODIC_CHECK);
-
-            air_humidity_check_state->SetTransitions(
-                irrigate_air_state_mock,
-                air_periodic_check_state_mock
-            );
-
-            system_core = new SystemCore(
-                air_humidity_check_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete air_periodic_check_state_mock;
-            delete irrigate_air_state_mock;
-            delete air_humidity_check_state;
-        }
+    GetAirHumidityInformationCallback GetStub() override
+    {
+        return stub_get_air_humidity_70_threshold_60;
+    }
 };
 
-class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public ::testing::Test
+class CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60 : public CoreInitialAirHumidityCheck
+{
+    private:
+    GetAirHumidityInformationCallback GetStub() override
+    {
+        return stub_get_air_humidity_60_threshold_60;
+    }
+};
+
+class CoreInitialAirPeriodicCheck : public ::testing::Test
 {
     private:
         AirPeriodicCheckState* air_periodic_check_state;
         GeneralStateMock* irrigate_air_state_mock;
         GeneralStateMock* wrap_up_state_mock;
 
+        virtual GetTimeFromLastAirIrrigationCallback GetStub() = 0;
+
     protected:
         SystemCore* system_core;
         
         void SetUp() override
         {   
-            air_periodic_check_state = new AirPeriodicCheckState(stub_get_time_from_last_air_irrigation_2_hours, 3 * 60 * 60);
+            air_periodic_check_state = new AirPeriodicCheckState(GetStub(), 3 * 60 * 60);
             irrigate_air_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_AIR);
             wrap_up_state_mock = new GeneralStateMock(CoreState::CORE_STATE_WRAP_UP);
 
@@ -502,74 +362,31 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public 
         }
 };
 
-class CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public ::testing::Test
+class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public CoreInitialAirPeriodicCheck
 {
     private:
-        AirPeriodicCheckState* air_periodic_check_state;
-        GeneralStateMock* irrigate_air_state_mock;
-        GeneralStateMock* wrap_up_state_mock;
-
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {   
-            air_periodic_check_state = new AirPeriodicCheckState(stub_get_time_from_last_air_irrigation_3_hours, 3 * 60 * 60);
-            irrigate_air_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_AIR);
-            wrap_up_state_mock = new GeneralStateMock(CoreState::CORE_STATE_WRAP_UP);
-
-            air_periodic_check_state->SetTransitions(
-                irrigate_air_state_mock,
-                wrap_up_state_mock
-            );
-
-            system_core = new SystemCore(
-                air_periodic_check_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete wrap_up_state_mock;
-            delete irrigate_air_state_mock;
-            delete air_periodic_check_state;
-        }
+    GetTimeFromLastAirIrrigationCallback GetStub()
+    {
+        return stub_get_time_from_last_air_irrigation_2_hours;
+    }
 };
 
-class CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public ::testing::Test
+class CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public CoreInitialAirPeriodicCheck
 {
     private:
-        AirPeriodicCheckState* air_periodic_check_state;
-        GeneralStateMock* irrigate_air_state_mock;
-        GeneralStateMock* wrap_up_state_mock;
+    GetTimeFromLastAirIrrigationCallback GetStub()
+    {
+        return stub_get_time_from_last_air_irrigation_3_hours;
+    }
+};
 
-    protected:
-        SystemCore* system_core;
-        
-        void SetUp() override
-        {   
-            air_periodic_check_state = new AirPeriodicCheckState(stub_get_time_from_last_air_irrigation_4_hours, 3 * 60 * 60);
-            irrigate_air_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_AIR);
-            wrap_up_state_mock = new GeneralStateMock(CoreState::CORE_STATE_WRAP_UP);
-
-            air_periodic_check_state->SetTransitions(
-                irrigate_air_state_mock,
-                wrap_up_state_mock
-            );
-
-            system_core = new SystemCore(
-                air_periodic_check_state
-            );
-        }
-
-        void TearDown() override
-        {
-            delete system_core;
-            delete wrap_up_state_mock;
-            delete irrigate_air_state_mock;
-            delete air_periodic_check_state;
-        }
+class CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public CoreInitialAirPeriodicCheck
+{
+    private:
+    GetTimeFromLastAirIrrigationCallback GetStub()
+    {
+        return stub_get_time_from_last_air_irrigation_4_hours;
+    }
 };
 
 class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
