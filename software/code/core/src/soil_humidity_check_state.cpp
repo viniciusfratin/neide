@@ -60,6 +60,11 @@ SoilHumidityCheckState::SoilHumidityCheckState(
 
 }
 
+SoilHumidityCheckState::~SoilHumidityCheckState()
+{
+    delete pImpl;
+}
+
 void SoilHumidityCheckState::SetTransitions(
     CoreStateInterface* irrigate_soil_state_interface_ptr,
     CoreStateInterface* soil_periodic_check_state_interface_ptr
@@ -69,11 +74,6 @@ void SoilHumidityCheckState::SetTransitions(
         irrigate_soil_state_interface_ptr,
         soil_periodic_check_state_interface_ptr
     );
-}
-
-SoilHumidityCheckState::~SoilHumidityCheckState()
-{
-    
 }
 
 CoreStateInterface* SoilHumidityCheckState::ExecuteState()

@@ -42,6 +42,13 @@ class CoreInitialIdleWithWakeUpTrue : public ::testing::Test
                 idle_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete woke_state_mock;
+            delete idle_state;
+        }
 };
 
 class CoreInitialIdleWithWakeUpFalse : public ::testing::Test
@@ -64,6 +71,13 @@ class CoreInitialIdleWithWakeUpFalse : public ::testing::Test
                 idle_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete woke_state_mock;
+            delete idle_state;
+        }
 };
 
 class CoreInitialWoke : public ::testing::Test
@@ -85,6 +99,12 @@ class CoreInitialWoke : public ::testing::Test
             system_core = new SystemCore(
                 woke_state
             );
+        }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete woke_state;
         }
 };
 
@@ -113,6 +133,14 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60 : public ::t
                 soil_humidity_check_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete soil_periodic_check_state_mock;
+            delete irrigate_soil_state_mock;
+            delete soil_humidity_check_state;
+        }
 };
 
 class CoreInitialSoilHumidityCheckWithRelativeHumidity70Threshold60 : public ::testing::Test
@@ -140,6 +168,14 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity70Threshold60 : public ::t
                 soil_humidity_check_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete soil_periodic_check_state_mock;
+            delete irrigate_soil_state_mock;
+            delete soil_humidity_check_state;
+        }
 };
 
 class CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60 : public ::testing::Test
@@ -166,6 +202,14 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60 : public ::t
             system_core = new SystemCore(
                 soil_humidity_check_state
             );
+        }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete soil_periodic_check_state_mock;
+            delete irrigate_soil_state_mock;
+            delete soil_humidity_check_state;
         }
 };
 
@@ -198,6 +242,14 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public
                 soil_periodic_check_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete air_humidity_check_state_mock;
+            delete irrigate_soil_state_mock;
+            delete soil_periodic_check_state;
+        }
 };
 
 class CoreInitialSoilPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public ::testing::Test
@@ -228,6 +280,14 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public
             system_core = new SystemCore(
                 soil_periodic_check_state
             );
+        }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete air_humidity_check_state_mock;
+            delete irrigate_soil_state_mock;
+            delete soil_periodic_check_state;
         }
 };
 
@@ -260,6 +320,14 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public
                 soil_periodic_check_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete air_humidity_check_state_mock;
+            delete irrigate_soil_state_mock;
+            delete soil_periodic_check_state;
+        }
 };
 
 class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
@@ -283,6 +351,14 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
             system_core = new SystemCore(
                 irrigate_soil_state
             );
+        }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete irrigate_soil_state;
+            delete air_humidity_check_state_mock;
+            delete soil_irrigator_mock;
         }
 };
 
@@ -311,6 +387,14 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60 : public ::te
                 air_humidity_check_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete air_periodic_check_state_mock;
+            delete irrigate_air_state_mock;
+            delete air_humidity_check_state;
+        }
 };
 
 class CoreInitialAirHumidityCheckWithRelativeHumidity70Threshold60 : public ::testing::Test
@@ -337,6 +421,14 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity70Threshold60 : public ::te
             system_core = new SystemCore(
                 air_humidity_check_state
             );
+        }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete air_periodic_check_state_mock;
+            delete irrigate_air_state_mock;
+            delete air_humidity_check_state;
         }
 };
 
@@ -365,6 +457,14 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60 : public ::te
                 air_humidity_check_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete air_periodic_check_state_mock;
+            delete irrigate_air_state_mock;
+            delete air_humidity_check_state;
+        }
 };
 
 class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public ::testing::Test
@@ -391,6 +491,14 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public 
             system_core = new SystemCore(
                 air_periodic_check_state
             );
+        }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete wrap_up_state_mock;
+            delete irrigate_air_state_mock;
+            delete air_periodic_check_state;
         }
 };
 
@@ -419,6 +527,14 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public 
                 air_periodic_check_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete wrap_up_state_mock;
+            delete irrigate_air_state_mock;
+            delete air_periodic_check_state;
+        }
 };
 
 class CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public ::testing::Test
@@ -446,6 +562,14 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public 
                 air_periodic_check_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete wrap_up_state_mock;
+            delete irrigate_air_state_mock;
+            delete air_periodic_check_state;
+        }
 };
 
 class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
@@ -470,6 +594,14 @@ class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
                 irrigate_air_state
             );
         }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete irrigate_air_state;
+            delete wrap_up_state_mock;
+            delete air_irrigator_mock;
+        }
 };
 
 class CoreInitialWrapUp : public ::testing::Test
@@ -493,6 +625,14 @@ class CoreInitialWrapUp : public ::testing::Test
             system_core = new SystemCore(
                 wrap_up_state
             );
+        }
+
+        void TearDown() override
+        {
+            delete system_core;
+            delete idle_state_mock;
+            delete wrap_up_state;
+            delete wrap_up_action_mock;
         }
 };
 

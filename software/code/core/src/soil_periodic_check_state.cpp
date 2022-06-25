@@ -67,7 +67,7 @@ SoilPeriodicCheckState::SoilPeriodicCheckState(
 
 SoilPeriodicCheckState::~SoilPeriodicCheckState()
 {
-
+    delete pImpl;
 }
 
 void SoilPeriodicCheckState::SetTransitions(

@@ -24,7 +24,7 @@ WrapUpAction::WrapUpAction() :
 
 WrapUpAction::~WrapUpAction()
 {
-    
+    delete pImpl;
 }
 
 

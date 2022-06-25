@@ -36,7 +36,7 @@ SystemCore::SystemCore(
 
 SystemCore::~SystemCore()
 {
-
+    delete pImpl;
 }
 
 CoreState SystemCore::GetCurrentState()

@@ -67,7 +67,7 @@ AirPeriodicCheckState::AirPeriodicCheckState(
 
 AirPeriodicCheckState::~AirPeriodicCheckState()
 {
-    
+    delete pImpl;
 }
 
 void AirPeriodicCheckState::SetTransitions(

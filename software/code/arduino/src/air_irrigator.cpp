@@ -91,7 +91,7 @@ AirIrrigator::AirIrrigator(
 
 AirIrrigator::~AirIrrigator()
 {
-    
+    delete pImpl;
 }
 
 void AirIrrigator::Irrigate(long irrigation_time_seconds)

@@ -61,7 +61,7 @@ IdleState::IdleState(
 
 IdleState::~IdleState()
 {
-    
+    delete pImpl;
 }
 
 void IdleState::SetTransitions(

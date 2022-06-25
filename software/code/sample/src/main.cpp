@@ -63,6 +63,11 @@ class Irrigator : public IrrigatorInterface
     {
         printf("- Irrigating: %ld\n", irrigation_time_seconds);
     }
+
+    virtual ~Irrigator()
+    {
+        
+    }
 };
 
 class WrapUpAction : public WrapUpActionInterface
@@ -71,6 +76,11 @@ class WrapUpAction : public WrapUpActionInterface
     void WrapUp() override
     {
         return;
+    }
+
+    virtual ~WrapUpAction()
+    {
+
     }
 };
 
@@ -106,5 +116,10 @@ int main()
         system_core->AdvanceCycle();
     }
 
+    delete standard_configuration;
+    delete wrap_up_action;
+    delete air_irrigator;
+    delete soil_irrigator;
+    
     return 0;
 }

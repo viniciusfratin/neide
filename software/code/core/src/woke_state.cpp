@@ -42,7 +42,7 @@ WokeState::WokeState() :
 
 WokeState::~WokeState()
 {
-
+    delete pImpl;
 }
 
 void WokeState::SetTransitions(

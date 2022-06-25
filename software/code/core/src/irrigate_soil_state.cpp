@@ -51,12 +51,12 @@ IrrigateSoilState::IrrigateSoilState(
         )
     )
 {
-
+    
 }
 
 IrrigateSoilState::~IrrigateSoilState()
 {
-
+    delete pImpl;
 }
 
 void IrrigateSoilState::SetTransitions(

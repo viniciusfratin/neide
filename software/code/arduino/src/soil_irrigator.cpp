@@ -63,7 +63,7 @@ SoilIrrigator::SoilIrrigator(
 
 SoilIrrigator::~SoilIrrigator()
 {
-    
+    delete pImpl;
 }
 
 void SoilIrrigator::Irrigate(long irrigation_time_seconds)

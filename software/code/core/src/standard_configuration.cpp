@@ -120,6 +120,20 @@ struct StandardConfiguration::impl
         this->system_core = new SystemCore(idle_state);
     }
 
+    virtual ~impl()
+    {
+        delete system_core;
+        delete wrap_up_state;
+        delete irrigate_air_state;
+        delete air_periodic_check_state;
+        delete air_humidity_check_state;
+        delete irrigate_soil_state;
+        delete soil_periodic_check_state;
+        delete soil_humidity_check_state;
+        delete woke_state;
+        delete idle_state;
+    }
+
     SystemCore* GetSystemCore()
     {
         return this->system_core;
@@ -161,7 +175,7 @@ StandardConfiguration::StandardConfiguration(
 
 StandardConfiguration::~StandardConfiguration()
 {
-
+    delete pImpl;
 }
 
 SystemCore* StandardConfiguration::GetSystemCore()

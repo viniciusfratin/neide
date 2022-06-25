@@ -56,7 +56,7 @@ IrrigateAirState::IrrigateAirState(
 
 IrrigateAirState::~IrrigateAirState()
 {
-    
+    delete pImpl;
 }
 
 void IrrigateAirState::SetTransitions(

@@ -63,7 +63,7 @@ AirHumidityCheckState::AirHumidityCheckState(
 
 AirHumidityCheckState::~AirHumidityCheckState()
 {
-    
+    delete pImpl;
 }
 
 void AirHumidityCheckState::SetTransitions(

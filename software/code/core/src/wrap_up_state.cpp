@@ -51,7 +51,7 @@ WrapUpState::WrapUpState(
 
 WrapUpState::~WrapUpState()
 {
-
+    delete pImpl;
 }
 
 void WrapUpState::SetTransitions(
