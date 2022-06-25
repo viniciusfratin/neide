@@ -1,10 +1,5 @@
 #include "soil_interface.hpp"
 
-extern "C" 
-{
-    #include <stddef.h>
-}
-
 typedef struct SoilInterfaceStateInternal
 {
     bool is_initialized;
