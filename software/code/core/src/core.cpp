@@ -1,6 +1,5 @@
 #include "core.hpp"
 #include "core_state_interface.hpp"
-#include <memory>
 
 struct SystemCore::impl
 {
@@ -27,7 +26,7 @@ struct SystemCore::impl
 SystemCore::SystemCore(
     CoreStateInterface* initial_core_state_interface
 ) : pImpl(
-        std::make_unique<impl>(
+        new impl(
             initial_core_state_interface
         )
     )

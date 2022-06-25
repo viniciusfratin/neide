@@ -2,7 +2,6 @@
 #define WRAP_UP_ACTION_MOCK_H
 
 #include "wrap_up_action_interface.hpp"
-#include <cstdint>
 
 class WrapUpActionMock : public WrapUpActionInterface
 {
@@ -11,10 +10,10 @@ class WrapUpActionMock : public WrapUpActionInterface
     virtual ~WrapUpActionMock();
     
     void WrapUp() override;
-    int32_t GetNumberOfCalls();
+    long GetNumberOfCalls();
 
     private:
-    int32_t number_of_calls;
+    long number_of_calls;
 };
 
 #endif

@@ -2,17 +2,15 @@
 #define AIR_PERIODIC_CHECK_STATE_HPP
 
 #include "core_state_interface.hpp"
-#include <cstdint>
-#include <memory>
 
-typedef int32_t (*GetTimeFromLastAirIrrigationCallback)();
+typedef long (*GetTimeFromLastAirIrrigationCallback)();
 
 class AirPeriodicCheckState : public CoreStateInterface
 {
     public:
     AirPeriodicCheckState(
         GetTimeFromLastAirIrrigationCallback get_time_from_last_irrigation_callback,
-        int32_t maximum_period_seconds
+        long maximum_period_seconds
     );
 
     void SetTransitions(
@@ -27,7 +25,7 @@ class AirPeriodicCheckState : public CoreStateInterface
 
     private:
     struct impl;
-    std::unique_ptr<impl> pImpl;
+    impl* pImpl;
 };
 
 #endif

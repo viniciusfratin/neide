@@ -1,18 +1,20 @@
-#ifndef WRAP_UP_ACTION_H
-#define WRAP_UP_ACTION_H
+#ifndef WRAP_UP_ACTION_HPP
+#define WRAP_UP_ACTION_HPP
 
 #include "wrap_up_action_interface.hpp"
 
-typedef struct WrapUpActionInternal* WrapUpAction;
+class WrapUpAction : public WrapUpActionInterface
+{
+    public:
+    WrapUpAction();
 
-#define WRAP_UP_ACTION_INVALID_INSTANCE ((WrapUpAction)NULL)
+    void WrapUp() override;
 
+    virtual ~WrapUpAction();
 
-WrapUpActionInterface WrapUpAction_GetWrapUpActionInterface(WrapUpAction instance);
-
-
-WrapUpAction WrapUpAction_Construct();
-void WrapUpAction_Destruct(WrapUpAction* instancePtr);
-
+    private:
+    struct impl;
+    impl* pImpl;
+};
 
 #endif

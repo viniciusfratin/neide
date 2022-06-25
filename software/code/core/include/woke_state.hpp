@@ -2,7 +2,6 @@
 #define WOKE_STATE_HPP
 
 #include "core_state_interface.hpp"
-#include <memory>
 
 class WokeState : public CoreStateInterface
 {
@@ -20,7 +19,7 @@ class WokeState : public CoreStateInterface
 
     private:
     struct impl;
-    std::unique_ptr<impl> pImpl;
+    impl* pImpl;
 };
 
 

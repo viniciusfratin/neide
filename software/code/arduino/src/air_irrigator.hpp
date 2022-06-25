@@ -1,22 +1,29 @@
-#ifndef AIR_IRRIGATOR_H
-#define AIR_IRRIGATOR_H
+#ifndef AIR_IRRIGATOR_HPP
+#define AIR_IRRIGATOR_HPP
 
 #include "irrigator_interface.hpp"
 #include "pin_utils/adc_utils.hpp"
 #include "clock/clock.hpp"
-#include <cstdint>
 
-typedef struct AirIrrigatorInternal* AirIrrigator;
+class AirIrrigator : public IrrigatorInterface
+{
+    public:
+    AirIrrigator(
+        GetCurrentTimeSecondsCallback get_current_time_seconds_callback, 
+        volatile unsigned char* pin_ddr_ptr, 
+        volatile unsigned char* pin_port_ptr, 
+        unsigned char pin,
+        ADCIdentifier configuration_adc
+    );
 
-#define AIR_IRRIGATOR_INVALID_INSTANCE ((AirIrrigator)NULL)
+    void Irrigate(long irrigation_time_seconds) override;
+    long GetTimeFromLastIrrigation();
+    
+    virtual ~AirIrrigator();
 
-
-IrrigatorInterface AirIrrigator_GetIrrigatorInterface(AirIrrigator instance);
-int32_t AirIrrigator_GetTimeFromLastIrrigation(AirIrrigator instance);
-
-
-AirIrrigator AirIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin, ADCIdentifier configuration_adc);
-void AirIrrigator_Destruct(AirIrrigator* instancePtr);
-
+    private:
+    struct impl;
+    impl* pImpl;
+};
 
 #endif

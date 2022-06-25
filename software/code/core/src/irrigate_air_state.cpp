@@ -1,18 +1,17 @@
 #include "irrigate_air_state.hpp"
 #include "irrigator_interface.hpp"
 #include "core_state_interface.hpp"
-#include <memory>
 
 struct IrrigateAirState::impl
 {
     CoreState core_state;
     CoreStateInterface* wrap_up_state_interface_ptr;
     IrrigatorInterface* air_irrigator_interface_ptr;
-    int32_t irrigation_time_seconds;
+    long irrigation_time_seconds;
 
     impl(
         IrrigatorInterface* air_irrigator_interface_ptr,
-        int32_t irrigation_time_seconds
+        long irrigation_time_seconds
     )
     {
         this->core_state = CoreState::CORE_STATE_IRRIGATE_AIR;
@@ -44,9 +43,9 @@ struct IrrigateAirState::impl
 
 IrrigateAirState::IrrigateAirState(
     IrrigatorInterface* air_irrigator_interface_ptr,
-    int32_t irrigation_time_seconds
+    long irrigation_time_seconds
 ) : pImpl(
-        std::make_unique<impl>(
+        new impl(
             air_irrigator_interface_ptr,
             irrigation_time_seconds
         )

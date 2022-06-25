@@ -9,8 +9,6 @@
 #include "soil_periodic_check_state.hpp"
 #include "air_humidity_check_state.hpp"
 #include "air_periodic_check_state.hpp"
-#include <cstdint>
-#include <memory>
 
 class StandardConfiguration
 {
@@ -19,14 +17,14 @@ class StandardConfiguration
         ShouldWakeUpCallback should_wake_up_callback,
         GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
         GetTimeFromLastSoilIrrigationCallback get_time_from_last_soil_irrigation_callback,
-        int32_t soil_periodic_check_maximum_period,
+        long soil_periodic_check_maximum_period,
         IrrigatorInterface* soil_irrigator_ptr,
-        int32_t soil_irrigation_time,
+        long soil_irrigation_time,
         GetAirHumidityInformationCallback get_air_humidity_information_callback,
         GetTimeFromLastAirIrrigationCallback get_time_from_last_air_irrigation_callback,
-        int32_t air_periodic_check_maximum_period,
+        long air_periodic_check_maximum_period,
         IrrigatorInterface* air_irrigator_ptr,
-        int32_t air_irrigation_time,
+        long air_irrigation_time,
         WrapUpActionInterface* wrap_up_action_ptr
     );
 
@@ -36,7 +34,7 @@ class StandardConfiguration
 
     private:
     struct impl;
-    std::unique_ptr<impl> pImpl;
+    impl* pImpl;
 };
 
 #endif

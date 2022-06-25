@@ -2,7 +2,6 @@
 #define SOIL_HUMIDITY_CHECK_STATE_HPP
 
 #include "core_state_interface.hpp"
-#include <memory>
 
 typedef struct SoilHumidityInformationInternal
 {
@@ -31,7 +30,7 @@ class SoilHumidityCheckState : public CoreStateInterface
 
     private:
     struct impl;
-    std::unique_ptr<impl> pImpl;
+    impl* pImpl;
 };
 
 #endif

@@ -1,7 +1,6 @@
 #include "wrap_up_state.hpp"
 #include "core_state_interface.hpp"
 #include "wrap_up_action_interface.hpp"
-#include <memory>
 
 struct WrapUpState::impl
 {
@@ -42,7 +41,7 @@ struct WrapUpState::impl
 WrapUpState::WrapUpState(
     WrapUpActionInterface* wrap_up_action_interface_ptr
 ) : pImpl(
-        std::make_unique<impl>(
+        new impl(
             wrap_up_action_interface_ptr
         )
     )

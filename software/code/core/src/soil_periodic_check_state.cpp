@@ -1,6 +1,5 @@
 #include "soil_periodic_check_state.hpp"
 #include "core_state_interface.hpp"
-#include <memory>
 
 struct SoilPeriodicCheckState::impl
 {
@@ -8,11 +7,11 @@ struct SoilPeriodicCheckState::impl
     GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback;
     CoreStateInterface* irrigate_soil_state_interface_ptr;
     CoreStateInterface* air_humidity_check_state_interface_ptr;
-    int32_t maximum_period_seconds;
+    long maximum_period_seconds;
 
     impl(
         GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
-        int32_t maximum_period_seconds
+        long maximum_period_seconds
     )
     {
         this->core_state = CoreState::CORE_STATE_SOIL_PERIODIC_CHECK;
@@ -33,7 +32,7 @@ struct SoilPeriodicCheckState::impl
     {
         CoreStateInterface* next_core_state_interface = nullptr;
     
-        int32_t time_from_last_irrigation = this->get_time_from_last_irrigation_callback();
+        long time_from_last_irrigation = this->get_time_from_last_irrigation_callback();
         
         if(time_from_last_irrigation > this->maximum_period_seconds)
         {
@@ -55,9 +54,9 @@ struct SoilPeriodicCheckState::impl
 
 SoilPeriodicCheckState::SoilPeriodicCheckState(
     GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
-    int32_t maximum_period_seconds
+    long maximum_period_seconds
 ) : pImpl(
-        std::make_unique<impl>(
+        new impl(
             get_time_from_last_irrigation_callback,
             maximum_period_seconds
         )

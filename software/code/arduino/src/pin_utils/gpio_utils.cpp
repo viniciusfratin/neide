@@ -1,8 +1,8 @@
 #include "gpio_utils.hpp"
 
-void wait_for_gpio_high(volatile uint8_t* input_register_ptr, uint8_t pin, int32_t timeout_cycles)
+void wait_for_gpio_high(volatile unsigned char* input_register_ptr, unsigned char pin, long timeout_cycles)
 {
-    int32_t elapsed_cycles = 0;
+    long elapsed_cycles = 0;
     while(READ_GPIO_PIN(input_register_ptr, pin) == 1)
     {
         if(elapsed_cycles == timeout_cycles)
@@ -14,9 +14,9 @@ void wait_for_gpio_high(volatile uint8_t* input_register_ptr, uint8_t pin, int32
     }
 }
 
-void wait_for_gpio_low(volatile uint8_t* input_register_ptr, uint8_t pin, int32_t timeout_cycles)
+void wait_for_gpio_low(volatile unsigned char* input_register_ptr, unsigned char pin, long timeout_cycles)
 {
-    int32_t elapsed_cycles = 0;
+    long elapsed_cycles = 0;
     while(READ_GPIO_PIN(input_register_ptr, pin) == 0)
     {
         if(elapsed_cycles == timeout_cycles)

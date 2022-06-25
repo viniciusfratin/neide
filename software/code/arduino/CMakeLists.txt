@@ -1,4 +1,5 @@
 set (arduino_source_files
+    "src/memory/memory.cpp"
     "src/main.cpp"
     "src/soil_irrigator.cpp"
     "src/air_irrigator.cpp"

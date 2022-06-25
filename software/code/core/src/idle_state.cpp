@@ -1,6 +1,5 @@
 #include "idle_state.hpp"
 #include "core_state_interface.hpp"
-#include <memory>
 
 struct IdleState::impl
 {
@@ -51,7 +50,7 @@ struct IdleState::impl
 IdleState::IdleState(
     ShouldWakeUpCallback should_wake_up_callback
 ) : pImpl(
-        std::make_unique<impl>(
+        new impl(
             this,
             should_wake_up_callback
         )

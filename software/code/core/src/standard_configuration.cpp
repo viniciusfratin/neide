@@ -8,123 +8,121 @@
 #include "air_periodic_check_state.hpp"
 #include "irrigate_air_state.hpp"
 #include "wrap_up_state.hpp"
-#include <memory>
-#include <cstdint>
 
 struct StandardConfiguration::impl
 {
-    std::unique_ptr<SystemCore> system_core;
+    SystemCore* system_core;
 
-    std::unique_ptr<IdleState> idle_state;
-    std::unique_ptr<WokeState> woke_state;
-    std::unique_ptr<SoilHumidityCheckState> soil_humidity_check_state;
-    std::unique_ptr<SoilPeriodicCheckState> soil_periodic_check_state;
-    std::unique_ptr<IrrigateSoilState> irrigate_soil_state;
-    std::unique_ptr<AirHumidityCheckState> air_humidity_check_state;
-    std::unique_ptr<AirPeriodicCheckState> air_periodic_check_state;
-    std::unique_ptr<IrrigateAirState> irrigate_air_state;
-    std::unique_ptr<WrapUpState> wrap_up_state;
+    IdleState* idle_state;
+    WokeState* woke_state;
+    SoilHumidityCheckState* soil_humidity_check_state;
+    SoilPeriodicCheckState* soil_periodic_check_state;
+    IrrigateSoilState* irrigate_soil_state;
+    AirHumidityCheckState* air_humidity_check_state;
+    AirPeriodicCheckState* air_periodic_check_state;
+    IrrigateAirState* irrigate_air_state;
+    WrapUpState* wrap_up_state;
 
     impl(
         ShouldWakeUpCallback should_wake_up_callback,
         GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
         GetTimeFromLastSoilIrrigationCallback get_time_from_last_soil_irrigation_callback,
-        int32_t soil_periodic_check_maximum_period,
+        long soil_periodic_check_maximum_period,
         IrrigatorInterface* soil_irrigator_ptr,
-        int32_t soil_irrigation_time,
+        long soil_irrigation_time,
         GetAirHumidityInformationCallback get_air_humidity_information_callback,
         GetTimeFromLastAirIrrigationCallback get_time_from_last_air_irrigation_callback,
-        int32_t air_periodic_check_maximum_period,
+        long air_periodic_check_maximum_period,
         IrrigatorInterface* air_irrigator_ptr,
-        int32_t air_irrigation_time,
+        long air_irrigation_time,
         WrapUpActionInterface* wrap_up_action_ptr
     )
     {
         
-        idle_state = std::make_unique<IdleState>(
+        idle_state = new IdleState(
             should_wake_up_callback
         );
 
-        woke_state = std::make_unique<WokeState>();
+        woke_state = new WokeState();
 
-        soil_humidity_check_state = std::make_unique<SoilHumidityCheckState>(
+        soil_humidity_check_state = new SoilHumidityCheckState(
             get_soil_humidity_information_callback
         );
         
-        soil_periodic_check_state = std::make_unique<SoilPeriodicCheckState>(
+        soil_periodic_check_state = new SoilPeriodicCheckState(
             get_time_from_last_soil_irrigation_callback,
             soil_periodic_check_maximum_period
         );
         
-        irrigate_soil_state = std::make_unique<IrrigateSoilState>(
+        irrigate_soil_state = new IrrigateSoilState(
             soil_irrigator_ptr,
             soil_irrigation_time
         );
         
-        air_humidity_check_state = std::make_unique<AirHumidityCheckState>(
+        air_humidity_check_state = new AirHumidityCheckState(
             get_air_humidity_information_callback
         );
         
-        air_periodic_check_state = std::make_unique<AirPeriodicCheckState>(
+        air_periodic_check_state = new AirPeriodicCheckState(
             get_time_from_last_air_irrigation_callback,
             air_periodic_check_maximum_period
         );
 
-        irrigate_air_state = std::make_unique<IrrigateAirState>(
+        irrigate_air_state = new IrrigateAirState(
             air_irrigator_ptr,
             air_irrigation_time
         );
         
-        wrap_up_state = std::make_unique<WrapUpState>(
+        wrap_up_state = new WrapUpState(
             wrap_up_action_ptr
         );
 
         idle_state->SetTransitions(
-            woke_state.get()
+            woke_state
         );
 
         woke_state->SetTransitions(
-            soil_humidity_check_state.get()
+            soil_humidity_check_state
         );
 
         soil_humidity_check_state->SetTransitions(
-            irrigate_soil_state.get(),
-            soil_periodic_check_state.get()
+            irrigate_soil_state,
+            soil_periodic_check_state
         );
 
         soil_periodic_check_state->SetTransitions(
-            irrigate_soil_state.get(),
-            air_humidity_check_state.get()
+            irrigate_soil_state,
+            air_humidity_check_state
         );
 
         irrigate_soil_state->SetTransitions(
-            air_humidity_check_state.get()
+            air_humidity_check_state
         );
         
         air_humidity_check_state->SetTransitions(
-            irrigate_air_state.get(),
-            air_periodic_check_state.get()
+            irrigate_air_state,
+            air_periodic_check_state
         );
         
         air_periodic_check_state->SetTransitions(
-            irrigate_air_state.get(), 
-            wrap_up_state.get()
+            irrigate_air_state, 
+            wrap_up_state
         );
         
         irrigate_air_state->SetTransitions(
-            wrap_up_state.get()
+            wrap_up_state
         );
         
         wrap_up_state->SetTransitions(
-            idle_state.get()
+            idle_state
         );
         
-        this->system_core = std::make_unique<SystemCore>(idle_state.get());
+        this->system_core = new SystemCore(idle_state);
     }
 
     SystemCore* GetSystemCore()
     {
-        return this->system_core.get();
+        return this->system_core;
     }
 };
 
@@ -132,17 +130,17 @@ StandardConfiguration::StandardConfiguration(
     ShouldWakeUpCallback should_wake_up_callback,
     GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
     GetTimeFromLastSoilIrrigationCallback get_time_from_last_soil_irrigation_callback,
-    int32_t soil_periodic_check_maximum_period,
+    long soil_periodic_check_maximum_period,
     IrrigatorInterface* soil_irrigator_ptr,
-    int32_t soil_irrigation_time,
+    long soil_irrigation_time,
     GetAirHumidityInformationCallback get_air_humidity_information_callback,
     GetTimeFromLastAirIrrigationCallback get_time_from_last_air_irrigation_callback,
-    int32_t air_periodic_check_maximum_period,
+    long air_periodic_check_maximum_period,
     IrrigatorInterface* air_irrigator_ptr,
-    int32_t air_irrigation_time,
+    long air_irrigation_time,
     WrapUpActionInterface* wrap_up_action_ptr
 ) : pImpl(
-        std::make_unique<impl>(
+        new impl(
             should_wake_up_callback,
             get_soil_humidity_information_callback,
             get_time_from_last_soil_irrigation_callback,

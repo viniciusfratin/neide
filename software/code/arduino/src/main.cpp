@@ -16,7 +16,6 @@
 #include "system_timer/system_timer.hpp"
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <cstdint>
 
 #define DHT11_DATA_PIN_INPUT_REGISTER_PTR (&PINB)
 #define DHT11_DATA_PIN_DDR_PTR (&DDRB)
@@ -31,21 +30,18 @@
 #define AIR_IRRIGATOR_DATA_PIN_PORT_PTR (&PORTD)
 #define AIR_IRRIGATOR_DATA_PIN (PD3)
 
-static IrrigatorInterface soil_irrigator_interface;
-static SoilIrrigator soil_irrigator;
-static AirIrrigator air_irrigator;
-static IrrigatorInterface air_irrigator_interface;
-static WrapUpAction wrap_up_action;
-static WrapUpActionInterface wrap_up_action_interface;
-static StandardConfiguration standard_configuration;
-static SystemCore system_core;
+static SoilIrrigator* soil_irrigator;
+static AirIrrigator* air_irrigator;
+static WrapUpAction* wrap_up_action;
+static StandardConfiguration* standard_configuration;
+static SystemCore* system_core;
 
 void setup();
 void loop();
 
 bool should_wake_up();
-int32_t get_time_from_last_soil_irrigation();
-int32_t get_time_from_last_air_irrigation();
+long get_time_from_last_soil_irrigation();
+long get_time_from_last_air_irrigation();
 
 int main()
 {
@@ -75,56 +71,52 @@ void setup()
     SoilConfiguration_Initialize(IDENTIFIER_ADC2);
     SoilInterface_Initialize(HL69_GetSoilInformation, SoilConfiguration_GetSoilUserConfiguration);
 
-    soil_irrigator = SoilIrrigator_Construct(SystemTimer_GetCurrentTimeSeconds, 
+    soil_irrigator = new SoilIrrigator(SystemTimer_GetCurrentTimeSeconds, 
         SOIL_IRRIGATOR_DATA_PIN_DDR_PTR, 
         SOIL_IRRIGATOR_DATA_PIN_PORT_PTR, 
         SOIL_IRRIGATOR_DATA_PIN
     );
-    soil_irrigator_interface = SoilIrrigator_GetIrrigatorInterface(soil_irrigator);
 
-    air_irrigator = AirIrrigator_Construct(SystemTimer_GetCurrentTimeSeconds, 
+    air_irrigator = new AirIrrigator(SystemTimer_GetCurrentTimeSeconds, 
         AIR_IRRIGATOR_DATA_PIN_DDR_PTR,
         AIR_IRRIGATOR_DATA_PIN_PORT_PTR,
         AIR_IRRIGATOR_DATA_PIN,
         IDENTIFIER_ADC3
     );
-    air_irrigator_interface = AirIrrigator_GetIrrigatorInterface(air_irrigator);
 
-    wrap_up_action = WrapUpAction_Construct();
-    wrap_up_action_interface = WrapUpAction_GetWrapUpActionInterface(wrap_up_action);
+    wrap_up_action = new WrapUpAction();
 
-
-    standard_configuration = StandardConfiguration_Construct(
+    standard_configuration = new StandardConfiguration(
         should_wake_up,
         SoilInterface_GetSoilHumidityInformation,
         get_time_from_last_soil_irrigation,
         8L * 60L * 60L,
-        &soil_irrigator_interface,
+        soil_irrigator,
         15L,
         AirInterface_GetAirHumidityInformation,
         get_time_from_last_air_irrigation,
         3L * 60L * 60L,
-        &air_irrigator_interface,
+        air_irrigator,
         15L,
-        &wrap_up_action_interface
+        wrap_up_action
     );
 
-    system_core = StandardConfiguration_GetSystemCore(standard_configuration);
+    system_core = standard_configuration->GetSystemCore();
 
     sei();
 }
 
 void loop()
 {
-    SystemCore_AdvanceCycle(system_core);
+    system_core->AdvanceCycle();
 }
 
 bool should_wake_up()
 {
-    static int32_t last_wake_up_time = 0;
+    static long last_wake_up_time = 0;
 
     bool should_wake_up = false;
-    int32_t current_time = SystemTimer_GetCurrentTimeSeconds();
+    long current_time = SystemTimer_GetCurrentTimeSeconds();
 
     if((current_time - last_wake_up_time) >= (15 * 60))
     {
@@ -139,12 +131,12 @@ bool should_wake_up()
     return should_wake_up;
 }
 
-int32_t get_time_from_last_soil_irrigation()
+long get_time_from_last_soil_irrigation()
 {
-    return SoilIrrigator_GetTimeFromLastIrrigation(soil_irrigator);
+    return soil_irrigator->GetTimeFromLastIrrigation();
 }
 
-int32_t get_time_from_last_air_irrigation()
+long get_time_from_last_air_irrigation()
 {
-    return AirIrrigator_GetTimeFromLastIrrigation(air_irrigator);
+    return air_irrigator->GetTimeFromLastIrrigation();
 }

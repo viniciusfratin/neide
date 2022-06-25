@@ -2,7 +2,6 @@
 #define IRRIGATOR_MOCK_H
 
 #include "irrigator_interface.hpp"
-#include <cstdint>
 
 class IrrigatorMock : public IrrigatorInterface
 {
@@ -10,11 +9,11 @@ class IrrigatorMock : public IrrigatorInterface
     IrrigatorMock();
     virtual ~IrrigatorMock();
     
-    void Irrigate(int32_t irrigation_time_seconds) override;
-    int32_t GetLastIrrigationTime();
+    void Irrigate(long irrigation_time_seconds) override;
+    long GetLastIrrigationTime();
 
     private:
-    int32_t last_irrigation_time_seconds;
+    long last_irrigation_time_seconds;
 };
 
 #endif

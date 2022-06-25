@@ -3,7 +3,6 @@
 
 #include "core_state_interface.hpp"
 #include "wrap_up_action_interface.hpp"
-#include <memory>
 
 class WrapUpState : public CoreStateInterface
 {
@@ -23,7 +22,7 @@ class WrapUpState : public CoreStateInterface
 
     private:
     struct impl;
-    std::unique_ptr<impl> pImpl;
+    impl* pImpl;
 };
 
 #endif

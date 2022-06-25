@@ -1,6 +1,5 @@
 #include "woke_state.hpp"
 #include "core_state_interface.hpp"
-#include <memory>
 
 struct WokeState::impl
 {
@@ -35,7 +34,7 @@ struct WokeState::impl
 
 WokeState::WokeState() : 
     pImpl(
-        std::make_unique<impl>()
+        new impl()
     )
 {
 

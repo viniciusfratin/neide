@@ -10,12 +10,12 @@ IrrigatorMock::~IrrigatorMock()
 
 }
 
-void IrrigatorMock::Irrigate(int32_t irrigation_time_seconds)
+void IrrigatorMock::Irrigate(long irrigation_time_seconds)
 {
     this->last_irrigation_time_seconds = irrigation_time_seconds;
 }
 
-int32_t IrrigatorMock::GetLastIrrigationTime()
+long IrrigatorMock::GetLastIrrigationTime()
 {
     return this->last_irrigation_time_seconds;
 }

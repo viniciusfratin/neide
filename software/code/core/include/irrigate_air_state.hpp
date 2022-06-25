@@ -3,15 +3,13 @@
 
 #include "core_state_interface.hpp"
 #include "irrigator_interface.hpp"
-#include <memory>
-#include <cstdint>
 
 class IrrigateAirState : public CoreStateInterface
 {
     public:
     IrrigateAirState(
         IrrigatorInterface* air_irrigator_interface_ptr,
-        int32_t irrigation_time_seconds
+        long irrigation_time_seconds
     );
 
     void SetTransitions(
@@ -25,7 +23,7 @@ class IrrigateAirState : public CoreStateInterface
 
     private:
     struct impl;
-    std::unique_ptr<impl> pImpl;
+    impl* pImpl;
 };
 
 #endif

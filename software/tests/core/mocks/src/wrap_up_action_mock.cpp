@@ -15,7 +15,7 @@ void WrapUpActionMock::WrapUp()
     this->number_of_calls++;
 }
 
-int32_t WrapUpActionMock::GetNumberOfCalls()
+long WrapUpActionMock::GetNumberOfCalls()
 {
     return this->number_of_calls;
 }

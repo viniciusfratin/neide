@@ -1,6 +1,5 @@
 #include "soil_humidity_check_state.hpp"
 #include "core_state_interface.hpp"
-#include <memory>
 
 struct SoilHumidityCheckState::impl
 {
@@ -53,7 +52,7 @@ struct SoilHumidityCheckState::impl
 SoilHumidityCheckState::SoilHumidityCheckState(
     GetSoilHumidityInformationCallback get_soil_humidity_information_callback
 ) : pImpl(
-        std::make_unique<impl>(
+        new impl(
             get_soil_humidity_information_callback
         )
     )

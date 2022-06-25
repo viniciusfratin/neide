@@ -1,10 +1,9 @@
 #include "adc_utils.hpp"
-#include <cstdint>
 #include <avr/io.h>
 
 #define NUM_ADCS 8
 
-static uint8_t adc_selection_bits[NUM_ADCS] = {
+static unsigned char adc_selection_bits[NUM_ADCS] = {
     0x00U,
     0x01U,
     0x02U,
@@ -36,7 +35,7 @@ float read_adc(ADCIdentifier adc_identifier)
 
 static void select_adc(ADCIdentifier adc_identifier)
 {
-    uint8_t admux_value = 0x00U;
+    unsigned char admux_value = 0x00U;
     admux_value &= ~(_BV(REFS1));
     admux_value |= _BV(REFS0);
     admux_value &= ~(_BV(ADLAR));
@@ -47,7 +46,7 @@ static void select_adc(ADCIdentifier adc_identifier)
 
 static void set_free_running_mode()
 {
-    uint8_t adcsrb_value = 0x00U;
+    unsigned char adcsrb_value = 0x00U;
     adcsrb_value &= ~(_BV(ACME));
     adcsrb_value &= ~(_BV(ADTS2));
     adcsrb_value &= ~(_BV(ADTS1));
@@ -58,7 +57,7 @@ static void set_free_running_mode()
 
 static void set_inputs_as_analog()
 {
-    uint8_t didr0_value = 0x00U;
+    unsigned char didr0_value = 0x00U;
     didr0_value &= ~(_BV(ADC5D));
     didr0_value &= ~(_BV(ADC4D));
     didr0_value &= ~(_BV(ADC3D));
@@ -84,7 +83,7 @@ static void begin_read()
 static float get_read_value()
 {
     float actual_value;
-    int32_t raw_value = 0;
+    long raw_value = 0;
 
     while((ADCSRA & _BV(ADSC)) != 0);
     raw_value = ADCL;

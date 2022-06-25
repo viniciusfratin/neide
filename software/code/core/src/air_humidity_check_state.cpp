@@ -1,6 +1,5 @@
 #include "air_humidity_check_state.hpp"
 #include "core_state_interface.hpp"
-#include <memory>
 
 struct AirHumidityCheckState::impl
 {
@@ -54,7 +53,7 @@ struct AirHumidityCheckState::impl
 AirHumidityCheckState::AirHumidityCheckState(
     GetAirHumidityInformationCallback get_air_humidity_information_callback
 ) : pImpl(
-        std::make_unique<impl>(
+        new impl(
             get_air_humidity_information_callback
         )
     )

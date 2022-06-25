@@ -1,87 +1,77 @@
 #include "soil_irrigator.hpp"
 #include "irrigator_interface.hpp"
-#include "irrigator_interface_construction.hpp"
 #include "pin_utils/gpio_utils.hpp"
-#include <stdlib.h>
 
-typedef struct SoilIrrigatorInternal
+struct SoilIrrigator::impl
 {
-    IrrigatorInterface irrigator_interface;
-    int32_t last_irrigation_time;
+    long last_irrigation_time;
     GetCurrentTimeSecondsCallback get_current_time_seconds_callback;
-    volatile uint8_t* pin_ddr_ptr;
-    volatile uint8_t* pin_port_ptr; 
-    uint8_t pin;
-} SoilIrrigatorImplementation;
+    volatile unsigned char* pin_ddr_ptr;
+    volatile unsigned char* pin_port_ptr; 
+    unsigned char pin;
 
-static void SoilIrrigator_Irrigate(void* object_instance, int32_t irrigation_time_seconds);
-
-SoilIrrigator SoilIrrigator_Construct(GetCurrentTimeSecondsCallback get_current_time_seconds_callback, volatile uint8_t* pin_ddr_ptr, volatile uint8_t* pin_port_ptr, uint8_t pin)
-{
-    SoilIrrigator instance = (SoilIrrigator)malloc(sizeof(SoilIrrigatorImplementation));
-
-    if(instance != NULL)
+    impl(
+        GetCurrentTimeSecondsCallback get_current_time_seconds_callback, 
+        volatile unsigned char* pin_ddr_ptr, 
+        volatile unsigned char* pin_port_ptr, 
+        unsigned char pin
+    )
     {
-        instance->irrigator_interface = IrrigatorInterface_Construct(
-            (void*)instance,
-            SoilIrrigator_Irrigate
-        );
+        this->last_irrigation_time = 0;
+        this->get_current_time_seconds_callback = get_current_time_seconds_callback;
+        this->pin_ddr_ptr = pin_ddr_ptr;
+        this->pin_port_ptr = pin_port_ptr;
+        this->pin = pin;
 
-        if(instance->irrigator_interface != IRRIGATOR_INTERFACE_INVALID_INSTANCE)
-        {
-            instance->last_irrigation_time = 0;
-            instance->get_current_time_seconds_callback = get_current_time_seconds_callback;
-            instance->pin_ddr_ptr = pin_ddr_ptr;
-            instance->pin_port_ptr = pin_port_ptr;
-            instance->pin = pin;
-
-            SET_GPIO_PIN_AS_OUTPUT(instance->pin_ddr_ptr, instance->pin);
-            SET_GPIO_PIN_TO_LOW(instance->pin_port_ptr, instance->pin);
-        }
-        else
-        {
-            instance = SOIL_IRRIGATOR_INVALID_INSTANCE;
-        }
-    }
-    else
-    {
-        instance = SOIL_IRRIGATOR_INVALID_INSTANCE;
+        SET_GPIO_PIN_AS_OUTPUT(this->pin_ddr_ptr, this->pin);
+        SET_GPIO_PIN_TO_LOW(this->pin_port_ptr, this->pin);
     }
 
-    return instance;
-}
-
-void SoilIrrigator_Destruct(SoilIrrigator* instancePtr)
-{
-    if(instancePtr != NULL)
+    long GetTimeFromLastIrrigation()
     {
-        IrrigatorInterface_Destruct(&((*instancePtr)->irrigator_interface));
+        long current_time = this->get_current_time_seconds_callback();
 
-        free(*instancePtr);
-        (*instancePtr) = SOIL_IRRIGATOR_INVALID_INSTANCE;
+        return (current_time - this->last_irrigation_time);
     }
-}
 
-IrrigatorInterface SoilIrrigator_GetIrrigatorInterface(SoilIrrigator instance)
+    void Irrigate(long irrigation_time_seconds)
+    {
+        this->last_irrigation_time = this->get_current_time_seconds_callback();
+
+        SET_GPIO_PIN_TO_HIGH(this->pin_port_ptr, this->pin);
+        while((this->get_current_time_seconds_callback() - this->last_irrigation_time) <= irrigation_time_seconds);
+        SET_GPIO_PIN_TO_LOW(this->pin_port_ptr, this->pin);
+    }
+};
+
+SoilIrrigator::SoilIrrigator(
+    GetCurrentTimeSecondsCallback get_current_time_seconds_callback, 
+    volatile unsigned char* pin_ddr_ptr, 
+    volatile unsigned char* pin_port_ptr, 
+    unsigned char pin
+) : pImpl(
+        new impl(
+            get_current_time_seconds_callback,
+            pin_ddr_ptr,
+            pin_port_ptr,
+            pin
+        )
+    )
 {
-    return instance->irrigator_interface;
+
 }
 
-int32_t SoilIrrigator_GetTimeFromLastIrrigation(SoilIrrigator instance)
+SoilIrrigator::~SoilIrrigator()
 {
-    int32_t current_time = instance->get_current_time_seconds_callback();
-
-    return (current_time - instance->last_irrigation_time);
+    
 }
 
-static void SoilIrrigator_Irrigate(void* object_instance, int32_t irrigation_time_seconds)
+void SoilIrrigator::Irrigate(long irrigation_time_seconds)
 {
-    SoilIrrigator instance = (SoilIrrigator)object_instance;
-    instance->last_irrigation_time = instance->get_current_time_seconds_callback();
-
-    SET_GPIO_PIN_TO_HIGH(instance->pin_port_ptr, instance->pin);
-    while((instance->get_current_time_seconds_callback() - instance->last_irrigation_time) <= irrigation_time_seconds);
-    SET_GPIO_PIN_TO_LOW(instance->pin_port_ptr, instance->pin);
+    pImpl->Irrigate(irrigation_time_seconds);
 }
 
-
+long SoilIrrigator::GetTimeFromLastIrrigation()
+{
+    return pImpl->GetTimeFromLastIrrigation();
+}

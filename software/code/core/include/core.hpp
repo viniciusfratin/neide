@@ -2,7 +2,6 @@
 #define CORE_HPP
 
 #include "core_state_interface.hpp"
-#include <memory>
 
 class SystemCore
 {
@@ -18,7 +17,7 @@ class SystemCore
 
     private:
     struct impl;
-    std::unique_ptr<impl> pImpl;
+    impl* pImpl;
 };
 
 #endif

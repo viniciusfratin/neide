@@ -2,7 +2,6 @@
 #define IDLE_STATE_HPP
 
 #include "core_state_interface.hpp"
-#include <memory>
 
 typedef bool (*ShouldWakeUpCallback)();
 
@@ -24,7 +23,7 @@ class IdleState : public CoreStateInterface
 
     private:
     struct impl;
-    std::unique_ptr<impl> pImpl;
+    impl* pImpl;
 };
 
 #endif
