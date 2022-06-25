@@ -1,5 +1,9 @@
 #include "soil_interface.hpp"
-#include <stddef.h>
+
+extern "C" 
+{
+    #include <stddef.h>
+}
 
 typedef struct SoilInterfaceStateInternal
 {
@@ -8,7 +12,7 @@ typedef struct SoilInterfaceStateInternal
     GetSoilUserConfigurationCallback get_soil_user_configuration_callback;
 } SoilInterfaceState;
 
-static SoilInterfaceState singleton = {false, NULL, NULL};
+static SoilInterfaceState singleton = {false, nullptr, nullptr};
 
 void SoilInterface_Initialize(GetSoilInformationCallback get_soil_information_callback, 
     GetSoilUserConfigurationCallback get_soil_user_configuration_callback

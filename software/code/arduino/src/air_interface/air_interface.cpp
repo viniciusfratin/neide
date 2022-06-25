@@ -1,5 +1,4 @@
 #include "air_interface.hpp"
-#include <stddef.h>
 
 typedef struct AirInterfaceStateInternal
 {
@@ -8,7 +7,7 @@ typedef struct AirInterfaceStateInternal
     GetAirUserConfigurationCallback get_air_user_configuration_callback;
 } AirInterfaceState;
 
-static AirInterfaceState singleton = {false, NULL, NULL};
+static AirInterfaceState singleton = {false, nullptr, nullptr};
 
 void AirInterface_Initialize(GetAirInformationCallback get_air_information_callback, 
     GetAirUserConfigurationCallback get_air_user_configuration_callback

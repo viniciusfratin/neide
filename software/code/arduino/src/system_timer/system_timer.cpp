@@ -1,6 +1,10 @@
 #include "system_timer.hpp"
-#include <avr/io.h>
-#include <avr/interrupt.h>
+
+extern "C" 
+{
+    #include <avr/io.h>
+    #include <avr/interrupt.h>
+}
 
 typedef struct SystemTimerStateInternal
 {

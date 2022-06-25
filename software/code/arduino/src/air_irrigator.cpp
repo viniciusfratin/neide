@@ -1,7 +1,11 @@
 #include "air_irrigator.hpp"
 #include "irrigator_interface.hpp"
 #include "pin_utils/gpio_utils.hpp"
-#include <avr/io.h>
+
+extern "C" 
+{
+    #include <avr/io.h>
+}
 
 #define PWM_DDR_PIN (DDRB)
 #define PWM_PIN (PB1)

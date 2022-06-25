@@ -9,9 +9,11 @@
 
 #include "dht11.hpp"
 #include "pin_utils/gpio_utils.hpp"
-#include <stddef.h>
-#include <util/delay.h>
 
+extern "C" 
+{
+    #include <util/delay.h>
+}
 
 typedef struct DHT11StateInternal
 {
@@ -31,7 +33,7 @@ typedef struct DHT11InterchangeDataInternal
     bool is_valid;
 } DHT11InterchangeData;
 
-static DHT11State singleton = {false, NULL, NULL, NULL, 0U};
+static DHT11State singleton = {false, nullptr, nullptr, nullptr, 0U};
 
 static AirInformation DHT11_ReadAirInformationFromSensor();
 static DHT11InterchangeData DHT11_GetSensorData();

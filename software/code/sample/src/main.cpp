@@ -2,7 +2,10 @@
 #include "standard_configuration.hpp"
 #include "irrigator_interface.hpp"
 #include "wrap_up_action_interface.hpp"
-#include <stdio.h>
+extern "C" 
+{
+    #include <stdio.h>
+}
 
 #define NUMBER_OF_SAMPLE_CYCLES 50
 

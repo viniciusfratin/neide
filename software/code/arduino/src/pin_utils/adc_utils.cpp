@@ -1,5 +1,9 @@
 #include "adc_utils.hpp"
-#include <avr/io.h>
+
+extern "C" 
+{
+    #include <avr/io.h>
+}
 
 #define NUM_ADCS 8
 

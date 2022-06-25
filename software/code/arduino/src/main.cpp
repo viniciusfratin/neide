@@ -14,8 +14,12 @@
 #include "pin_utils/adc_defs.hpp"
 #include "clock/clock.hpp"
 #include "system_timer/system_timer.hpp"
-#include <avr/io.h>
-#include <avr/interrupt.h>
+
+extern "C" 
+{
+    #include <avr/io.h>
+    #include <avr/interrupt.h>
+}
 
 #define DHT11_DATA_PIN_INPUT_REGISTER_PTR (&PINB)
 #define DHT11_DATA_PIN_DDR_PTR (&DDRB)
