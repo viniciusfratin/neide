@@ -1,20 +1,29 @@
-#ifndef WRAP_UP_STATE_H
-#define WRAP_UP_STATE_H
+#ifndef WRAP_UP_STATE_HPP
+#define WRAP_UP_STATE_HPP
 
-#include "common.hpp"
 #include "core_state_interface.hpp"
 #include "wrap_up_action_interface.hpp"
+#include <memory>
 
-typedef struct WrapUpStateInternal* WrapUpState;
+class WrapUpState : public CoreStateInterface
+{
+    public:
+    WrapUpState(
+        WrapUpActionInterface* wrap_up_action_interface_ptr
+    );
 
-#define WRAP_UP_STATE_INVALID_INSTANCE ((WrapUpState)NULL)
+    void SetTransitions(
+        CoreStateInterface* idle_state_interface_ptr
+    );
 
+    CoreStateInterface* ExecuteState() override;
+    CoreState GetCoreState() override;
 
-CoreStateInterface WrapUpState_GetCoreStateInterface(WrapUpState instance);
+    virtual ~WrapUpState();
 
-
-WrapUpState WrapUpState_Construct(WrapUpActionInterface* wrap_up_action_interface_ptr, CoreStateInterface* idle_state_interface_ptr);
-void WrapUpState_Destruct(WrapUpState* instancePtr);
-
+    private:
+    struct impl;
+    std::unique_ptr<impl> pImpl;
+};
 
 #endif

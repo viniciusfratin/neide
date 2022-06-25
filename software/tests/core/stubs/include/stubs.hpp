@@ -1,13 +1,12 @@
-#ifndef STUBS_H
-#define STUBS_H
+#ifndef STUBS_HPP
+#define STUBS_HPP
 
-#include "common.hpp"
 #include "soil_humidity_check_state.hpp"
 #include "air_humidity_check_state.hpp"
-#include <stdint.h>
+#include <cstdint>
 
-Bool stub_should_wake_up_true();
-Bool stub_should_wake_up_false();
+bool stub_should_wake_up_true();
+bool stub_should_wake_up_false();
 SoilHumidityInformation stub_get_soil_humidity_50_threshold_60();
 SoilHumidityInformation stub_get_soil_humidity_70_threshold_60();
 SoilHumidityInformation stub_get_soil_humidity_60_threshold_60();

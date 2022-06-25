@@ -1,18 +1,19 @@
-#ifndef GENERAL_STATE_MOCK_H
-#define GENERAL_STATE_MOCK_H
+#ifndef GENERAL_STATE_MOCK_HPP
+#define GENERAL_STATE_MOCK_HPP
 
 #include "core_state_interface.hpp"
 
-typedef struct GeneralStateMockInternal* GeneralStateMock;
+class GeneralStateMock : public CoreStateInterface
+{
+    public:
+    GeneralStateMock(CoreState core_state);
+    virtual ~GeneralStateMock();
 
-#define GENERAL_STATE_MOCK_INVALID_INSTANCE ((GeneralStateMock)NULL)
+    CoreStateInterface* ExecuteState() override;
+    CoreState GetCoreState() override;
 
-
-CoreStateInterface GeneralStateMock_GetCoreStateInterface(GeneralStateMock instance);
-
-
-GeneralStateMock GeneralStateMock_Construct(CoreState core_state);
-void GeneralStateMock_Destruct(GeneralStateMock* instancePtr);
-
+    private:
+    const CoreState core_state;
+};
 
 #endif

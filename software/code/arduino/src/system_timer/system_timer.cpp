@@ -1,23 +1,22 @@
 #include "system_timer.hpp"
-#include "common.hpp"
-#include <stdint.h>
+#include <cstdint>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
 typedef struct SystemTimerStateInternal
 {
-    Bool is_initialized;
+    bool is_initialized;
     volatile int32_t current_time_seconds;
     volatile int32_t current_num_of_overflows;
 } SystemTimerState;
 
-static SystemTimerState singleton = {FALSE, 0, 0};
+static SystemTimerState singleton = {false, 0, 0};
 
 #define NUM_OVERFLOWS_PER_SECOND ((F_CPU/256)/1024)
 
 void SystemTimer_Initialize()
 {
-    singleton.is_initialized = TRUE;
+    singleton.is_initialized = true;
     singleton.current_time_seconds = 0;
     singleton.current_num_of_overflows = 0;
 

@@ -1,23 +1,31 @@
-#ifndef IRRIGATE_AIR_STATE_H
-#define IRRIGATE_AIR_STATE_H
+#ifndef IRRIGATE_AIR_STATE_HPP
+#define IRRIGATE_AIR_STATE_HPP
 
 #include "core_state_interface.hpp"
 #include "irrigator_interface.hpp"
-#include <stdint.h>
+#include <memory>
+#include <cstdint>
 
-typedef struct IrrigateAirStateInternal* IrrigateAirState;
+class IrrigateAirState : public CoreStateInterface
+{
+    public:
+    IrrigateAirState(
+        IrrigatorInterface* air_irrigator_interface_ptr,
+        int32_t irrigation_time_seconds
+    );
 
-#define IRRIGATE_AIR_STATE_INVALID_INSTANCE ((IrrigateAirState)NULL)
+    void SetTransitions(
+        CoreStateInterface* wrap_up_state_interface_ptr
+    );
+    
+    CoreStateInterface* ExecuteState() override;
+    CoreState GetCoreState() override;
 
+    virtual ~IrrigateAirState();
 
-CoreStateInterface IrrigateAirState_GetCoreStateInterface(IrrigateAirState instance);
-
-
-IrrigateAirState IrrigateAirState_Construct(
-    CoreStateInterface* wrap_up_state_interface_ptr,
-    IrrigatorInterface* air_irrigator_interface_ptr,
-    int32_t irrigation_time_seconds);
-void IrrigateAirState_Destruct(IrrigateAirState* instancePtr);
-
+    private:
+    struct impl;
+    std::unique_ptr<impl> pImpl;
+};
 
 #endif

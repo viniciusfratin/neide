@@ -1,18 +1,27 @@
-#ifndef WOKE_STATE_H
-#define WOKE_STATE_H
+#ifndef WOKE_STATE_HPP
+#define WOKE_STATE_HPP
 
 #include "core_state_interface.hpp"
+#include <memory>
 
-typedef struct WokeStateInternal* WokeState;
+class WokeState : public CoreStateInterface
+{
+    public:
+    WokeState();
 
-#define WOKE_STATE_INVALID_INSTANCE ((WokeState)NULL)
+    void SetTransitions(
+        CoreStateInterface* soil_humidity_check_state_interface_ptr
+    );
+    
+    CoreStateInterface* ExecuteState() override;
+    CoreState GetCoreState() override;
 
+    virtual ~WokeState();
 
-CoreStateInterface WokeState_GetCoreStateInterface(WokeState instance);
-
-
-WokeState WokeState_Construct(CoreStateInterface* soil_humidity_check_state_interface_ptr);
-void WokeState_Destruct(WokeState* instancePtr);
+    private:
+    struct impl;
+    std::unique_ptr<impl> pImpl;
+};
 
 
 #endif

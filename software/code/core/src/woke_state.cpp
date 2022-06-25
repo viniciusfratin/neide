@@ -1,75 +1,66 @@
 #include "woke_state.hpp"
 #include "core_state_interface.hpp"
-#include "core_state_interface_construction.hpp"
-#include <stdlib.h>
+#include <memory>
 
-typedef struct WokeStateInternal
+struct WokeState::impl
 {
-    CoreStateInterface woke_state_interface;
     CoreState core_state;
     CoreStateInterface* soil_humidity_check_state_interface_ptr;
-} WokeStateImplementation;
 
-static CoreStateInterface WokeState_ExecuteWokeState(void* object_instance);
-static CoreState WokeState_GetCoreState(void* object_instance);
-
-WokeState WokeState_Construct(CoreStateInterface* soil_humidity_check_state_interface_ptr)
-{
-    WokeState instance = (WokeState)malloc(sizeof(WokeStateImplementation));
-
-    if(instance != NULL)
+    impl()
     {
-        instance->woke_state_interface = CoreStateInterface_Construct(
-            (void*)instance,
-            WokeState_GetCoreState,
-            WokeState_ExecuteWokeState
-        );
-
-        if(instance->woke_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
-        {
-            instance->core_state = CORE_STATE_WOKE;
-            instance->soil_humidity_check_state_interface_ptr = soil_humidity_check_state_interface_ptr;
-        }
-        else
-        {
-            instance = WOKE_STATE_INVALID_INSTANCE;
-        }
-    }
-    else
-    {
-        instance = WOKE_STATE_INVALID_INSTANCE;
+        this->core_state = CoreState::CORE_STATE_WOKE;
+        
     }
 
-    return instance;
-}
-
-void WokeState_Destruct(WokeState* instancePtr)
-{
-    if(instancePtr != NULL)
+    void SetTransitions(
+        CoreStateInterface* soil_humidity_check_state_interface_ptr
+    )
     {
-        CoreStateInterface_Destruct(&((*instancePtr)->woke_state_interface));
-
-        free(*instancePtr);
-        (*instancePtr) = WOKE_STATE_INVALID_INSTANCE;
+        this->soil_humidity_check_state_interface_ptr = soil_humidity_check_state_interface_ptr;
     }
-}
 
-CoreStateInterface WokeState_GetCoreStateInterface(WokeState instance)
-{
-    return instance->woke_state_interface;
-}
+    CoreStateInterface* ExecuteState()
+    {
+        CoreStateInterface* next_core_state_interface =  this->soil_humidity_check_state_interface_ptr;
 
-static CoreStateInterface WokeState_ExecuteWokeState(void* object_instance)
-{
-    WokeState instance = (WokeState)object_instance;
-    CoreStateInterface next_core_state_interface = *(instance->soil_humidity_check_state_interface_ptr);
-
-    return next_core_state_interface;
-}
-
-static CoreState WokeState_GetCoreState(void* object_instance)
-{
-    WokeState instance = (WokeState)object_instance;
+        return next_core_state_interface;
+    }
     
-    return instance->core_state;
+    CoreState GetCoreState()
+    {
+        return this->core_state;
+    }
+};
+
+WokeState::WokeState() : 
+    pImpl(
+        std::make_unique<impl>()
+    )
+{
+
+}
+
+WokeState::~WokeState()
+{
+
+}
+
+void WokeState::SetTransitions(
+    CoreStateInterface* soil_humidity_check_state_interface_ptr
+)
+{
+    pImpl->SetTransitions(
+        soil_humidity_check_state_interface_ptr
+    );
+}
+
+CoreStateInterface* WokeState::ExecuteState()
+{
+    return pImpl->ExecuteState();
+}
+
+CoreState WokeState::GetCoreState()
+{
+    return pImpl->GetCoreState();
 }

@@ -1,85 +1,78 @@
 #include "irrigate_soil_state.hpp"
 #include "irrigator_interface.hpp"
 #include "core_state_interface.hpp"
-#include "core_state_interface_construction.hpp"
-#include <stdlib.h>
+#include <memory>
 
-typedef struct IrrigateSoilStateInternal
+struct IrrigateSoilState::impl
 {
-    CoreStateInterface irrigate_soil_state_interface;
     CoreState core_state;
     CoreStateInterface* air_humidity_check_state_interface_ptr;
     IrrigatorInterface* soil_irrigator_interface_ptr;
     int32_t irrigation_time_seconds;
-} IrrigateSoilStateImplementation;
 
-static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* object_instance);
-static CoreState IrrigateSoilState_GetCoreState(void* object_instance);
+    impl(
+        IrrigatorInterface* soil_irrigator_interface_ptr,
+        int32_t irrigation_time_seconds
+    )
+    {
+        this->core_state = CoreState::CORE_STATE_IRRIGATE_SOIL;
+        this->soil_irrigator_interface_ptr = soil_irrigator_interface_ptr;
+        this->irrigation_time_seconds = irrigation_time_seconds;
+    }
 
-IrrigateSoilState IrrigateSoilState_Construct(
-    CoreStateInterface* air_humidity_check_state_interface_ptr,
+    void SetTransitions(
+        CoreStateInterface* air_humidity_check_state_interface_ptr
+    )
+    {
+        this->air_humidity_check_state_interface_ptr = air_humidity_check_state_interface_ptr;
+    }
+
+    CoreStateInterface* ExecuteState()
+    {
+        CoreStateInterface* next_core_state_interface = this->air_humidity_check_state_interface_ptr;
+    
+        this->soil_irrigator_interface_ptr->Irrigate(this->irrigation_time_seconds);
+
+        return next_core_state_interface;
+    }
+    
+    CoreState GetCoreState()
+    {
+        return this->core_state;
+    }
+};
+
+IrrigateSoilState::IrrigateSoilState(
     IrrigatorInterface* soil_irrigator_interface_ptr,
-    int32_t irrigation_time_seconds)
+    int32_t irrigation_time_seconds
+) : pImpl(
+        std::make_unique<impl>(
+            soil_irrigator_interface_ptr,
+            irrigation_time_seconds
+        )
+    )
 {
-    IrrigateSoilState instance = (IrrigateSoilState)malloc(sizeof(IrrigateSoilStateImplementation));
 
-    if(instance != NULL)
-    {
-        instance->irrigate_soil_state_interface = CoreStateInterface_Construct(
-            (void*)instance,
-            IrrigateSoilState_GetCoreState,
-            IrrigateSoilState_ExecuteIrrigateSoilState
-        );
-
-        if(instance->irrigate_soil_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
-        {
-            instance->core_state = CORE_STATE_IRRIGATE_SOIL;
-            instance->air_humidity_check_state_interface_ptr = air_humidity_check_state_interface_ptr;
-            instance->soil_irrigator_interface_ptr = soil_irrigator_interface_ptr;
-            instance->irrigation_time_seconds = irrigation_time_seconds;
-        }
-        else
-        {
-            instance = IRRIGATE_SOIL_STATE_INVALID_INSTANCE;
-        }
-    }
-    else
-    {
-        instance = IRRIGATE_SOIL_STATE_INVALID_INSTANCE;
-    }
-
-    return instance;
 }
 
-void IrrigateSoilState_Destruct(IrrigateSoilState* instancePtr)
+IrrigateSoilState::~IrrigateSoilState()
 {
-    if(instancePtr != NULL)
-    {
-        CoreStateInterface_Destruct(&((*instancePtr)->irrigate_soil_state_interface));
 
-        free(*instancePtr);
-        (*instancePtr) = IRRIGATE_SOIL_STATE_INVALID_INSTANCE;
-    }
 }
 
-CoreStateInterface IrrigateSoilState_GetCoreStateInterface(IrrigateSoilState instance)
+void IrrigateSoilState::SetTransitions(
+    CoreStateInterface* air_humidity_check_state_interface_ptr
+)
 {
-    return instance->irrigate_soil_state_interface;
+    pImpl->SetTransitions(air_humidity_check_state_interface_ptr);
 }
 
-static CoreStateInterface IrrigateSoilState_ExecuteIrrigateSoilState(void* object_instance)
+CoreStateInterface* IrrigateSoilState::ExecuteState()
 {
-    IrrigateSoilState instance = (IrrigateSoilState)object_instance;
-    CoreStateInterface next_core_state_interface = *(instance->air_humidity_check_state_interface_ptr);
-    
-    IrrigatorInterface_Irrigate(*(instance->soil_irrigator_interface_ptr), instance->irrigation_time_seconds);
-    
-    return next_core_state_interface;
+    return pImpl->ExecuteState();
 }
 
-static CoreState IrrigateSoilState_GetCoreState(void* object_instance)
+CoreState IrrigateSoilState::GetCoreState()
 {
-    IrrigateSoilState instance = (IrrigateSoilState)object_instance;
-    
-    return instance->core_state;
+    return pImpl->GetCoreState();
 }

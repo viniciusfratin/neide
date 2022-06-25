@@ -2,16 +2,15 @@
 #include "standard_configuration.hpp"
 #include "irrigator_interface.hpp"
 #include "wrap_up_action_interface.hpp"
-#include "irrigator.hpp"
-#include "wrap_up_action.hpp"
 #include <stdio.h>
-#include <stdint.h>
+#include <memory>
+#include <cstdint>
 
 #define NUMBER_OF_SAMPLE_CYCLES 50
 
-Bool should_wake_up()
+bool should_wake_up()
 {
-    Bool should_wake_up = TRUE;
+    bool should_wake_up = true;
 
     printf("- Should wake up: %d\n", should_wake_up);
     return should_wake_up;
@@ -59,42 +58,54 @@ int32_t get_time_from_last_air_irrigation()
     return time;
 }
 
+class Irrigator : public IrrigatorInterface
+{
+    public:
+    void Irrigate(int32_t irrigation_time_seconds) override
+    {
+        printf("- Irrigating: %d\n", irrigation_time_seconds);
+    }
+};
+
+class WrapUpAction : public WrapUpActionInterface
+{
+    public:
+    void WrapUp() override
+    {
+        return;
+    }
+};
+
 int32_t main()
 {
     printf("neide system.\n");
 
-    Irrigator soil_irrigator = Irrigator_Construct();
-    IrrigatorInterface soil_irrigator_interface = Irrigator_GetIrrigatorInterface(soil_irrigator);
+    std::unique_ptr<Irrigator> soil_irrigator = std::make_unique<Irrigator>();
+    std::unique_ptr<Irrigator> air_irrigator = std::make_unique<Irrigator>();
+    std::unique_ptr<WrapUpAction> wrap_up_action = std::make_unique<WrapUpAction>();
 
-    Irrigator air_irrigator = Irrigator_Construct();
-    IrrigatorInterface air_irrigator_interface = Irrigator_GetIrrigatorInterface(air_irrigator);
-
-    WrapUpAction wrap_up_action = WrapUpAction_Construct();
-    WrapUpActionInterface wrap_up_action_interface = WrapUpAction_GetWrapUpActionInterface(wrap_up_action);
-
-
-    StandardConfiguration standard_configuration = StandardConfiguration_Construct(
+    std::unique_ptr<StandardConfiguration> standard_configuration = std::make_unique<StandardConfiguration>(
         should_wake_up,
         get_soil_humidity_information,
         get_time_from_last_soil_irrigation,
         3 * 60 * 60,
-        &soil_irrigator_interface,
+        soil_irrigator.get(),
         10,
         get_air_humidity_information,
         get_time_from_last_air_irrigation,
         3 * 60 * 60,
-        &air_irrigator_interface,
+        air_irrigator.get(),
         10,
-        &wrap_up_action_interface
+        wrap_up_action.get()
     );
 
-    SystemCore system_core = StandardConfiguration_GetSystemCore(standard_configuration);
+    SystemCore* system_core = standard_configuration->GetSystemCore();
 
     for(int32_t num_cycles = 0; num_cycles < NUMBER_OF_SAMPLE_CYCLES; num_cycles++)
     {
-        printf("Current state: %d\n", SystemCore_GetCurrentState(system_core));
+        printf("Current state: %d\n", (int32_t)system_core->GetCurrentState());
         
-        SystemCore_AdvanceCycle(system_core);
+        system_core->AdvanceCycle();
     }
 
     return 0;

@@ -1,20 +1,24 @@
-#ifndef CORE_H
-#define CORE_H
+#ifndef CORE_HPP
+#define CORE_HPP
 
-#include "common.hpp"
 #include "core_state_interface.hpp"
+#include <memory>
 
-typedef struct SystemCoreInternal* SystemCore;
+class SystemCore
+{
+    public:
+    SystemCore(
+        CoreStateInterface* initial_core_state_interface
+    );
 
-#define SYSTEM_CORE_INVALID_INSTANCE ((SystemCore)NULL)
+    CoreState GetCurrentState();
+    void AdvanceCycle();
 
+    virtual ~SystemCore();
 
-CoreState SystemCore_GetCurrentState(SystemCore instance);
-void SystemCore_AdvanceCycle(SystemCore instance);
-
-
-SystemCore SystemCore_Construct(CoreStateInterface initial_core_state_interface);
-void SystemCore_Destruct(SystemCore* instancePtr);
-
+    private:
+    struct impl;
+    std::unique_ptr<impl> pImpl;
+};
 
 #endif

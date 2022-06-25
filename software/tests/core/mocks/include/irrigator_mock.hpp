@@ -2,19 +2,19 @@
 #define IRRIGATOR_MOCK_H
 
 #include "irrigator_interface.hpp"
-#include <stdint.h>
+#include <cstdint>
 
-typedef struct IrrigatorMockInternal* IrrigatorMock;
+class IrrigatorMock : public IrrigatorInterface
+{
+    public:
+    IrrigatorMock();
+    virtual ~IrrigatorMock();
+    
+    void Irrigate(int32_t irrigation_time_seconds) override;
+    int32_t GetLastIrrigationTime();
 
-#define IRRIGATOR_MOCK_INVALID_INSTANCE ((IrrigatorMock)NULL)
-
-
-IrrigatorInterface IrrigatorMock_GetIrrigatorInterface(IrrigatorMock instance);
-int32_t IrrigatorMock_GetLastIrrigationTime(IrrigatorMock instance);
-
-
-IrrigatorMock IrrigatorMock_Construct();
-void IrrigatorMock_Destruct(IrrigatorMock* instancePtr);
-
+    private:
+    int32_t last_irrigation_time_seconds;
+};
 
 #endif

@@ -1,15 +1,13 @@
-#ifndef CORE_STATE_INTERFACE_H
-#define CORE_STATE_INTERFACE_H
+#ifndef CORE_STATE_INTERFACE_HPP
+#define CORE_STATE_INTERFACE_HPP
 
 #include "core_states.hpp"
 
-typedef struct CoreStateInterfaceInternal* CoreStateInterface;
-
-#define CORE_STATE_INTERFACE_INVALID_INSTANCE ((CoreStateInterface)NULL)
-
-
-CoreStateInterface CoreStateInterface_ExecuteState(CoreStateInterface instance);
-CoreState CoreStateInterface_GetCoreState(CoreStateInterface instance);
-
+class CoreStateInterface
+{
+    public:
+    virtual CoreStateInterface* ExecuteState() = 0;
+    virtual CoreState GetCoreState() = 0;
+};
 
 #endif

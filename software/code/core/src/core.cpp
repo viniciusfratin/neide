@@ -1,45 +1,51 @@
 #include "core.hpp"
-#include <stdlib.h>
+#include "core_state_interface.hpp"
+#include <memory>
 
-typedef struct SystemCoreInternal
+struct SystemCore::impl
 {
-    CoreStateInterface current_core_state_interface;
-} SystemCoreImplementation;
+    CoreStateInterface* current_core_state_interface;
 
-SystemCore SystemCore_Construct(CoreStateInterface initial_core_state_interface)
-{
-    SystemCore instance = (SystemCore)malloc(sizeof(SystemCoreImplementation));
-
-    if(instance != NULL)
+    impl(
+        CoreStateInterface* initial_core_state_interface
+    )
     {
-        instance->current_core_state_interface = initial_core_state_interface;
-    }
-    else
-    {
-        instance = SYSTEM_CORE_INVALID_INSTANCE;
+        this->current_core_state_interface = initial_core_state_interface;
     }
 
-    return instance;
-}
-
-void SystemCore_Destruct(SystemCore* instancePtr)
-{
-    if(instancePtr != NULL)
+    CoreState GetCurrentState()
     {
-        free(*instancePtr);
-        (*instancePtr) = SYSTEM_CORE_INVALID_INSTANCE;
+        return this->current_core_state_interface->GetCoreState();
     }
+
+    void AdvanceCycle()
+    {
+        this->current_core_state_interface = this->current_core_state_interface->ExecuteState();
+    }
+};
+
+SystemCore::SystemCore(
+    CoreStateInterface* initial_core_state_interface
+) : pImpl(
+        std::make_unique<impl>(
+            initial_core_state_interface
+        )
+    )
+{
+
 }
 
-CoreState SystemCore_GetCurrentState(SystemCore instance)
+SystemCore::~SystemCore()
 {
-    return CoreStateInterface_GetCoreState(instance->current_core_state_interface);
+
 }
 
-void SystemCore_AdvanceCycle(SystemCore instance)
+CoreState SystemCore::GetCurrentState()
 {
-    instance->current_core_state_interface = 
-        CoreStateInterface_ExecuteState(
-            instance->current_core_state_interface
-        );
+    return pImpl->GetCurrentState();
+}
+
+void SystemCore::AdvanceCycle()
+{
+    pImpl->AdvanceCycle();
 }

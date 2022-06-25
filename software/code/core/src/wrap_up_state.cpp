@@ -1,80 +1,73 @@
 #include "wrap_up_state.hpp"
 #include "core_state_interface.hpp"
-#include "core_state_interface_construction.hpp"
 #include "wrap_up_action_interface.hpp"
-#include <stdlib.h>
+#include <memory>
 
-typedef struct WrapUpStateInternal
+struct WrapUpState::impl
 {
-    CoreStateInterface wrap_up_state_interface;
     CoreState core_state;
     WrapUpActionInterface* wrap_up_action_interface_ptr;
     CoreStateInterface* idle_state_interface_ptr;
-} WrapUpStateImplementation;
 
-static CoreStateInterface WrapUpState_ExecuteWrapUpState(void* object_instance);
-static CoreState WrapUpState_GetCoreState(void* object_instance);
-
-WrapUpState WrapUpState_Construct(WrapUpActionInterface* wrap_up_action_interface_ptr, CoreStateInterface* idle_state_interface_ptr)
-{
-    WrapUpState instance = (WrapUpState)malloc(sizeof(WrapUpStateImplementation));
-
-    if(instance != NULL)
+    impl(
+        WrapUpActionInterface* wrap_up_action_interface_ptr
+    )
     {
-        instance->wrap_up_state_interface = CoreStateInterface_Construct(
-            (void*)instance,
-            WrapUpState_GetCoreState,
-            WrapUpState_ExecuteWrapUpState
-        );
-
-        if(instance->wrap_up_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
-        {
-            instance->core_state = CORE_STATE_WRAP_UP;
-            instance->wrap_up_action_interface_ptr = wrap_up_action_interface_ptr;
-            instance->idle_state_interface_ptr = idle_state_interface_ptr;
-        }
-        else
-        {
-            instance = WRAP_UP_STATE_INVALID_INSTANCE;
-        }
-    }
-    else
-    {
-        instance = WRAP_UP_STATE_INVALID_INSTANCE;
+        this->core_state = CoreState::CORE_STATE_WRAP_UP;
+        this->wrap_up_action_interface_ptr = wrap_up_action_interface_ptr;
     }
 
-    return instance;
-}
-
-void WrapUpState_Destruct(WrapUpState* instancePtr)
-{
-    if(instancePtr != NULL)
+    void SetTransitions(
+        CoreStateInterface* idle_state_interface_ptr
+    )
     {
-        CoreStateInterface_Destruct(&((*instancePtr)->wrap_up_state_interface));
-
-        free(*instancePtr);
-        (*instancePtr) = WRAP_UP_STATE_INVALID_INSTANCE;
+        this->idle_state_interface_ptr = idle_state_interface_ptr;
     }
-}
 
-CoreStateInterface WrapUpState_GetCoreStateInterface(WrapUpState instance)
-{
-    return instance->wrap_up_state_interface;
-}
+    CoreStateInterface* ExecuteState()
+    {
+        CoreStateInterface* next_core_state_interface = this->idle_state_interface_ptr;
 
-static CoreStateInterface WrapUpState_ExecuteWrapUpState(void* object_instance)
-{
-    WrapUpState instance = (WrapUpState)object_instance;
-    CoreStateInterface next_core_state_interface = *(instance->idle_state_interface_ptr);
+        this->wrap_up_action_interface_ptr->WrapUp();
 
-    WrapUpActionInterface_WrapUp(*(instance->wrap_up_action_interface_ptr));
+        return next_core_state_interface;
+    }
     
-    return next_core_state_interface;
+    CoreState GetCoreState()
+    {
+        return this->core_state;
+    }
+};
+
+WrapUpState::WrapUpState(
+    WrapUpActionInterface* wrap_up_action_interface_ptr
+) : pImpl(
+        std::make_unique<impl>(
+            wrap_up_action_interface_ptr
+        )
+    )
+{
+
 }
 
-static CoreState WrapUpState_GetCoreState(void* object_instance)
+WrapUpState::~WrapUpState()
 {
-    WrapUpState instance = (WrapUpState)object_instance;
 
-    return instance->core_state;
+}
+
+void WrapUpState::SetTransitions(
+    CoreStateInterface* idle_state_interface_ptr
+)
+{
+    pImpl->SetTransitions(idle_state_interface_ptr);
+}
+
+CoreStateInterface* WrapUpState::ExecuteState()
+{
+    return pImpl->ExecuteState();
+}
+
+CoreState WrapUpState::GetCoreState()
+{
+    return pImpl->GetCoreState();
 }

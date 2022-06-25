@@ -1,94 +1,88 @@
 #include "soil_humidity_check_state.hpp"
 #include "core_state_interface.hpp"
-#include "core_state_interface_construction.hpp"
-#include <stdlib.h>
+#include <memory>
 
-typedef struct SoilHumidityCheckStateInternal
+struct SoilHumidityCheckState::impl
 {
-    CoreStateInterface soil_humidity_check_state_interface;
     CoreState core_state;
     GetSoilHumidityInformationCallback get_soil_humidity_information_callback;
     CoreStateInterface* irrigate_soil_state_interface_ptr;
     CoreStateInterface* soil_periodic_check_state_interface_ptr;
-} SoilHumidityCheckStateImplementation;
 
-static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(void* object_instance);
-static CoreState SoilHumidityCheckState_GetCoreState(void* object_instance);
+    impl(
+        GetSoilHumidityInformationCallback get_soil_humidity_information_callback
+    )
+    {
+        this->core_state = CoreState::CORE_STATE_SOIL_HUMIDITY_CHECK;
+        this->get_soil_humidity_information_callback = get_soil_humidity_information_callback;
+    }
 
-SoilHumidityCheckState SoilHumidityCheckState_Construct(
-    GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
+    void SetTransitions(
+        CoreStateInterface* irrigate_soil_state_interface_ptr,
+        CoreStateInterface* soil_periodic_check_state_interface_ptr
+    )
+    {
+        this->irrigate_soil_state_interface_ptr = irrigate_soil_state_interface_ptr;
+        this->soil_periodic_check_state_interface_ptr = soil_periodic_check_state_interface_ptr;
+    }
+
+    CoreStateInterface* ExecuteState()
+    {
+        CoreStateInterface* next_core_state_interface = nullptr;
+    
+        SoilHumidityInformation soil_humidity_information = this->get_soil_humidity_information_callback();
+        
+        if(soil_humidity_information.current_relative_humidity < soil_humidity_information.relative_humidity_threshold)
+        {
+            next_core_state_interface = this->irrigate_soil_state_interface_ptr;
+        }
+        else
+        {
+            next_core_state_interface = this->soil_periodic_check_state_interface_ptr;
+        }
+
+        return next_core_state_interface;
+    }
+    
+    CoreState GetCoreState()
+    {
+        return this->core_state;
+    }
+};
+
+SoilHumidityCheckState::SoilHumidityCheckState(
+    GetSoilHumidityInformationCallback get_soil_humidity_information_callback
+) : pImpl(
+        std::make_unique<impl>(
+            get_soil_humidity_information_callback
+        )
+    )
+{
+
+}
+
+void SoilHumidityCheckState::SetTransitions(
     CoreStateInterface* irrigate_soil_state_interface_ptr,
     CoreStateInterface* soil_periodic_check_state_interface_ptr
 )
 {
-    SoilHumidityCheckState instance = (SoilHumidityCheckState)malloc(sizeof(SoilHumidityCheckStateImplementation));
-
-    if(instance != NULL)
-    {
-        instance->soil_humidity_check_state_interface = CoreStateInterface_Construct(
-            (void*)instance,
-            SoilHumidityCheckState_GetCoreState,
-            SoilHumidityCheckState_ExecuteSoilHumidityCheckState
-        );
-
-        if(instance->soil_humidity_check_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
-        {
-            instance->core_state = CORE_STATE_SOIL_HUMIDITY_CHECK;
-            instance->get_soil_humidity_information_callback = get_soil_humidity_information_callback;
-            instance->irrigate_soil_state_interface_ptr = irrigate_soil_state_interface_ptr;
-            instance->soil_periodic_check_state_interface_ptr = soil_periodic_check_state_interface_ptr;
-        }
-        else
-        {
-            instance = SOIL_HUMIDITY_CHECK_STATE_INVALID_INSTANCE;
-        }
-    }
-    else
-    {
-        instance = SOIL_HUMIDITY_CHECK_STATE_INVALID_INSTANCE;
-    }
-
-    return instance;
+    pImpl->SetTransitions(
+        irrigate_soil_state_interface_ptr,
+        soil_periodic_check_state_interface_ptr
+    );
 }
 
-void SoilHumidityCheckState_Destruct(SoilHumidityCheckState* instancePtr)
+SoilHumidityCheckState::~SoilHumidityCheckState()
 {
-    if(instancePtr != NULL)
-    {
-        CoreStateInterface_Destruct(&((*instancePtr)->soil_humidity_check_state_interface));
-
-        free(*instancePtr);
-        (*instancePtr) = SOIL_HUMIDITY_CHECK_STATE_INVALID_INSTANCE;
-    }
+    
 }
 
-CoreStateInterface SoilHumidityCheckState_GetCoreStateInterface(SoilHumidityCheckState instance)
+CoreStateInterface* SoilHumidityCheckState::ExecuteState()
 {
-    return instance->soil_humidity_check_state_interface;
+    return pImpl->ExecuteState();
 }
 
-static CoreStateInterface SoilHumidityCheckState_ExecuteSoilHumidityCheckState(void* object_instance)
+CoreState SoilHumidityCheckState::GetCoreState()
 {
-    SoilHumidityCheckState instance = (SoilHumidityCheckState)object_instance;
-    CoreStateInterface next_core_state_interface = CORE_STATE_INTERFACE_INVALID_INSTANCE;
-    
-    SoilHumidityInformation soil_humidity_information = instance->get_soil_humidity_information_callback();
-    
-    if(soil_humidity_information.current_relative_humidity < soil_humidity_information.relative_humidity_threshold)
-    {
-        next_core_state_interface = *(instance->irrigate_soil_state_interface_ptr);
-    }
-    else
-    {
-        next_core_state_interface = *(instance->soil_periodic_check_state_interface_ptr);
-    }
-    
-    return next_core_state_interface;
-}
-
-static CoreState SoilHumidityCheckState_GetCoreState(void* object_instance)
-{
-    SoilHumidityCheckState instance = (SoilHumidityCheckState)object_instance;
-    
-    return instance->core_state;
+    return pImpl->GetCoreState();
 }

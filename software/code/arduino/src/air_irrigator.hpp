@@ -4,7 +4,7 @@
 #include "irrigator_interface.hpp"
 #include "pin_utils/adc_utils.hpp"
 #include "clock/clock.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 typedef struct AirIrrigatorInternal* AirIrrigator;
 

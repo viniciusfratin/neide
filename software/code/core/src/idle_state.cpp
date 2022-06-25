@@ -1,86 +1,85 @@
 #include "idle_state.hpp"
 #include "core_state_interface.hpp"
-#include "core_state_interface_construction.hpp"
-#include <stdlib.h>
+#include <memory>
 
-typedef struct IdleStateInternal
+struct IdleState::impl
 {
-    CoreStateInterface idle_state_interface;
     CoreState core_state;
+    CoreStateInterface* instance;
     ShouldWakeUpCallback should_wake_up_callback;
     CoreStateInterface* woke_state_interface_ptr;
-} IdleStateImplementation;
 
-static CoreStateInterface IdleState_ExecuteIdleState(void* object_instance);
-static CoreState IdleState_GetCoreState(void* object_instance);
-
-IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, CoreStateInterface* woke_state_interface_ptr)
-{
-    IdleState instance = (IdleState)malloc(sizeof(IdleStateImplementation));
-
-    if(instance != NULL)
+    impl(
+        CoreStateInterface* instance,
+        ShouldWakeUpCallback should_wake_up_callback
+    )
     {
-        instance->idle_state_interface = CoreStateInterface_Construct(
-            (void*)instance,
-            IdleState_GetCoreState,
-            IdleState_ExecuteIdleState
-        );
+        this->core_state = CoreState::CORE_STATE_IDLE;
+        this->instance = instance;
+        this->should_wake_up_callback = should_wake_up_callback;
+    }
+    
+    void SetTransitions(
+        CoreStateInterface* woke_state_interface_ptr
+    )
+    {
+        this->woke_state_interface_ptr = woke_state_interface_ptr;
+    }
 
-        if(instance->idle_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
+    CoreStateInterface* ExecuteState()
+    {
+        CoreStateInterface* next_core_state_interface = nullptr;
+
+        if(this->should_wake_up_callback())
         {
-            instance->core_state = CORE_STATE_IDLE;
-            instance->should_wake_up_callback = should_wake_up_callback;
-            instance->woke_state_interface_ptr = woke_state_interface_ptr;
+            next_core_state_interface = this->woke_state_interface_ptr;
         }
         else
         {
-            instance = IDLE_STATE_INVALID_INSTANCE;
+            next_core_state_interface = instance;
         }
-    }
-    else
-    {
-        instance = IDLE_STATE_INVALID_INSTANCE;
-    }
 
-    return instance;
+        return next_core_state_interface;
+    }
+    
+    CoreState GetCoreState()
+    {
+        return this->core_state;
+    }
+};
+
+IdleState::IdleState(
+    ShouldWakeUpCallback should_wake_up_callback
+) : pImpl(
+        std::make_unique<impl>(
+            this,
+            should_wake_up_callback
+        )
+    )
+{
+
 }
 
-void IdleState_Destruct(IdleState* instancePtr)
+IdleState::~IdleState()
 {
-    if(instancePtr != NULL)
-    {
-        CoreStateInterface_Destruct(&((*instancePtr)->idle_state_interface));
-
-        free(*instancePtr);
-        (*instancePtr) = IDLE_STATE_INVALID_INSTANCE;
-    }
+    
 }
 
-CoreStateInterface IdleState_GetCoreStateInterface(IdleState instance)
+void IdleState::SetTransitions(
+    CoreStateInterface* woke_state_interface_ptr
+)
 {
-    return instance->idle_state_interface;
+    pImpl->SetTransitions(
+        woke_state_interface_ptr
+    );
 }
 
-static CoreStateInterface IdleState_ExecuteIdleState(void* object_instance)
+CoreStateInterface* IdleState::ExecuteState()
 {
-    IdleState instance = (IdleState)object_instance;
-    CoreStateInterface next_core_state_interface = CORE_STATE_INTERFACE_INVALID_INSTANCE;
-
-    if(instance->should_wake_up_callback())
-    {
-        next_core_state_interface = *(instance->woke_state_interface_ptr);
-    }
-    else
-    {
-        next_core_state_interface = IdleState_GetCoreStateInterface(instance);
-    }
-
-    return next_core_state_interface;
+    return pImpl->ExecuteState();
 }
 
-static CoreState IdleState_GetCoreState(void* object_instance)
+CoreState IdleState::GetCoreState()
 {
-    IdleState instance = (IdleState)object_instance;
-
-    return instance->core_state;
+    return pImpl->GetCoreState();
 }

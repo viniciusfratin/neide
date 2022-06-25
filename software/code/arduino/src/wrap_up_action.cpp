@@ -2,7 +2,7 @@
 #include "wrap_up_action_interface.hpp"
 #include "wrap_up_action_interface_construction.hpp"
 #include <stdlib.h>
-#include <stdint.h>
+#include <cstdint>
 
 typedef struct WrapUpActionInternal
 {

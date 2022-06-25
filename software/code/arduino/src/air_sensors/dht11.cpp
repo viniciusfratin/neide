@@ -8,16 +8,15 @@
  */
 
 #include "dht11.hpp"
-#include "common.hpp"
 #include "pin_utils/gpio_utils.hpp"
-#include <stdint.h>
+#include <cstdint>
 #include <stddef.h>
 #include <util/delay.h>
 
 
 typedef struct DHT11StateInternal
 {
-    Bool is_initialized;
+    bool is_initialized;
     volatile uint8_t* data_pin_input_register_ptr;
     volatile uint8_t* data_pin_ddr_ptr;
     volatile uint8_t* data_pin_port_ptr;
@@ -30,10 +29,10 @@ typedef struct DHT11InterchangeDataInternal
     int32_t relative_humidity_decimal_part;
     int32_t temperature_integral_part;
     int32_t temperature_decimal_part;
-    Bool is_valid;
+    bool is_valid;
 } DHT11InterchangeData;
 
-static DHT11State singleton = {FALSE, NULL, NULL, NULL, 0U};
+static DHT11State singleton = {false, NULL, NULL, NULL, 0U};
 
 static AirInformation DHT11_ReadAirInformationFromSensor();
 static DHT11InterchangeData DHT11_GetSensorData();
@@ -51,7 +50,7 @@ void DHT11_Initialize(volatile uint8_t* data_pin_input_register_ptr,
     volatile uint8_t* data_pin_port_ptr, 
     uint8_t data_pin)
 {
-    singleton.is_initialized = TRUE;
+    singleton.is_initialized = true;
     singleton.data_pin_input_register_ptr = data_pin_input_register_ptr;
     singleton.data_pin_ddr_ptr = data_pin_ddr_ptr;
     singleton.data_pin_port_ptr = data_pin_port_ptr;
@@ -64,7 +63,7 @@ AirInformation DHT11_GetAirInformation()
     air_information.relative_humidity = 0.0f;
     air_information.temperature = 0.0f;
 
-    if(singleton.is_initialized == TRUE)
+    if(singleton.is_initialized == true)
     {
         air_information = DHT11_ReadAirInformationFromSensor();
     }
@@ -80,7 +79,7 @@ static AirInformation DHT11_ReadAirInformationFromSensor()
     float relative_humidity = 0.0f;
     float temperature = 0.0f;
 
-    if(sensor_data.is_valid == TRUE)
+    if(sensor_data.is_valid == true)
     {
         relative_humidity = (float)sensor_data.relative_humidity_integral_part;
         relative_humidity += DHT11_GetFloatingPointFromDecimalPart(sensor_data.relative_humidity_decimal_part);
@@ -179,11 +178,11 @@ static DHT11InterchangeData DHT11_GetSensorData()
 
     if(calculated_checksum == received_checksum)
     {
-        interchange_data.is_valid = TRUE;
+        interchange_data.is_valid = true;
     }
     else
     {
-        interchange_data.is_valid = FALSE;
+        interchange_data.is_valid = false;
     }
 
     return interchange_data;

@@ -1,6 +1,5 @@
 set (core_source_files
     "src/core.cpp"
-    "src/core_state_interface.cpp"
     "src/idle_state.cpp"
     "src/woke_state.cpp"
     "src/soil_humidity_check_state.cpp"
@@ -10,8 +9,6 @@ set (core_source_files
     "src/air_periodic_check_state.cpp"
     "src/irrigate_air_state.cpp"
     "src/wrap_up_state.cpp"
-    "src/irrigator_interface.cpp"
-    "src/wrap_up_action_interface.cpp"
     "src/standard_configuration.cpp")
 
 neide_add_library (core "${core_source_files}")

@@ -1,97 +1,93 @@
 #include "soil_periodic_check_state.hpp"
 #include "core_state_interface.hpp"
-#include "core_state_interface_construction.hpp"
-#include <stdlib.h>
+#include <memory>
 
-typedef struct SoilPeriodicCheckStateInternal
+struct SoilPeriodicCheckState::impl
 {
-    CoreStateInterface soil_periodic_check_state_interface;
     CoreState core_state;
     GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback;
     CoreStateInterface* irrigate_soil_state_interface_ptr;
     CoreStateInterface* air_humidity_check_state_interface_ptr;
     int32_t maximum_period_seconds;
-} SoilPeriodicCheckStateImplementation;
 
-static CoreStateInterface SoilPeriodicCheckState_ExecuteSoilPeriodicCheckState(void* object_instance);
-static CoreState SoilPeriodicCheckState_GetCoreState(void* object_instance);
-
-SoilPeriodicCheckState SoilPeriodicCheckState_Construct(
-    GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
-    CoreStateInterface* irrigate_soil_state_interface_ptr,
-    CoreStateInterface* air_humidity_check_state_interface_ptr,
-    int32_t maximum_period_seconds
-)
-{
-    SoilPeriodicCheckState instance = (SoilPeriodicCheckState)malloc(sizeof(SoilPeriodicCheckStateImplementation));
-
-    if(instance != NULL)
+    impl(
+        GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
+        int32_t maximum_period_seconds
+    )
     {
-        instance->soil_periodic_check_state_interface = CoreStateInterface_Construct(
-            (void*)instance,
-            SoilPeriodicCheckState_GetCoreState,
-            SoilPeriodicCheckState_ExecuteSoilPeriodicCheckState
-        );
+        this->core_state = CoreState::CORE_STATE_SOIL_PERIODIC_CHECK;
+        this->get_time_from_last_irrigation_callback = get_time_from_last_irrigation_callback;
+        this->maximum_period_seconds = maximum_period_seconds;
+    }
 
-        if(instance->soil_periodic_check_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
+    void SetTransitions(
+        CoreStateInterface* irrigate_soil_state_interface_ptr,
+        CoreStateInterface* air_humidity_check_state_interface_ptr
+    )
+    {
+        this->irrigate_soil_state_interface_ptr = irrigate_soil_state_interface_ptr;
+        this->air_humidity_check_state_interface_ptr = air_humidity_check_state_interface_ptr;
+    }
+
+    CoreStateInterface* ExecuteState()
+    {
+        CoreStateInterface* next_core_state_interface = nullptr;
+    
+        int32_t time_from_last_irrigation = this->get_time_from_last_irrigation_callback();
+        
+        if(time_from_last_irrigation > this->maximum_period_seconds)
         {
-            instance->core_state = CORE_STATE_SOIL_PERIODIC_CHECK;
-            instance->get_time_from_last_irrigation_callback = get_time_from_last_irrigation_callback;
-            instance->irrigate_soil_state_interface_ptr = irrigate_soil_state_interface_ptr;
-            instance->air_humidity_check_state_interface_ptr = air_humidity_check_state_interface_ptr;
-            instance->maximum_period_seconds = maximum_period_seconds;
+            next_core_state_interface = this->irrigate_soil_state_interface_ptr;
         }
         else
         {
-            instance = SOIL_PERIODIC_CHECK_STATE_INVALID_INSTANCE;
+            next_core_state_interface = this->air_humidity_check_state_interface_ptr;
         }
-    }
-    else
-    {
-        instance = SOIL_PERIODIC_CHECK_STATE_INVALID_INSTANCE;
-    }
 
-    return instance;
-}
-
-void SoilPeriodicCheckState_Destruct(SoilPeriodicCheckState* instancePtr)
-{
-    if(instancePtr != NULL)
-    {
-        CoreStateInterface_Destruct(&((*instancePtr)->soil_periodic_check_state_interface));
-
-        free(*instancePtr);
-        (*instancePtr) = SOIL_PERIODIC_CHECK_STATE_INVALID_INSTANCE;
-    }
-}
-
-CoreStateInterface SoilPeriodicCheckState_GetCoreStateInterface(SoilPeriodicCheckState instance)
-{
-    return instance->soil_periodic_check_state_interface;
-}
-
-static CoreStateInterface SoilPeriodicCheckState_ExecuteSoilPeriodicCheckState(void* object_instance)
-{
-    SoilPeriodicCheckState instance = (SoilPeriodicCheckState)object_instance;
-    CoreStateInterface next_core_state_interface = CORE_STATE_INTERFACE_INVALID_INSTANCE;
-    
-    int32_t time_from_last_irrigation = instance->get_time_from_last_irrigation_callback();
-    
-    if(time_from_last_irrigation > instance->maximum_period_seconds)
-    {
-        next_core_state_interface = *(instance->irrigate_soil_state_interface_ptr);
-    }
-    else
-    {
-        next_core_state_interface = *(instance->air_humidity_check_state_interface_ptr);
+        return next_core_state_interface;
     }
     
-    return next_core_state_interface;
+    CoreState GetCoreState()
+    {
+        return this->core_state;
+    }
+};
+
+SoilPeriodicCheckState::SoilPeriodicCheckState(
+    GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
+    int32_t maximum_period_seconds
+) : pImpl(
+        std::make_unique<impl>(
+            get_time_from_last_irrigation_callback,
+            maximum_period_seconds
+        )
+    )
+{
+
 }
 
-static CoreState SoilPeriodicCheckState_GetCoreState(void* object_instance)
+SoilPeriodicCheckState::~SoilPeriodicCheckState()
 {
-    SoilPeriodicCheckState instance = (SoilPeriodicCheckState)object_instance;
-    
-    return instance->core_state;
+
+}
+
+void SoilPeriodicCheckState::SetTransitions(
+    CoreStateInterface* irrigate_soil_state_interface_ptr,
+    CoreStateInterface* air_humidity_check_state_interface_ptr
+)
+{
+    pImpl->SetTransitions(
+        irrigate_soil_state_interface_ptr, 
+        air_humidity_check_state_interface_ptr
+    );
+}
+
+CoreStateInterface* SoilPeriodicCheckState::ExecuteState()
+{
+    return pImpl->ExecuteState();
+}
+
+CoreState SoilPeriodicCheckState::GetCoreState()
+{
+    return pImpl->GetCoreState();
 }

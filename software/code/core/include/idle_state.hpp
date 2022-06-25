@@ -1,21 +1,30 @@
-#ifndef IDLE_STATE_H
-#define IDLE_STATE_H
+#ifndef IDLE_STATE_HPP
+#define IDLE_STATE_HPP
 
-#include "common.hpp"
 #include "core_state_interface.hpp"
+#include <memory>
 
-typedef struct IdleStateInternal* IdleState;
+typedef bool (*ShouldWakeUpCallback)();
 
-#define IDLE_STATE_INVALID_INSTANCE ((IdleState)NULL)
+class IdleState : public CoreStateInterface
+{
+    public:
+    IdleState(
+        ShouldWakeUpCallback should_wake_up_callback
+    );
 
-typedef Bool (*ShouldWakeUpCallback)();
+    void SetTransitions(
+        CoreStateInterface* woke_state_interface_ptr
+    );
 
+    CoreStateInterface* ExecuteState() override;
+    CoreState GetCoreState() override;
 
-CoreStateInterface IdleState_GetCoreStateInterface(IdleState instance);
+    virtual ~IdleState();
 
-
-IdleState IdleState_Construct(ShouldWakeUpCallback should_wake_up_callback, CoreStateInterface* woke_state_interface_ptr);
-void IdleState_Destruct(IdleState* instancePtr);
-
+    private:
+    struct impl;
+    std::unique_ptr<impl> pImpl;
+};
 
 #endif

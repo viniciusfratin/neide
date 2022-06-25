@@ -1,85 +1,80 @@
 #include "irrigate_air_state.hpp"
 #include "irrigator_interface.hpp"
 #include "core_state_interface.hpp"
-#include "core_state_interface_construction.hpp"
-#include <stdlib.h>
+#include <memory>
 
-typedef struct IrrigateAirStateInternal
+struct IrrigateAirState::impl
 {
-    CoreStateInterface irrigate_air_state_interface;
     CoreState core_state;
     CoreStateInterface* wrap_up_state_interface_ptr;
     IrrigatorInterface* air_irrigator_interface_ptr;
     int32_t irrigation_time_seconds;
-} IrrigateAirStateImplementation;
 
-static CoreStateInterface IrrigateAirState_ExecuteIrrigateAirState(void* object_instance);
-static CoreState IrrigateAirState_GetCoreState(void* object_instance);
+    impl(
+        IrrigatorInterface* air_irrigator_interface_ptr,
+        int32_t irrigation_time_seconds
+    )
+    {
+        this->core_state = CoreState::CORE_STATE_IRRIGATE_AIR;
+        this->air_irrigator_interface_ptr = air_irrigator_interface_ptr;
+        this->irrigation_time_seconds = irrigation_time_seconds;
+    }
 
-IrrigateAirState IrrigateAirState_Construct(
-    CoreStateInterface* wrap_up_state_interface_ptr,
+    void SetTransitions(
+        CoreStateInterface* wrap_up_state_interface_ptr
+    )
+    {
+        this->wrap_up_state_interface_ptr = wrap_up_state_interface_ptr;
+    }
+
+    CoreStateInterface* ExecuteState()
+    {
+        CoreStateInterface* next_core_state_interface = this->wrap_up_state_interface_ptr;
+    
+        this->air_irrigator_interface_ptr->Irrigate(this->irrigation_time_seconds);
+
+        return next_core_state_interface;
+    }
+    
+    CoreState GetCoreState()
+    {
+        return this->core_state;
+    }
+};
+
+IrrigateAirState::IrrigateAirState(
     IrrigatorInterface* air_irrigator_interface_ptr,
-    int32_t irrigation_time_seconds)
+    int32_t irrigation_time_seconds
+) : pImpl(
+        std::make_unique<impl>(
+            air_irrigator_interface_ptr,
+            irrigation_time_seconds
+        )
+    )
 {
-    IrrigateAirState instance = (IrrigateAirState)malloc(sizeof(IrrigateAirStateImplementation));
 
-    if(instance != NULL)
-    {
-        instance->irrigate_air_state_interface = CoreStateInterface_Construct(
-            (void*)instance,
-            IrrigateAirState_GetCoreState,
-            IrrigateAirState_ExecuteIrrigateAirState
-        );
-
-        if(instance->irrigate_air_state_interface != CORE_STATE_INTERFACE_INVALID_INSTANCE)
-        {
-            instance->core_state = CORE_STATE_IRRIGATE_AIR;
-            instance->wrap_up_state_interface_ptr = wrap_up_state_interface_ptr;
-            instance->air_irrigator_interface_ptr = air_irrigator_interface_ptr;
-            instance->irrigation_time_seconds = irrigation_time_seconds;
-        }
-        else
-        {
-            instance = IRRIGATE_AIR_STATE_INVALID_INSTANCE;
-        }
-    }
-    else
-    {
-        instance = IRRIGATE_AIR_STATE_INVALID_INSTANCE;
-    }
-
-    return instance;
 }
 
-void IrrigateAirState_Destruct(IrrigateAirState* instancePtr)
+IrrigateAirState::~IrrigateAirState()
 {
-    if(instancePtr != NULL)
-    {
-        CoreStateInterface_Destruct(&((*instancePtr)->irrigate_air_state_interface));
-
-        free(*instancePtr);
-        (*instancePtr) = IRRIGATE_AIR_STATE_INVALID_INSTANCE;
-    }
-}
-
-CoreStateInterface IrrigateAirState_GetCoreStateInterface(IrrigateAirState instance)
-{
-    return instance->irrigate_air_state_interface;
-}
-
-static CoreStateInterface IrrigateAirState_ExecuteIrrigateAirState(void* object_instance)
-{
-    IrrigateAirState instance = (IrrigateAirState)object_instance;
-    CoreStateInterface next_core_state_interface = *(instance->wrap_up_state_interface_ptr);
     
-    IrrigatorInterface_Irrigate(*(instance->air_irrigator_interface_ptr), instance->irrigation_time_seconds);
-    
-    return next_core_state_interface;
 }
 
-static CoreState IrrigateAirState_GetCoreState(void* object_instance)
+void IrrigateAirState::SetTransitions(
+    CoreStateInterface* wrap_up_state_interface_ptr
+)
 {
-    IrrigateAirState instance = (IrrigateAirState)object_instance;
-    
-    return instance->core_state;
+    pImpl->SetTransitions(
+        wrap_up_state_interface_ptr
+    );
+}
+
+CoreStateInterface* IrrigateAirState::ExecuteState()
+{
+    return pImpl->ExecuteState();
+}
+
+CoreState IrrigateAirState::GetCoreState()
+{
+    return pImpl->GetCoreState();
 }

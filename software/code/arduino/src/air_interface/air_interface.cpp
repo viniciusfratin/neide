@@ -1,21 +1,20 @@
-#include "common.hpp"
 #include "air_interface.hpp"
 #include <stddef.h>
 
 typedef struct AirInterfaceStateInternal
 {
-    Bool is_initialized;
+    bool is_initialized;
     GetAirInformationCallback get_air_information_callback;
     GetAirUserConfigurationCallback get_air_user_configuration_callback;
 } AirInterfaceState;
 
-static AirInterfaceState singleton = {FALSE, NULL, NULL};
+static AirInterfaceState singleton = {false, NULL, NULL};
 
 void AirInterface_Initialize(GetAirInformationCallback get_air_information_callback, 
     GetAirUserConfigurationCallback get_air_user_configuration_callback
 )
 {
-    singleton.is_initialized = TRUE;
+    singleton.is_initialized = true;
     singleton.get_air_information_callback = get_air_information_callback;
     singleton.get_air_user_configuration_callback = get_air_user_configuration_callback;
 }
@@ -27,7 +26,7 @@ AirHumidityInformation AirInterface_GetAirHumidityInformation()
     float current_relative_humidity = 0.0f;
     float relative_humidity_threshold = 0.0f;
 
-    if(singleton.is_initialized == TRUE)
+    if(singleton.is_initialized == true)
     {
         current_relative_humidity = singleton.get_air_information_callback().relative_humidity;
         relative_humidity_threshold = singleton.get_air_user_configuration_callback().relative_humidity_threshold;

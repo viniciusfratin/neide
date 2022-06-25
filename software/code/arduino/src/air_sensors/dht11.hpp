@@ -2,7 +2,7 @@
 #define DHT11_H
 
 #include "air_interface/air_interface.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 void DHT11_Initialize(volatile uint8_t* data_pin_input_register_ptr,
     volatile uint8_t* data_pin_ddr_ptr, 

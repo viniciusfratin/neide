@@ -1,69 +1,21 @@
 #include "wrap_up_action_mock.hpp"
-#include "wrap_up_action_interface.hpp"
-#include "wrap_up_action_interface_construction.hpp"
-#include <stdlib.h>
 
-typedef struct WrapUpActionMockInternal
+WrapUpActionMock::WrapUpActionMock()
 {
-    WrapUpActionInterface wrap_up_action_interface;
-    int32_t number_of_calls;
-} WrapUpActionMockImplementation;
-
-static void WrapUpActionMock_WrapUp(void* object_instance);
-
-WrapUpActionMock WrapUpActionMock_Construct()
-{
-    WrapUpActionMock instance = (WrapUpActionMock)malloc(sizeof(WrapUpActionMockImplementation));
-
-    if(instance != NULL)
-    {
-        instance->wrap_up_action_interface = WrapUpActionInterface_Construct(
-            (void*)instance,
-            WrapUpActionMock_WrapUp
-        );
-
-        if(instance->wrap_up_action_interface != WRAP_UP_ACTION_INTERFACE_INVALID_INSTANCE)
-        {
-            instance->number_of_calls = 0;
-        }
-        else
-        {
-            instance = WRAP_UP_ACTION_MOCK_INVALID_INSTANCE;
-        }
-    }
-    else
-    {
-        instance = WRAP_UP_ACTION_MOCK_INVALID_INSTANCE;
-    }
-
-    return instance;
+    this->number_of_calls = 0;
 }
 
-void WrapUpActionMock_Destruct(WrapUpActionMock* instancePtr)
+WrapUpActionMock::~WrapUpActionMock()
 {
-    if(instancePtr != NULL)
-    {
-        WrapUpActionInterface_Destruct(&((*instancePtr)->wrap_up_action_interface));
 
-        free(*instancePtr);
-        (*instancePtr) = WRAP_UP_ACTION_MOCK_INVALID_INSTANCE;
-    }
 }
 
-WrapUpActionInterface WrapUpActionMock_GetWrapUpActionInterface(WrapUpActionMock instance)
+void WrapUpActionMock::WrapUp()
 {
-    return instance->wrap_up_action_interface;
+    this->number_of_calls++;
 }
 
-int32_t WrapUpActionMock_GetNumberOfCalls(WrapUpActionMock instance)
+int32_t WrapUpActionMock::GetNumberOfCalls()
 {
-    return instance->number_of_calls;
+    return this->number_of_calls;
 }
-
-static void WrapUpActionMock_WrapUp(void* object_instance)
-{
-    WrapUpActionMock instance = (WrapUpActionMock)object_instance;
-    instance->number_of_calls += 1;
-}
-
-

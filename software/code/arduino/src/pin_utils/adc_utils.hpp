@@ -2,7 +2,7 @@
 #define ADC_UTILS_H
 
 #include "adc_defs.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 float read_adc(ADCIdentifier adc_identifier);
 

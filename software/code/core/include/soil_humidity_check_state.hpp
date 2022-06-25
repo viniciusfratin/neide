@@ -1,11 +1,8 @@
-#ifndef SOIL_HUMIDITY_CHECK_STATE_H
-#define SOIL_HUMIDITY_CHECK_STATE_H
+#ifndef SOIL_HUMIDITY_CHECK_STATE_HPP
+#define SOIL_HUMIDITY_CHECK_STATE_HPP
 
 #include "core_state_interface.hpp"
-
-typedef struct SoilHumidityCheckStateInternal* SoilHumidityCheckState;
-
-#define SOIL_HUMIDITY_CHECK_STATE_INVALID_INSTANCE ((SoilHumidityCheckState)NULL)
+#include <memory>
 
 typedef struct SoilHumidityInformationInternal
 {
@@ -15,16 +12,26 @@ typedef struct SoilHumidityInformationInternal
 
 typedef SoilHumidityInformation (*GetSoilHumidityInformationCallback)();
 
+class SoilHumidityCheckState : public CoreStateInterface
+{
+    public:
+    SoilHumidityCheckState(
+        GetSoilHumidityInformationCallback get_soil_humidity_information_callback
+    );
 
-CoreStateInterface SoilHumidityCheckState_GetCoreStateInterface(SoilHumidityCheckState instance);
+    void SetTransitions(
+        CoreStateInterface* irrigate_soil_state_interface_ptr,
+        CoreStateInterface* soil_periodic_check_state_interface_ptr
+    );
+    
+    CoreStateInterface* ExecuteState() override;
+    CoreState GetCoreState() override;
 
+    virtual ~SoilHumidityCheckState();
 
-SoilHumidityCheckState SoilHumidityCheckState_Construct(
-    GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
-    CoreStateInterface* irrigate_soil_state_interface_ptr,
-    CoreStateInterface* soil_periodic_check_state_interface_ptr
-);
-void SoilHumidityCheckState_Destruct(SoilHumidityCheckState* instancePtr);
-
+    private:
+    struct impl;
+    std::unique_ptr<impl> pImpl;
+};
 
 #endif

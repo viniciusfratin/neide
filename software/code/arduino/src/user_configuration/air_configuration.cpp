@@ -1,4 +1,3 @@
-#include "common.hpp"
 #include "air_configuration.hpp"
 #include "pin_utils/adc_utils.hpp"
 
@@ -7,15 +6,15 @@
 
 typedef struct AirConfigurationStateInternal
 {
-    Bool is_initialized;
+    bool is_initialized;
     ADCIdentifier adc_identifier;
 } AirConfigurationState;
 
-static AirConfigurationState singleton = {FALSE, IDENTIFIER_ADC0};
+static AirConfigurationState singleton = {false, IDENTIFIER_ADC0};
 
 void AirConfiguration_Initialize(ADCIdentifier adc_identifier)
 {
-    singleton.is_initialized = TRUE;
+    singleton.is_initialized = true;
     singleton.adc_identifier = adc_identifier;
 }
 
@@ -26,7 +25,7 @@ AirUserConfiguration AirConfiguration_GetAirUserConfiguration()
     float relative_humidity_threshold = 0.0f;
     float adc_voltage_read;
 
-    if(singleton.is_initialized == TRUE)
+    if(singleton.is_initialized == true)
     {
         adc_voltage_read = read_adc(singleton.adc_identifier);
 

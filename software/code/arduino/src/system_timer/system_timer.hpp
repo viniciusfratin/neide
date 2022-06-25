@@ -2,7 +2,7 @@
 #define SYSTEM_TIMER_H
 
 #include "clock/clock.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 void SystemTimer_Initialize();
 int32_t SystemTimer_GetCurrentTimeSeconds();

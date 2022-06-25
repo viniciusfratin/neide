@@ -1,7 +1,7 @@
 #ifndef GPIO_UTILS_H
 #define GPIO_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #define SET_GPIO_PIN_AS_INPUT(pin_ddr_ptr, pin) ((*pin_ddr_ptr) &= ~((1 << pin)))
 #define SET_GPIO_PIN_AS_OUTPUT(pin_ddr_ptr, pin) ((*pin_ddr_ptr) |= (1 << pin))

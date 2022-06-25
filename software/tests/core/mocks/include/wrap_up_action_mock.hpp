@@ -2,18 +2,19 @@
 #define WRAP_UP_ACTION_MOCK_H
 
 #include "wrap_up_action_interface.hpp"
+#include <cstdint>
 
-typedef struct WrapUpActionMockInternal* WrapUpActionMock;
+class WrapUpActionMock : public WrapUpActionInterface
+{
+    public:
+    WrapUpActionMock();
+    virtual ~WrapUpActionMock();
+    
+    void WrapUp() override;
+    int32_t GetNumberOfCalls();
 
-#define WRAP_UP_ACTION_MOCK_INVALID_INSTANCE ((WrapUpActionMock)NULL)
-
-
-WrapUpActionInterface WrapUpActionMock_GetWrapUpActionInterface(WrapUpActionMock instance);
-int32_t WrapUpActionMock_GetNumberOfCalls(WrapUpActionMock instance);
-
-
-WrapUpActionMock WrapUpActionMock_Construct();
-void WrapUpActionMock_Destruct(WrapUpActionMock* instancePtr);
-
+    private:
+    int32_t number_of_calls;
+};
 
 #endif

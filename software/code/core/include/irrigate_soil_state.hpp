@@ -1,23 +1,31 @@
-#ifndef IRRIGATE_SOIL_STATE_H
-#define IRRIGATE_SOIL_STATE_H
+#ifndef IRRIGATE_SOIL_STATE_HPP
+#define IRRIGATE_SOIL_STATE_HPP
 
 #include "core_state_interface.hpp"
 #include "irrigator_interface.hpp"
-#include <stdint.h>
+#include <cstdint>
+#include <memory>
 
-typedef struct IrrigateSoilStateInternal* IrrigateSoilState;
+class IrrigateSoilState : public CoreStateInterface
+{
+    public:
+    IrrigateSoilState(
+        IrrigatorInterface* soil_irrigator_interface_ptr,
+        int32_t irrigation_time_seconds
+    );
 
-#define IRRIGATE_SOIL_STATE_INVALID_INSTANCE ((IrrigateSoilState)NULL)
+    void SetTransitions(
+        CoreStateInterface* air_humidity_check_state_interface_ptr
+    );
 
+    CoreStateInterface* ExecuteState() override;
+    CoreState GetCoreState() override;
 
-CoreStateInterface IrrigateSoilState_GetCoreStateInterface(IrrigateSoilState instance);
+    virtual ~IrrigateSoilState();
 
-
-IrrigateSoilState IrrigateSoilState_Construct(
-    CoreStateInterface* air_humidity_check_state_interface_ptr,
-    IrrigatorInterface* soil_irrigator_interface_ptr,
-    int32_t irrigation_time_seconds);
-void IrrigateSoilState_Destruct(IrrigateSoilState* instancePtr);
-
+    private:
+    struct impl;
+    std::unique_ptr<impl> pImpl;
+};
 
 #endif

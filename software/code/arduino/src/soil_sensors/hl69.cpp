@@ -1,4 +1,3 @@
-#include "common.hpp"
 #include "hl69.hpp"
 #include "pin_utils/adc_utils.hpp"
 
@@ -7,15 +6,15 @@
 
 typedef struct HL69StateInternal
 {
-    Bool is_initialized;
+    bool is_initialized;
     ADCIdentifier adc_identifier;
 } HL69State;
 
-static HL69State singleton = {FALSE, IDENTIFIER_ADC0};
+static HL69State singleton = {false, IDENTIFIER_ADC0};
 
 void HL69_Initialize(ADCIdentifier adc_identifier)
 {
-    singleton.is_initialized = TRUE;
+    singleton.is_initialized = true;
     singleton.adc_identifier = adc_identifier;
 }
 
@@ -26,7 +25,7 @@ SoilInformation HL69_GetSoilInformation()
     float current_relative_humidity = 0.0f;
     float adc_voltage_read;
 
-    if(singleton.is_initialized == TRUE)
+    if(singleton.is_initialized == true)
     {
         adc_voltage_read = read_adc(singleton.adc_identifier);
 

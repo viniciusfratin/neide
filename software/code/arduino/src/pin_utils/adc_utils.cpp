@@ -1,6 +1,5 @@
-#include "common.hpp"
 #include "adc_utils.hpp"
-#include <stdint.h>
+#include <cstdint>
 #include <avr/io.h>
 
 #define NUM_ADCS 8

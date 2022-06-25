@@ -1,7 +1,7 @@
-#ifndef CORE_STATES_H
-#define CORE_STATES_H
+#ifndef CORE_STATES_HPP
+#define CORE_STATES_HPP
 
-typedef enum CoreStateInternal
+enum class CoreState
 {
     CORE_STATE_IDLE,
     CORE_STATE_WOKE,
@@ -12,6 +12,6 @@ typedef enum CoreStateInternal
     CORE_STATE_AIR_PERIODIC_CHECK,
     CORE_STATE_IRRIGATE_AIR,
     CORE_STATE_WRAP_UP
-} CoreState;
+};
 
 #endif

@@ -1,4 +1,3 @@
-#include "common.hpp"
 #include "soil_configuration.hpp"
 #include "pin_utils/adc_utils.hpp"
 
@@ -7,15 +6,15 @@
 
 typedef struct SoilConfigurationStateInternal
 {
-    Bool is_initialized;
+    bool is_initialized;
     ADCIdentifier adc_identifier;
 } SoilConfigurationState;
 
-static SoilConfigurationState singleton = {FALSE, IDENTIFIER_ADC0};
+static SoilConfigurationState singleton = {false, IDENTIFIER_ADC0};
 
 void SoilConfiguration_Initialize(ADCIdentifier adc_identifier)
 {
-    singleton.is_initialized = TRUE;
+    singleton.is_initialized = true;
     singleton.adc_identifier = adc_identifier;
 }
 
@@ -26,7 +25,7 @@ SoilUserConfiguration SoilConfiguration_GetSoilUserConfiguration()
     float relative_humidity_threshold = 0.0f;
     float adc_voltage_read;
 
-    if(singleton.is_initialized == TRUE)
+    if(singleton.is_initialized == true)
     {
         adc_voltage_read = read_adc(singleton.adc_identifier);
 

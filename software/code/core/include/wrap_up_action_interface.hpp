@@ -1,12 +1,10 @@
-#ifndef WRAP_UP_ACTION_INTERFACE_H
-#define WRAP_UP_ACTION_INTERFACE_H
+#ifndef WRAP_UP_ACTION_INTERFACE_HPP
+#define WRAP_UP_ACTION_INTERFACE_HPP
 
-typedef struct WrapUpActionInterfaceInternal* WrapUpActionInterface;
-
-#define WRAP_UP_ACTION_INTERFACE_INVALID_INSTANCE ((WrapUpActionInterface)NULL)
-
-
-void WrapUpActionInterface_WrapUp(WrapUpActionInterface instance);
-
+class WrapUpActionInterface
+{
+    public:
+    virtual void WrapUp() = 0;
+};
 
 #endif

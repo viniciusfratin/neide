@@ -16,7 +16,7 @@
 #include "system_timer/system_timer.hpp"
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <stdint.h>
+#include <cstdint>
 
 #define DHT11_DATA_PIN_INPUT_REGISTER_PTR (&PINB)
 #define DHT11_DATA_PIN_DDR_PTR (&DDRB)
@@ -43,7 +43,7 @@ static SystemCore system_core;
 void setup();
 void loop();
 
-Bool should_wake_up();
+bool should_wake_up();
 int32_t get_time_from_last_soil_irrigation();
 int32_t get_time_from_last_air_irrigation();
 
@@ -119,21 +119,21 @@ void loop()
     SystemCore_AdvanceCycle(system_core);
 }
 
-Bool should_wake_up()
+bool should_wake_up()
 {
     static int32_t last_wake_up_time = 0;
 
-    Bool should_wake_up = FALSE;
+    bool should_wake_up = false;
     int32_t current_time = SystemTimer_GetCurrentTimeSeconds();
 
     if((current_time - last_wake_up_time) >= (15 * 60))
     {
-        should_wake_up = TRUE;
+        should_wake_up = true;
         last_wake_up_time = current_time;
     }
     else
     {
-        should_wake_up = FALSE;
+        should_wake_up = false;
     }
 
     return should_wake_up;

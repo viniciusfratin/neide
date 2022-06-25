@@ -3,7 +3,7 @@
 
 #include "irrigator_interface.hpp"
 #include "clock/clock.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 typedef struct SoilIrrigatorInternal* SoilIrrigator;
 

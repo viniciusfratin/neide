@@ -1,14 +1,12 @@
-#ifndef IRRIGATOR_INTERFACE_H
-#define IRRIGATOR_INTERFACE_H
+#ifndef IRRIGATOR_INTERFACE_HPP
+#define IRRIGATOR_INTERFACE_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
-typedef struct IrrigatorInterfaceInternal* IrrigatorInterface;
-
-#define IRRIGATOR_INTERFACE_INVALID_INSTANCE ((IrrigatorInterface)NULL)
-
-
-void IrrigatorInterface_Irrigate(IrrigatorInterface instance, int32_t irrigation_time_seconds);
-
+class IrrigatorInterface
+{
+    public:
+    virtual void Irrigate(int32_t irrigation_time_seconds) = 0;
+};
 
 #endif
