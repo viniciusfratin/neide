@@ -15,7 +15,6 @@
 #include "irrigate_air_state.hpp"
 #include "wrap_up_state.hpp"
 
-#include "stubs.hpp"
 #include "general_state_mock.hpp"
 #include "irrigator_mock.hpp"
 #include "wrap_up_action_mock.hpp"
@@ -56,7 +55,10 @@ class CoreInitialIdleWithWakeUpTrue : public CoreInitialIdle
     private:
     ShouldWakeUpCallback GetStub()
     {
-        return stub_should_wake_up_true;
+        return []()
+        {
+            return true;
+        };
     }
 };
 
@@ -65,7 +67,10 @@ class CoreInitialIdleWithWakeUpFalse : public CoreInitialIdle
     private:
     ShouldWakeUpCallback GetStub()
     {
-        return stub_should_wake_up_false;
+        return []()
+        {
+            return false;
+        };
     }
 };
 
@@ -139,7 +144,14 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity50Threshold60 : public Cor
     private:
     GetSoilHumidityInformationCallback GetStub()
     {
-        return stub_get_soil_humidity_50_threshold_60;
+        return []()
+        {
+            SoilHumidityInformation soil_information;
+            soil_information.current_relative_humidity = 50.0f;
+            soil_information.relative_humidity_threshold = 60.0f;
+
+            return soil_information;
+        };
     }
 };
 
@@ -148,7 +160,14 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity70Threshold60 : public Cor
     private:
     GetSoilHumidityInformationCallback GetStub()
     {
-        return stub_get_soil_humidity_70_threshold_60;
+        return []()
+        {
+            SoilHumidityInformation soil_information;
+            soil_information.current_relative_humidity = 70.0f;
+            soil_information.relative_humidity_threshold = 60.0f;
+
+            return soil_information;
+        };
     }
 };
 
@@ -157,7 +176,14 @@ class CoreInitialSoilHumidityCheckWithRelativeHumidity60Threshold60 : public Cor
     private:
     GetSoilHumidityInformationCallback GetStub()
     {
-        return stub_get_soil_humidity_60_threshold_60;
+        return []()
+        {
+            SoilHumidityInformation soil_information;
+            soil_information.current_relative_humidity = 60.0f;
+            soil_information.relative_humidity_threshold = 60.0f;
+
+            return soil_information;
+        };
     }
 };
 
@@ -207,7 +233,10 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public
     private:
     GetTimeFromLastSoilIrrigationCallback GetStub()
     {
-        return stub_get_time_from_last_soil_irrigation_2_hours;
+        return []()
+        {
+            return 2L * 60L * 60L;
+        };
     }
 };
 
@@ -216,7 +245,10 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public
     private:
     GetTimeFromLastSoilIrrigationCallback GetStub()
     {
-        return stub_get_time_from_last_soil_irrigation_3_hours;
+        return []()
+        {
+            return 3L * 60L * 60L;
+        };
     }
 };
 
@@ -225,7 +257,10 @@ class CoreInitialSoilPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public
     private:
     GetTimeFromLastSoilIrrigationCallback GetStub()
     {
-        return stub_get_time_from_last_soil_irrigation_4_hours;
+        return []()
+        {
+            return 4L * 60L * 60L;
+        };
     }
 };
 
@@ -303,7 +338,14 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity50Threshold60 : public Core
     private:
     GetAirHumidityInformationCallback GetStub() override
     {
-        return stub_get_air_humidity_50_threshold_60;
+        return []()
+        {
+            AirHumidityInformation air_information;
+            air_information.current_relative_humidity = 50.0f;
+            air_information.relative_humidity_threshold = 60.0f;
+
+            return air_information;
+        };
     }
 };
 
@@ -312,7 +354,14 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity70Threshold60 : public Core
     private:
     GetAirHumidityInformationCallback GetStub() override
     {
-        return stub_get_air_humidity_70_threshold_60;
+        return []()
+        {
+            AirHumidityInformation air_information;
+            air_information.current_relative_humidity = 70.0f;
+            air_information.relative_humidity_threshold = 60.0f;
+
+            return air_information;
+        };
     }
 };
 
@@ -321,7 +370,14 @@ class CoreInitialAirHumidityCheckWithRelativeHumidity60Threshold60 : public Core
     private:
     GetAirHumidityInformationCallback GetStub() override
     {
-        return stub_get_air_humidity_60_threshold_60;
+        return []()
+        {
+            AirHumidityInformation air_information;
+            air_information.current_relative_humidity = 60.0f;
+            air_information.relative_humidity_threshold = 60.0f;
+
+            return air_information;
+        };
     }
 };
 
@@ -367,7 +423,10 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public 
     private:
     GetTimeFromLastAirIrrigationCallback GetStub()
     {
-        return stub_get_time_from_last_air_irrigation_2_hours;
+        return []()
+        {
+            return 2L * 60L * 60L;
+        };
     }
 };
 
@@ -376,7 +435,10 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public 
     private:
     GetTimeFromLastAirIrrigationCallback GetStub()
     {
-        return stub_get_time_from_last_air_irrigation_3_hours;
+        return []()
+        {
+            return 3L * 60L * 60L;
+        };
     }
 };
 
@@ -385,7 +447,10 @@ class CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public 
     private:
     GetTimeFromLastAirIrrigationCallback GetStub()
     {
-        return stub_get_time_from_last_air_irrigation_4_hours;
+        return []()
+        {
+            return 4L * 60L * 60L;
+        };
     }
 };
 
