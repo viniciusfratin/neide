@@ -1,6 +1,5 @@
 set(core_tests_sources
     "core_test.cpp"
-    "stubs/src/stubs.cpp"
     "mocks/src/general_state_mock.cpp"
     "mocks/src/irrigator_mock.cpp"
     "mocks/src/wrap_up_action_mock.cpp"
@@ -14,7 +13,6 @@ neide_add_executable(
 neide_target_include_directories (
     core_tests
     PRIVATE
-    "stubs/include"
     "mocks/include"
 )
 
