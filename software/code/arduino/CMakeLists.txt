@@ -5,7 +5,7 @@ set (arduino_source_files
     "src/air_irrigator.cpp"
     "src/wrap_up_action.cpp"
     "src/air_sensors/dht11.cpp"
-    "src/soil_sensors/hl69.cpp"
+    "src/soil_sensors/sen0193.cpp"
     "src/air_interface/air_interface.cpp"
     "src/soil_interface/soil_interface.cpp"
     "src/user_configuration/air_configuration.cpp"

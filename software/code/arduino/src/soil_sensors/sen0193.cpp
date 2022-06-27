@@ -1,24 +1,24 @@
-#include "hl69.hpp"
+#include "sen0193.hpp"
 #include "pin_utils/adc_utils.hpp"
 
 #define MIN_RELATIVE_HUMIDITY 0.0f
 #define MAX_RELATIVE_HUMIDITY 100.0f
 
-typedef struct HL69StateInternal
+typedef struct SEN0193StateInternal
 {
     bool is_initialized;
     ADCIdentifier adc_identifier;
-} HL69State;
+} SEN0193State;
 
-static HL69State singleton = {false, IDENTIFIER_ADC0};
+static SEN0193State singleton = {false, IDENTIFIER_ADC0};
 
-void HL69_Initialize(ADCIdentifier adc_identifier)
+void SEN0193_Initialize(ADCIdentifier adc_identifier)
 {
     singleton.is_initialized = true;
     singleton.adc_identifier = adc_identifier;
 }
 
-SoilInformation HL69_GetSoilInformation()
+SoilInformation SEN0193_GetSoilInformation()
 {
     SoilInformation soil_information;
 

@@ -6,7 +6,7 @@
 #include "air_irrigator.hpp"
 #include "wrap_up_action.hpp"
 #include "air_sensors/dht11.hpp"
-#include "soil_sensors/hl69.hpp"
+#include "soil_sensors/sen0193.hpp"
 #include "air_interface/air_interface.hpp"
 #include "soil_interface/soil_interface.hpp"
 #include "user_configuration/air_configuration.hpp"
@@ -71,9 +71,9 @@ void setup()
     AirConfiguration_Initialize(IDENTIFIER_ADC0);
     AirInterface_Initialize(DHT11_GetAirInformation, AirConfiguration_GetAirUserConfiguration);
     
-    HL69_Initialize(IDENTIFIER_ADC1);
+    SEN0193_Initialize(IDENTIFIER_ADC1);
     SoilConfiguration_Initialize(IDENTIFIER_ADC2);
-    SoilInterface_Initialize(HL69_GetSoilInformation, SoilConfiguration_GetSoilUserConfiguration);
+    SoilInterface_Initialize(SEN0193_GetSoilInformation, SoilConfiguration_GetSoilUserConfiguration);
 
     soil_irrigator = new SoilIrrigator(SystemTimer_GetCurrentTimeSeconds, 
         SOIL_IRRIGATOR_DATA_PIN_DDR_PTR, 
@@ -94,9 +94,9 @@ void setup()
         should_wake_up,
         SoilInterface_GetSoilHumidityInformation,
         get_time_from_last_soil_irrigation,
-        8L * 60L * 60L,
+        48L * 60L * 60L,
         soil_irrigator,
-        15L,
+        40L,
         AirInterface_GetAirHumidityInformation,
         get_time_from_last_air_irrigation,
         3L * 60L * 60L,
