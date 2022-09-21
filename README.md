@@ -38,8 +38,8 @@ The files will be in a newly created "target_files" folder.
 ### Setup
 Make sure you have the following prerequisites:
 - CMake (>= 3.23)
-- gcc (>= 9.4.0)
-- g++ (>= 9.4.0)
+- gcc (>= 7.5.0)
+- g++ (>= 7.5.0)
 - avr-gcc (>= 5.4.0)
 - avr-g++ (>= 5.4.0)
 - avr-objdump (>= 2.26.20160125)
