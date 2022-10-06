@@ -2,6 +2,7 @@
 #include "standard_configuration.hpp"
 #include "irrigator_interface.hpp"
 #include "wrap_up_action_interface.hpp"
+#include "irrigation_time_provider_interface.hpp"
 #include "soil_irrigator.hpp"
 #include "air_irrigator.hpp"
 #include "wrap_up_action.hpp"
@@ -44,7 +45,6 @@ void setup();
 void loop();
 
 bool should_wake_up();
-long get_time_from_last_soil_irrigation();
 long get_time_from_last_air_irrigation();
 
 int main()
@@ -93,7 +93,7 @@ void setup()
     standard_configuration = new StandardConfiguration(
         should_wake_up,
         SoilInterface_GetSoilHumidityInformation,
-        get_time_from_last_soil_irrigation,
+        soil_irrigator,
         48L * 60L * 60L,
         soil_irrigator,
         40L,
@@ -133,11 +133,6 @@ bool should_wake_up()
     }
 
     return should_wake_up;
-}
-
-long get_time_from_last_soil_irrigation()
-{
-    return soil_irrigator->GetTimeFromLastIrrigation();
 }
 
 long get_time_from_last_air_irrigation()

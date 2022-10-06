@@ -1,5 +1,4 @@
 #include "soil_irrigator.hpp"
-#include "irrigator_interface.hpp"
 #include "pin_utils/gpio_utils.hpp"
 
 struct SoilIrrigator::impl
@@ -27,7 +26,7 @@ struct SoilIrrigator::impl
         SET_GPIO_PIN_TO_LOW(this->pin_port_ptr, this->pin);
     }
 
-    long GetTimeFromLastIrrigation()
+    long GetTimeFromLastIrrigationSeconds()
     {
         long current_time = this->get_current_time_seconds_callback();
 
@@ -71,7 +70,7 @@ void SoilIrrigator::Irrigate(long irrigation_time_seconds)
     pImpl->Irrigate(irrigation_time_seconds);
 }
 
-long SoilIrrigator::GetTimeFromLastIrrigation()
+long SoilIrrigator::GetTimeFromLastIrrigationSeconds()
 {
-    return pImpl->GetTimeFromLastIrrigation();
+    return pImpl->GetTimeFromLastIrrigationSeconds();
 }

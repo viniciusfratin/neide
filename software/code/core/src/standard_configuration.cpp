@@ -26,7 +26,7 @@ struct StandardConfiguration::impl
     impl(
         ShouldWakeUpCallback should_wake_up_callback,
         GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
-        GetTimeFromLastSoilIrrigationCallback get_time_from_last_soil_irrigation_callback,
+        IrrigationTimeProviderInterface* soil_time_provider_ptr,
         long soil_periodic_check_maximum_period,
         IrrigatorInterface* soil_irrigator_ptr,
         long soil_irrigation_time,
@@ -50,7 +50,7 @@ struct StandardConfiguration::impl
         );
         
         soil_periodic_check_state = new SoilPeriodicCheckState(
-            get_time_from_last_soil_irrigation_callback,
+            soil_time_provider_ptr,
             soil_periodic_check_maximum_period
         );
         
@@ -143,7 +143,7 @@ struct StandardConfiguration::impl
 StandardConfiguration::StandardConfiguration(
     ShouldWakeUpCallback should_wake_up_callback,
     GetSoilHumidityInformationCallback get_soil_humidity_information_callback,
-    GetTimeFromLastSoilIrrigationCallback get_time_from_last_soil_irrigation_callback,
+    IrrigationTimeProviderInterface* soil_time_provider_ptr,
     long soil_periodic_check_maximum_period,
     IrrigatorInterface* soil_irrigator_ptr,
     long soil_irrigation_time,
@@ -157,7 +157,7 @@ StandardConfiguration::StandardConfiguration(
         new impl(
             should_wake_up_callback,
             get_soil_humidity_information_callback,
-            get_time_from_last_soil_irrigation_callback,
+            soil_time_provider_ptr,
             soil_periodic_check_maximum_period,
             soil_irrigator_ptr,
             soil_irrigation_time,

@@ -2,6 +2,7 @@
 #include "standard_configuration.hpp"
 #include "irrigator_interface.hpp"
 #include "wrap_up_action_interface.hpp"
+#include "irrigation_time_provider_interface.hpp"
 extern "C" 
 {
     #include <stdio.h>
@@ -29,14 +30,18 @@ SoilHumidityInformation get_soil_humidity_information()
     return information;
 }
 
-long get_time_from_last_soil_irrigation()
+class SoilTimeProvider : public IrrigationTimeProviderInterface
 {
-    long time = 4 * 60 * 60;
+    public:
+    long GetTimeFromLastIrrigationSeconds() override
+    {
+        long time = 4L * 60L * 60L;
 
-    printf("- Time from last soil irrigation: %ld\n", time);
+        printf("- Time from last soil irrigation: %ld\n", time);
 
-    return time;
-}
+        return time;
+    }
+};
 
 AirHumidityInformation get_air_humidity_information()
 {
@@ -94,11 +99,12 @@ int main()
     Irrigator* soil_irrigator = new Irrigator();
     Irrigator* air_irrigator = new Irrigator();
     WrapUpAction* wrap_up_action = new WrapUpAction();
+    SoilTimeProvider* soil_time_provider = new SoilTimeProvider();
 
     StandardConfiguration* standard_configuration = new StandardConfiguration(
         should_wake_up,
         get_soil_humidity_information,
-        get_time_from_last_soil_irrigation,
+        soil_time_provider,
         3 * 60 * 60,
         soil_irrigator,
         10,

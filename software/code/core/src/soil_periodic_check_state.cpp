@@ -4,18 +4,18 @@
 struct SoilPeriodicCheckState::impl
 {
     CoreState core_state;
-    GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback;
+    IrrigationTimeProviderInterface* soil_irrigation_time_provider_interface_ptr;
     CoreStateInterface* irrigate_soil_state_interface_ptr;
     CoreStateInterface* air_humidity_check_state_interface_ptr;
     long maximum_period_seconds;
 
     impl(
-        GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
+        IrrigationTimeProviderInterface* soil_irrigation_time_provider_interface_ptr,
         long maximum_period_seconds
     )
     {
         this->core_state = CoreState::CORE_STATE_SOIL_PERIODIC_CHECK;
-        this->get_time_from_last_irrigation_callback = get_time_from_last_irrigation_callback;
+        this->soil_irrigation_time_provider_interface_ptr = soil_irrigation_time_provider_interface_ptr;
         this->maximum_period_seconds = maximum_period_seconds;
     }
 
@@ -32,7 +32,7 @@ struct SoilPeriodicCheckState::impl
     {
         CoreStateInterface* next_core_state_interface = nullptr;
     
-        long time_from_last_irrigation = this->get_time_from_last_irrigation_callback();
+        long time_from_last_irrigation = this->soil_irrigation_time_provider_interface_ptr->GetTimeFromLastIrrigationSeconds();
         
         if(time_from_last_irrigation > this->maximum_period_seconds)
         {
@@ -53,11 +53,11 @@ struct SoilPeriodicCheckState::impl
 };
 
 SoilPeriodicCheckState::SoilPeriodicCheckState(
-    GetTimeFromLastSoilIrrigationCallback get_time_from_last_irrigation_callback,
+    IrrigationTimeProviderInterface* soil_irrigation_time_provider_interface_ptr,
     long maximum_period_seconds
 ) : pImpl(
         new impl(
-            get_time_from_last_irrigation_callback,
+            soil_irrigation_time_provider_interface_ptr,
             maximum_period_seconds
         )
     )
