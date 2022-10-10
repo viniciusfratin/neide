@@ -43,7 +43,7 @@ struct AirIrrigator::impl
         PWM_DDR_PIN &= ~(_BV(PWM_PIN));
     }
 
-    long GetTimeFromLastIrrigation()
+    long GetTimeFromLastIrrigationSeconds()
     {
         long current_time = this->get_current_time_seconds_callback();
 
@@ -103,7 +103,7 @@ void AirIrrigator::Irrigate(long irrigation_time_seconds)
     pImpl->Irrigate(irrigation_time_seconds);
 }
 
-long AirIrrigator::GetTimeFromLastIrrigation()
+long AirIrrigator::GetTimeFromLastIrrigationSeconds()
 {
-    return pImpl->GetTimeFromLastIrrigation();
+    return pImpl->GetTimeFromLastIrrigationSeconds();
 }

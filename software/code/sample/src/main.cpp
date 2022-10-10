@@ -41,6 +41,11 @@ class SoilTimeProvider : public IrrigationTimeProviderInterface
 
         return time;
     }
+
+    virtual ~SoilTimeProvider()
+    {
+
+    }
 };
 
 AirHumidityInformation get_air_humidity_information()
@@ -55,14 +60,23 @@ AirHumidityInformation get_air_humidity_information()
     return information;
 }
 
-long get_time_from_last_air_irrigation()
+class AirTimeProvider : public IrrigationTimeProviderInterface
 {
-    long time = 5 * 60 * 60;
+    public:
+    long GetTimeFromLastIrrigationSeconds() override
+    {
+        long time = 5L * 60L * 60L;
 
-    printf("- Time from last air irrigation: %ld\n", time);
+        printf("- Time from last air irrigation: %ld\n", time);
 
-    return time;
-}
+        return time;
+    }
+
+    virtual ~AirTimeProvider()
+    {
+        
+    }
+};
 
 class Irrigator : public IrrigatorInterface
 {
@@ -100,6 +114,7 @@ int main()
     Irrigator* air_irrigator = new Irrigator();
     WrapUpAction* wrap_up_action = new WrapUpAction();
     SoilTimeProvider* soil_time_provider = new SoilTimeProvider();
+    AirTimeProvider* air_time_provider = new AirTimeProvider();
 
     StandardConfiguration* standard_configuration = new StandardConfiguration(
         should_wake_up,
@@ -109,7 +124,7 @@ int main()
         soil_irrigator,
         10,
         get_air_humidity_information,
-        get_time_from_last_air_irrigation,
+        air_time_provider,
         3 * 60 * 60,
         air_irrigator,
         10,
@@ -126,6 +141,8 @@ int main()
     }
 
     delete standard_configuration;
+    delete soil_time_provider;
+    delete air_time_provider;
     delete wrap_up_action;
     delete air_irrigator;
     delete soil_irrigator;

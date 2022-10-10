@@ -31,7 +31,7 @@ struct StandardConfiguration::impl
         IrrigatorInterface* soil_irrigator_ptr,
         long soil_irrigation_time,
         GetAirHumidityInformationCallback get_air_humidity_information_callback,
-        GetTimeFromLastAirIrrigationCallback get_time_from_last_air_irrigation_callback,
+        IrrigationTimeProviderInterface* air_time_provider_ptr,
         long air_periodic_check_maximum_period,
         IrrigatorInterface* air_irrigator_ptr,
         long air_irrigation_time,
@@ -64,7 +64,7 @@ struct StandardConfiguration::impl
         );
         
         air_periodic_check_state = new AirPeriodicCheckState(
-            get_time_from_last_air_irrigation_callback,
+            air_time_provider_ptr,
             air_periodic_check_maximum_period
         );
 
@@ -148,7 +148,7 @@ StandardConfiguration::StandardConfiguration(
     IrrigatorInterface* soil_irrigator_ptr,
     long soil_irrigation_time,
     GetAirHumidityInformationCallback get_air_humidity_information_callback,
-    GetTimeFromLastAirIrrigationCallback get_time_from_last_air_irrigation_callback,
+    IrrigationTimeProviderInterface* air_time_provider_ptr,
     long air_periodic_check_maximum_period,
     IrrigatorInterface* air_irrigator_ptr,
     long air_irrigation_time,
@@ -162,7 +162,7 @@ StandardConfiguration::StandardConfiguration(
             soil_irrigator_ptr,
             soil_irrigation_time,
             get_air_humidity_information_callback,
-            get_time_from_last_air_irrigation_callback,
+            air_time_provider_ptr,
             air_periodic_check_maximum_period,
             air_irrigator_ptr,
             air_irrigation_time,

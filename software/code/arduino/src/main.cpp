@@ -45,7 +45,6 @@ void setup();
 void loop();
 
 bool should_wake_up();
-long get_time_from_last_air_irrigation();
 
 int main()
 {
@@ -98,7 +97,7 @@ void setup()
         soil_irrigator,
         40L,
         AirInterface_GetAirHumidityInformation,
-        get_time_from_last_air_irrigation,
+        air_irrigator,
         3L * 60L * 60L,
         air_irrigator,
         15L,
@@ -133,9 +132,4 @@ bool should_wake_up()
     }
 
     return should_wake_up;
-}
-
-long get_time_from_last_air_irrigation()
-{
-    return air_irrigator->GetTimeFromLastIrrigation();
 }

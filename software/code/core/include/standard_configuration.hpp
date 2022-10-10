@@ -22,7 +22,7 @@ class StandardConfiguration
         IrrigatorInterface* soil_irrigator_ptr,
         long soil_irrigation_time,
         GetAirHumidityInformationCallback get_air_humidity_information_callback,
-        GetTimeFromLastAirIrrigationCallback get_time_from_last_air_irrigation_callback,
+        IrrigationTimeProviderInterface* air_time_provider_ptr,
         long air_periodic_check_maximum_period,
         IrrigatorInterface* air_irrigator_ptr,
         long air_irrigation_time,

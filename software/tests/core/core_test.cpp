@@ -420,14 +420,17 @@ class CoreInitialAirPeriodicCheck : public ::testing::Test
         GeneralStateMock* irrigate_air_state_mock;
         GeneralStateMock* wrap_up_state_mock;
 
-        virtual GetTimeFromLastAirIrrigationCallback GetStub() = 0;
+        virtual IrrigationTimeProviderMock* GetIrrigationTimeProviderMock() = 0;
 
     protected:
         SystemCore* system_core;
         
         void SetUp() override
         {   
-            air_periodic_check_state = new AirPeriodicCheckState(GetStub(), 3 * 60 * 60);
+            air_periodic_check_state = new AirPeriodicCheckState(
+                GetIrrigationTimeProviderMock(), 
+                3 * 60 * 60
+            );
             irrigate_air_state_mock = new GeneralStateMock(CoreState::CORE_STATE_IRRIGATE_AIR);
             wrap_up_state_mock = new GeneralStateMock(CoreState::CORE_STATE_WRAP_UP);
 
@@ -453,36 +456,66 @@ class CoreInitialAirPeriodicCheck : public ::testing::Test
 class CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation : public CoreInitialAirPeriodicCheck
 {
     private:
-    GetTimeFromLastAirIrrigationCallback GetStub()
+    IrrigationTimeProviderMock* air_irrigation_time_provider_mock;
+
+    IrrigationTimeProviderMock* GetIrrigationTimeProviderMock()
     {
-        return []()
-        {
-            return 2L * 60L * 60L;
-        };
+        return air_irrigation_time_provider_mock;
+    }
+
+    public:
+    CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation()
+    {
+        air_irrigation_time_provider_mock = new IrrigationTimeProviderMock(2L * 60L * 60L);
+    }
+
+    virtual ~CoreInitialAirPeriodicCheckWith3HoursAnd2HoursFromLastIrrigation()
+    {
+        delete air_irrigation_time_provider_mock;
     }
 };
 
 class CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation : public CoreInitialAirPeriodicCheck
 {
     private:
-    GetTimeFromLastAirIrrigationCallback GetStub()
+    IrrigationTimeProviderMock* air_irrigation_time_provider_mock;
+
+    IrrigationTimeProviderMock* GetIrrigationTimeProviderMock()
     {
-        return []()
-        {
-            return 3L * 60L * 60L;
-        };
+        return air_irrigation_time_provider_mock;
+    }
+
+    public:
+    CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation()
+    {
+        air_irrigation_time_provider_mock = new IrrigationTimeProviderMock(3L * 60L * 60L);
+    }
+
+    virtual ~CoreInitialAirPeriodicCheckWith3HoursAnd3HoursFromLastIrrigation()
+    {
+        delete air_irrigation_time_provider_mock;
     }
 };
 
 class CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation : public CoreInitialAirPeriodicCheck
 {
     private:
-    GetTimeFromLastAirIrrigationCallback GetStub()
+    IrrigationTimeProviderMock* air_irrigation_time_provider_mock;
+
+    IrrigationTimeProviderMock* GetIrrigationTimeProviderMock()
     {
-        return []()
-        {
-            return 4L * 60L * 60L;
-        };
+        return air_irrigation_time_provider_mock;
+    }
+
+    public:
+    CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation()
+    {
+        air_irrigation_time_provider_mock = new IrrigationTimeProviderMock(4L * 60L * 60L);
+    }
+
+    virtual ~CoreInitialAirPeriodicCheckWith3HoursAnd4HoursFromLastIrrigation()
+    {
+        delete air_irrigation_time_provider_mock;
     }
 };
 

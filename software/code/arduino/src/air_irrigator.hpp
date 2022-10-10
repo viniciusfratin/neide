@@ -2,10 +2,11 @@
 #define AIR_IRRIGATOR_HPP
 
 #include "irrigator_interface.hpp"
+#include "irrigation_time_provider_interface.hpp"
 #include "pin_utils/adc_utils.hpp"
 #include "clock/clock.hpp"
 
-class AirIrrigator : public IrrigatorInterface
+class AirIrrigator : public IrrigatorInterface, public IrrigationTimeProviderInterface
 {
     public:
     AirIrrigator(
@@ -17,7 +18,7 @@ class AirIrrigator : public IrrigatorInterface
     );
 
     void Irrigate(long irrigation_time_seconds) override;
-    long GetTimeFromLastIrrigation();
+    long GetTimeFromLastIrrigationSeconds() override;
     
     virtual ~AirIrrigator();
 

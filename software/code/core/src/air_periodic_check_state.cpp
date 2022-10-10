@@ -4,18 +4,18 @@
 struct AirPeriodicCheckState::impl
 {
     CoreState core_state;
-    GetTimeFromLastAirIrrigationCallback get_time_from_last_irrigation_callback;
+    IrrigationTimeProviderInterface* air_irrigation_time_provider_interface_ptr;
     CoreStateInterface* irrigate_air_state_interface_ptr;
     CoreStateInterface* wrap_up_state_interface_ptr;
     long maximum_period_seconds;
 
     impl(
-        GetTimeFromLastAirIrrigationCallback get_time_from_last_irrigation_callback,
+        IrrigationTimeProviderInterface* air_irrigation_time_provider_interface_ptr,
         long maximum_period_seconds
     )
     {
         this->core_state = CoreState::CORE_STATE_AIR_PERIODIC_CHECK;
-        this->get_time_from_last_irrigation_callback = get_time_from_last_irrigation_callback;
+        this->air_irrigation_time_provider_interface_ptr = air_irrigation_time_provider_interface_ptr;
         this->maximum_period_seconds = maximum_period_seconds;
     }
 
@@ -32,7 +32,7 @@ struct AirPeriodicCheckState::impl
     {
         CoreStateInterface* next_core_state_interface = nullptr;
         
-        long time_from_last_irrigation = this->get_time_from_last_irrigation_callback();
+        long time_from_last_irrigation = this->air_irrigation_time_provider_interface_ptr->GetTimeFromLastIrrigationSeconds();
         
         if(time_from_last_irrigation > this->maximum_period_seconds)
         {
@@ -53,11 +53,11 @@ struct AirPeriodicCheckState::impl
 };
 
 AirPeriodicCheckState::AirPeriodicCheckState(
-    GetTimeFromLastAirIrrigationCallback get_time_from_last_irrigation_callback,
+    IrrigationTimeProviderInterface* air_irrigation_time_provider_interface_ptr,
     long maximum_period_seconds
 ) : pImpl(
         new impl(
-            get_time_from_last_irrigation_callback,
+            air_irrigation_time_provider_interface_ptr,
             maximum_period_seconds
         )
     )
