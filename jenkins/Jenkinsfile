@@ -1,0 +1,48 @@
+pipeline {
+	agent none
+	
+	stages {
+        	stage('Host build and test') {
+			agent {
+				dockerfile {
+					filename 'docker/Dockerfile'
+					additionalBuildArgs '--target neide_build_host'
+				}
+			}
+			stages {
+				stage('Host build') {
+					steps {
+						echo 'Build!'
+					}
+				}
+				stage('Host test') {
+					steps {
+						echo 'Test!'
+						sh 'cd /home/user/neide && ctest --test-dir build/tests/ --rerun-failed --output-on-failure'
+					}
+				}
+			}
+        }
+
+        stage('Target build and test') {
+			agent {
+				dockerfile {
+					filename 'docker/Dockerfile'
+					additionalBuildArgs '--target neide_build_target'
+				}
+			}
+			stages {
+				stage('Target build') {
+					steps {
+						echo 'Build!'
+					}
+				}
+				stage('Target test') {
+					steps {
+						echo 'Test!'
+					}
+				}
+			}
+	        }
+	}
+}
