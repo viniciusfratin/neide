@@ -2,7 +2,7 @@ pipeline {
 	agent none
 	
 	stages {
-        	stage('Host build and test') {
+		stage('Host build and test') {
 			agent {
 				dockerfile {
 					filename 'docker/Dockerfile'
