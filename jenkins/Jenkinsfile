@@ -1,40 +1,30 @@
 pipeline {
-	agent none
+	agent any
 	
 	stages {
 		stage('Host build and test') {
-			agent {
-				dockerfile {
-					filename 'docker/Dockerfile'
-					additionalBuildArgs '--target neide_build_host'
-				}
-			}
 			stages {
 				stage('Host build') {
 					steps {
 						echo 'Build!'
+						sh './scripts/host_build.sh'
 					}
 				}
 				stage('Host test') {
 					steps {
 						echo 'Test!'
-						sh 'cd /home/user/neide && ctest --test-dir build/tests/ --rerun-failed --output-on-failure'
+						sh './scripts/host_run_tests.sh'
 					}
 				}
 			}
-        }
+		}
 
-        stage('Target build and test') {
-			agent {
-				dockerfile {
-					filename 'docker/Dockerfile'
-					additionalBuildArgs '--target neide_build_target'
-				}
-			}
+        	stage('Target build and test') {
 			stages {
 				stage('Target build') {
 					steps {
 						echo 'Build!'
+						sh './scripts/target_build.sh'
 					}
 				}
 				stage('Target test') {

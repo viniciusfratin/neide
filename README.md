@@ -19,18 +19,18 @@ Make sure that the working directory is the intended one by running
 ### Tests
 In order to execute the tests, run the following in bash:
 
-> ./scripts/build_host_and_run_tests.sh
+> ./scripts/host_run_tests.sh
 
 ### Run sample
 In order to run a sample for the system with mocked external data, run the following in bash:
 
-> ./scripts/build_host_and_run_sample.sh
+> ./scripts/host_run_sample.sh
 
 ### Build files for target hardware
 In order to get the target hardware files (current only supporting the Atmel ATmega328P microcontroller), run
 the following in bash:
 
-> ./scripts/build_target_and_copy_files.sh
+> ./scripts/target_copy_files.sh
 
 The files will be in a newly created "target_files" folder.
 
