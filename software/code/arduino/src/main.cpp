@@ -2,7 +2,7 @@
 #include "standard_configuration.hpp"
 #include "irrigator_interface.hpp"
 #include "wrap_up_action_interface.hpp"
-#include "irrigation_time_provider_interface.hpp"
+#include "time_from_last_irrigation_provider_interface.hpp"
 #include "soil_irrigator.hpp"
 #include "air_irrigator.hpp"
 #include "wrap_up_action.hpp"

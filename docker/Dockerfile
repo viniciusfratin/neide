@@ -5,7 +5,7 @@ USER root
 RUN apt-get update \
     && apt-get install -y \
     build-essential=12.4ubuntu1 \
-    curl=7.58.0-2ubuntu3.20 \
+    curl=7.58.0-2ubuntu3.21 \
     && apt-get clean
 RUN curl -sSL https://cmake.org/files/v3.23/cmake-3.23.0-rc5-linux-x86_64.tar.gz \
     | tar -xzC /opt

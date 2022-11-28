@@ -1,7 +1,7 @@
 #ifndef IRRIGATION_TIME_PROVIDER_INTERFACE_HPP
 #define IRRIGATION_TIME_PROVIDER_INTERFACE_HPP
 
-class IrrigationTimeProviderInterface
+class TimeFromLastIrrigationProviderInterface
 {
     public:
     virtual long GetTimeFromLastIrrigationSeconds() = 0;

@@ -2,13 +2,13 @@
 #define SOIL_PERIODIC_CHECK_STATE_HPP
 
 #include "core_state_interface.hpp"
-#include "irrigation_time_provider_interface.hpp"
+#include "time_from_last_irrigation_provider_interface.hpp"
 
 class SoilPeriodicCheckState : public CoreStateInterface
 {
     public:
     SoilPeriodicCheckState(
-        IrrigationTimeProviderInterface* soil_irrigation_time_provider_interface_ptr,
+        TimeFromLastIrrigationProviderInterface* soil_time_from_last_irrigation_provider_interface_ptr,
         long maximum_period_seconds
     );
 

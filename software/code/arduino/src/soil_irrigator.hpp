@@ -2,10 +2,10 @@
 #define SOIL_IRRIGATOR_HPP
 
 #include "irrigator_interface.hpp"
-#include "irrigation_time_provider_interface.hpp"
+#include "time_from_last_irrigation_provider_interface.hpp"
 #include "clock/clock.hpp"
 
-class SoilIrrigator : public IrrigatorInterface, public IrrigationTimeProviderInterface
+class SoilIrrigator : public IrrigatorInterface, public TimeFromLastIrrigationProviderInterface
 {
     public:
     SoilIrrigator(

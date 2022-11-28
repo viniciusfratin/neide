@@ -14,7 +14,7 @@
 #include "air_periodic_check_state.hpp"
 #include "irrigate_air_state.hpp"
 #include "wrap_up_state.hpp"
-#include "irrigation_time_provider_interface.hpp"
+#include "time_from_last_irrigation_provider_interface.hpp"
 
 #include "general_state_mock.hpp"
 #include "irrigator_mock.hpp"

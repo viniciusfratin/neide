@@ -2,7 +2,7 @@
 #include "standard_configuration.hpp"
 #include "irrigator_interface.hpp"
 #include "wrap_up_action_interface.hpp"
-#include "irrigation_time_provider_interface.hpp"
+#include "time_from_last_irrigation_provider_interface.hpp"
 extern "C" 
 {
     #include <stdio.h>
@@ -30,7 +30,7 @@ SoilHumidityInformation get_soil_humidity_information()
     return information;
 }
 
-class SoilTimeProvider : public IrrigationTimeProviderInterface
+class SoilTimeProvider : public TimeFromLastIrrigationProviderInterface
 {
     public:
     long GetTimeFromLastIrrigationSeconds() override
@@ -60,7 +60,7 @@ AirHumidityInformation get_air_humidity_information()
     return information;
 }
 
-class AirTimeProvider : public IrrigationTimeProviderInterface
+class AirTimeProvider : public TimeFromLastIrrigationProviderInterface
 {
     public:
     long GetTimeFromLastIrrigationSeconds() override

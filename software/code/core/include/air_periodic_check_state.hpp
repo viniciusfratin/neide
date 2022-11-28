@@ -2,13 +2,13 @@
 #define AIR_PERIODIC_CHECK_STATE_HPP
 
 #include "core_state_interface.hpp"
-#include "irrigation_time_provider_interface.hpp"
+#include "time_from_last_irrigation_provider_interface.hpp"
 
 class AirPeriodicCheckState : public CoreStateInterface
 {
     public:
     AirPeriodicCheckState(
-        IrrigationTimeProviderInterface* air_irrigation_time_provider_interface_ptr,
+        TimeFromLastIrrigationProviderInterface* air_time_from_last_irrigation_provider_interface_ptr,
         long maximum_period_seconds
     );
 
