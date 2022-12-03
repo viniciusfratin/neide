@@ -10,8 +10,11 @@
 #include "soil_sensors/sen0193.hpp"
 #include "air_interface/air_interface.hpp"
 #include "soil_interface/soil_interface.hpp"
-#include "user_configuration/air_configuration.hpp"
-#include "user_configuration/soil_configuration.hpp"
+#include "user_configuration/dummy_air_configuration.hpp"
+#include "user_configuration/dummy_soil_configuration.hpp"
+#include "devices/potentiometer_interface.hpp"
+#include "devices/adc_potentiometer.hpp"
+#include "irrigation_time_providers/potentiometer_irrigation_time_provider.hpp"
 #include "pin_utils/adc_defs.hpp"
 #include "clock/clock.hpp"
 #include "system_timer/system_timer.hpp"
@@ -67,12 +70,27 @@ void setup()
         DHT11_DATA_PIN_PORT_PTR, 
         DHT11_DATA_PIN
     );
-    AirConfiguration_Initialize(IDENTIFIER_ADC0);
-    AirInterface_Initialize(DHT11_GetAirInformation, AirConfiguration_GetAirUserConfiguration);
+
+    ADCPotentiometer* air_potentiometer = new ADCPotentiometer(IDENTIFIER_ADC0);
+    ADCPotentiometer* soil_potentiometer = new ADCPotentiometer(IDENTIFIER_ADC2);
+    
+    PotentiometerIrrigationTimeProvider* air_irrigation_time_provider = new PotentiometerIrrigationTimeProvider(
+        air_potentiometer,
+        15,
+        120
+    );
+    PotentiometerIrrigationTimeProvider* soil_irrigation_time_provider = new PotentiometerIrrigationTimeProvider(
+        soil_potentiometer,
+        40,
+        60
+    );
+
+    DummyAirConfiguration_Initialize();
+    AirInterface_Initialize(DHT11_GetAirInformation, DummyAirConfiguration_GetAirUserConfiguration);
     
     SEN0193_Initialize(IDENTIFIER_ADC1);
-    SoilConfiguration_Initialize(IDENTIFIER_ADC2);
-    SoilInterface_Initialize(SEN0193_GetSoilInformation, SoilConfiguration_GetSoilUserConfiguration);
+    DummySoilConfiguration_Initialize();
+    SoilInterface_Initialize(SEN0193_GetSoilInformation, DummySoilConfiguration_GetSoilUserConfiguration);
 
     soil_irrigator = new SoilIrrigator(SystemTimer_GetCurrentTimeSeconds, 
         SOIL_IRRIGATOR_DATA_PIN_DDR_PTR, 
@@ -95,12 +113,12 @@ void setup()
         soil_irrigator,
         48L * 60L * 60L,
         soil_irrigator,
-        40L,
+        soil_irrigation_time_provider,
         AirInterface_GetAirHumidityInformation,
         air_irrigator,
         3L * 60L * 60L,
         air_irrigator,
-        15L,
+        air_irrigation_time_provider,
         wrap_up_action
     );
 
@@ -121,7 +139,7 @@ bool should_wake_up()
     bool should_wake_up = false;
     long current_time = SystemTimer_GetCurrentTimeSeconds();
 
-    if((current_time - last_wake_up_time) >= (15 * 60))
+    if((current_time - last_wake_up_time) >= (15L * 60L))
     {
         should_wake_up = true;
         last_wake_up_time = current_time;

@@ -8,8 +8,12 @@ set (arduino_source_files
     "src/soil_sensors/sen0193.cpp"
     "src/air_interface/air_interface.cpp"
     "src/soil_interface/soil_interface.cpp"
+    "src/user_configuration/dummy_soil_configuration.cpp"
     "src/user_configuration/air_configuration.cpp"
+    "src/user_configuration/dummy_air_configuration.cpp"
     "src/user_configuration/soil_configuration.cpp"
+    "src/devices/adc_potentiometer.cpp"
+    "src/irrigation_time_providers/potentiometer_irrigation_time_provider.cpp"
     "src/pin_utils/gpio_utils.cpp"
     "src/pin_utils/adc_utils.cpp"
     "src/system_timer/system_timer.cpp")
