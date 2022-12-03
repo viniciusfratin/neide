@@ -7,16 +7,16 @@ struct IrrigateSoilState::impl
     CoreState core_state;
     CoreStateInterface* air_humidity_check_state_interface_ptr;
     IrrigatorInterface* soil_irrigator_interface_ptr;
-    long irrigation_time_seconds;
+    IrrigationTimeProviderInterface* soil_irrigation_time_provider_ptr;
 
     impl(
         IrrigatorInterface* soil_irrigator_interface_ptr,
-        long irrigation_time_seconds
+        IrrigationTimeProviderInterface* soil_irrigation_time_provider_ptr
     )
     {
         this->core_state = CoreState::CORE_STATE_IRRIGATE_SOIL;
         this->soil_irrigator_interface_ptr = soil_irrigator_interface_ptr;
-        this->irrigation_time_seconds = irrigation_time_seconds;
+        this->soil_irrigation_time_provider_ptr = soil_irrigation_time_provider_ptr;
     }
 
     void SetTransitions(
@@ -30,7 +30,9 @@ struct IrrigateSoilState::impl
     {
         CoreStateInterface* next_core_state_interface = this->air_humidity_check_state_interface_ptr;
     
-        this->soil_irrigator_interface_ptr->Irrigate(this->irrigation_time_seconds);
+        this->soil_irrigator_interface_ptr->Irrigate(
+            (long)this->soil_irrigation_time_provider_ptr->GetIrrigationTimeSeconds()
+        );
 
         return next_core_state_interface;
     }
@@ -43,11 +45,11 @@ struct IrrigateSoilState::impl
 
 IrrigateSoilState::IrrigateSoilState(
     IrrigatorInterface* soil_irrigator_interface_ptr,
-    long irrigation_time_seconds
+    IrrigationTimeProviderInterface* soil_irrigation_time_provider_ptr
 ) : pImpl(
         new impl(
             soil_irrigator_interface_ptr,
-            irrigation_time_seconds
+            soil_irrigation_time_provider_ptr
         )
     )
 {

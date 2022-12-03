@@ -5,6 +5,7 @@
 #include "irrigator_interface.hpp"
 #include "wrap_up_action_interface.hpp"
 #include "time_from_last_irrigation_provider_interface.hpp"
+#include "irrigation_time_provider_interface.hpp"
 #include "idle_state.hpp"
 #include "soil_humidity_check_state.hpp"
 #include "soil_periodic_check_state.hpp"
@@ -20,12 +21,12 @@ class StandardConfiguration
         TimeFromLastIrrigationProviderInterface* soil_time_provider_ptr,
         long soil_periodic_check_maximum_period,
         IrrigatorInterface* soil_irrigator_ptr,
-        long soil_irrigation_time,
+        IrrigationTimeProviderInterface* soil_irrigation_time_provider_ptr,
         GetAirHumidityInformationCallback get_air_humidity_information_callback,
         TimeFromLastIrrigationProviderInterface* air_time_provider_ptr,
         long air_periodic_check_maximum_period,
         IrrigatorInterface* air_irrigator_ptr,
-        long air_irrigation_time,
+        IrrigationTimeProviderInterface* air_irrigation_time_provider_ptr,
         WrapUpActionInterface* wrap_up_action_ptr
     );
 

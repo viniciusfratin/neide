@@ -4,6 +4,7 @@ set(core_tests_sources
     "mocks/src/irrigator_mock.cpp"
     "mocks/src/wrap_up_action_mock.cpp"
     "mocks/src/time_from_last_irrigation_provider_mock.cpp"
+    "mocks/src/irrigation_time_provider_mock.cpp"
 )
 
 neide_add_executable(

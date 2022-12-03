@@ -15,11 +15,13 @@
 #include "irrigate_air_state.hpp"
 #include "wrap_up_state.hpp"
 #include "time_from_last_irrigation_provider_interface.hpp"
+#include "irrigation_time_provider_interface.hpp"
 
 #include "general_state_mock.hpp"
 #include "irrigator_mock.hpp"
 #include "wrap_up_action_mock.hpp"
 #include "time_from_last_irrigation_provider_mock.hpp"
+#include "irrigation_time_provider_mock.hpp"
 
 class CoreInitialIdle : public ::testing::Test
 {
@@ -301,6 +303,7 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
     private:
         IrrigateSoilState* irrigate_soil_state;
         GeneralStateMock* air_humidity_check_state_mock;
+        IrrigationTimeProviderMock* soil_irrigation_time_mock;
 
     protected:
         SystemCore* system_core;
@@ -310,7 +313,8 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
         {
             soil_irrigator_mock = new IrrigatorMock();
             air_humidity_check_state_mock = new GeneralStateMock(CoreState::CORE_STATE_AIR_HUMIDITY_CHECK);
-            irrigate_soil_state = new IrrigateSoilState(soil_irrigator_mock, 10);
+            soil_irrigation_time_mock = new IrrigationTimeProviderMock(10);
+            irrigate_soil_state = new IrrigateSoilState(soil_irrigator_mock, soil_irrigation_time_mock);
 
             irrigate_soil_state->SetTransitions(air_humidity_check_state_mock);            
 
@@ -325,6 +329,7 @@ class CoreInitialIrrigateSoilWith10Seconds : public ::testing::Test
             delete irrigate_soil_state;
             delete air_humidity_check_state_mock;
             delete soil_irrigator_mock;
+            delete soil_irrigation_time_mock;
         }
 };
 
@@ -524,6 +529,7 @@ class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
     private:
         IrrigateAirState* irrigate_air_state;
         GeneralStateMock* wrap_up_state_mock;
+        IrrigationTimeProviderMock* soil_irrigation_time_provider_mock;
 
     protected:
         SystemCore* system_core;
@@ -533,7 +539,8 @@ class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
         {
             air_irrigator_mock = new IrrigatorMock();
             wrap_up_state_mock = new GeneralStateMock(CoreState::CORE_STATE_WRAP_UP);
-            irrigate_air_state = new IrrigateAirState(air_irrigator_mock, 10);
+            soil_irrigation_time_provider_mock = new IrrigationTimeProviderMock(10);
+            irrigate_air_state = new IrrigateAirState(air_irrigator_mock, soil_irrigation_time_provider_mock);
 
             irrigate_air_state->SetTransitions(wrap_up_state_mock);
             
@@ -548,6 +555,7 @@ class CoreInitialIrrigateAirWith10Seconds : public ::testing::Test
             delete irrigate_air_state;
             delete wrap_up_state_mock;
             delete air_irrigator_mock;
+            delete soil_irrigation_time_provider_mock;
         }
 };
 

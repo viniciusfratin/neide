@@ -30,7 +30,7 @@ SoilHumidityInformation get_soil_humidity_information()
     return information;
 }
 
-class SoilTimeProvider : public TimeFromLastIrrigationProviderInterface
+class TimeFromLastSoilIrrigationProvider : public TimeFromLastIrrigationProviderInterface
 {
     public:
     long GetTimeFromLastIrrigationSeconds() override
@@ -42,9 +42,25 @@ class SoilTimeProvider : public TimeFromLastIrrigationProviderInterface
         return time;
     }
 
-    virtual ~SoilTimeProvider()
+    virtual ~TimeFromLastSoilIrrigationProvider()
     {
 
+    }
+};
+
+class SoilIrrigationTimeProvider : public IrrigationTimeProviderInterface
+{
+    public:
+    int GetIrrigationTimeSeconds() override
+    {
+        int time = 10;
+
+        return time;
+    }
+
+    virtual ~SoilIrrigationTimeProvider()
+    {
+        
     }
 };
 
@@ -60,7 +76,7 @@ AirHumidityInformation get_air_humidity_information()
     return information;
 }
 
-class AirTimeProvider : public TimeFromLastIrrigationProviderInterface
+class TimeFromLastAirIrrigationProvider : public TimeFromLastIrrigationProviderInterface
 {
     public:
     long GetTimeFromLastIrrigationSeconds() override
@@ -72,7 +88,23 @@ class AirTimeProvider : public TimeFromLastIrrigationProviderInterface
         return time;
     }
 
-    virtual ~AirTimeProvider()
+    virtual ~TimeFromLastAirIrrigationProvider()
+    {
+        
+    }
+};
+
+class AirIrrigationTimeProvider : public IrrigationTimeProviderInterface
+{
+    public:
+    int GetIrrigationTimeSeconds() override
+    {
+        int time = 10;
+
+        return time;
+    }
+
+    virtual ~AirIrrigationTimeProvider()
     {
         
     }
@@ -113,21 +145,23 @@ int main()
     Irrigator* soil_irrigator = new Irrigator();
     Irrigator* air_irrigator = new Irrigator();
     WrapUpAction* wrap_up_action = new WrapUpAction();
-    SoilTimeProvider* soil_time_provider = new SoilTimeProvider();
-    AirTimeProvider* air_time_provider = new AirTimeProvider();
+    TimeFromLastSoilIrrigationProvider* time_from_last_soil_irrigation_provider = new TimeFromLastSoilIrrigationProvider();
+    TimeFromLastAirIrrigationProvider* time_from_last_air_irrigation_provider = new TimeFromLastAirIrrigationProvider();
+    SoilIrrigationTimeProvider* soil_irrigation_time_provider = new SoilIrrigationTimeProvider();
+    AirIrrigationTimeProvider* air_irrigation_time_provider = new AirIrrigationTimeProvider();
 
     StandardConfiguration* standard_configuration = new StandardConfiguration(
         should_wake_up,
         get_soil_humidity_information,
-        soil_time_provider,
+        time_from_last_soil_irrigation_provider,
         3 * 60 * 60,
         soil_irrigator,
-        10,
+        soil_irrigation_time_provider,
         get_air_humidity_information,
-        air_time_provider,
+        time_from_last_air_irrigation_provider,
         3 * 60 * 60,
         air_irrigator,
-        10,
+        air_irrigation_time_provider,
         wrap_up_action
     );
 
@@ -141,8 +175,10 @@ int main()
     }
 
     delete standard_configuration;
-    delete soil_time_provider;
-    delete air_time_provider;
+    delete soil_irrigation_time_provider;
+    delete air_irrigation_time_provider;
+    delete time_from_last_soil_irrigation_provider;
+    delete time_from_last_air_irrigation_provider;
     delete wrap_up_action;
     delete air_irrigator;
     delete soil_irrigator;

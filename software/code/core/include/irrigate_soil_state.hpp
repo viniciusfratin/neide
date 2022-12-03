@@ -3,13 +3,14 @@
 
 #include "core_state_interface.hpp"
 #include "irrigator_interface.hpp"
+#include "irrigation_time_provider_interface.hpp"
 
 class IrrigateSoilState : public CoreStateInterface
 {
     public:
     IrrigateSoilState(
         IrrigatorInterface* soil_irrigator_interface_ptr,
-        long irrigation_time_seconds
+        IrrigationTimeProviderInterface* soil_irrigation_time_provider_ptr
     );
 
     void SetTransitions(
